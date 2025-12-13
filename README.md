@@ -196,8 +196,3 @@ Recommended workflow
 Developer docs & architecture
 - Look for docs/ or docs/*.md and HTML files in the repo for architecture diagrams and onboarding notes.
 - Native modules: check README in native folders for build and debugging instructions (C++, CMake, Swift).
-
----
-
-
-If you want, I can produce a final README now using only the information already in the repository (if you grant access) or refine this draft where you paste specific files. Which do you prefer?
