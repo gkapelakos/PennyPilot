@@ -197,38 +197,7 @@ Developer docs & architecture
 - Look for docs/ or docs/*.md and HTML files in the repo for architecture diagrams and onboarding notes.
 - Native modules: check README in native folders for build and debugging instructions (C++, CMake, Swift).
 
-Code of Conduct
-- Follow community standards listed in CONTRIBUTING.md or CODE_OF_CONDUCT.md if present.
-
 ---
 
-## License
-
-- License file not visible from repository metadata provided here. Please check the repository root for a LICENSE or COPYING file and add the license badge and text to this README accordingly.
-
----
-
-## Notes / verification required
-
-This README is a careful draft based on the repository description and repository language composition metadata you provided. To make this README fully accurate and executable, I need direct access to the repository contents to verify and replace the "needs confirmation" points with exact details (package names, database engine, config keys, file paths, tests, CI instructions, and license text).
-
-How I can finalize this README
-- Make the repository accessible (public or invite a read-capable account), or
-- Paste the following files here (or upload a zip):
-  - pubspec.yaml
-  - lib/ (Dart source)
-  - any DB / migration files
-  - native folders (android/, ios/, macos/) if they contain native modules
-  - README or docs already in repo
-  - LICENSE (if present)
-
-Once I can inspect code, I will:
-- Insert exact installation commands, dependencies, and platform notes
-- List concrete configuration keys and where they are stored
-- Specify exact local storage engine and schema
-- Confirm encryption and privacy implementations
-- Add license text and contribution links
-
----
 
 If you want, I can produce a final README now using only the information already in the repository (if you grant access) or refine this draft where you paste specific files. Which do you prefer?
