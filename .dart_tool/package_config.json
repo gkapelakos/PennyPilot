@@ -411,7 +411,7 @@
     },
     {
       "name": "image",
-      "rootUri": "file:///home/johnkap/.pub-cache/hosted/pub.dev/image-4.5.4",
+      "rootUri": "file:///home/johnkap/.pub-cache/hosted/pub.dev/image-4.6.0",
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
@@ -723,7 +723,7 @@
     },
     {
       "name": "time",
-      "rootUri": "file:///home/johnkap/.pub-cache/hosted/pub.dev/time-2.1.5",
+      "rootUri": "file:///home/johnkap/.pub-cache/hosted/pub.dev/time-2.1.6",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
@@ -783,9 +783,9 @@
     },
     {
       "name": "watcher",
-      "rootUri": "file:///home/johnkap/.pub-cache/hosted/pub.dev/watcher-1.1.4",
+      "rootUri": "file:///home/johnkap/.pub-cache/hosted/pub.dev/watcher-1.2.0",
       "packageUri": "lib/",
-      "languageVersion": "3.1"
+      "languageVersion": "3.4"
     },
     {
       "name": "web",

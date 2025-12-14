@@ -1,4 +1,5 @@
 import 'package:isar/isar.dart';
+import 'package:pennypilot/src/data/models/transaction_model.dart';
 
 part 'extraction_metadata_model.g.dart';
 
@@ -49,10 +50,4 @@ class ExtractionMetadataModel {
 
   @Index()
   late DateTime extractedAt;
-}
-
-enum ConfidenceLevel {
-  high,    // 90-100% confidence
-  medium,  // 60-89% confidence
-  low,     // Below 60% confidence
 }
