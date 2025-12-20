@@ -213,9 +213,9 @@
     },
     {
       "name": "file_picker",
-      "rootUri": "file:///home/johnkap/.pub-cache/hosted/pub.dev/file_picker-6.2.1",
+      "rootUri": "file:///home/johnkap/.pub-cache/hosted/pub.dev/file_picker-8.3.7",
       "packageUri": "lib/",
-      "languageVersion": "2.19"
+      "languageVersion": "3.4"
     },
     {
       "name": "fixnum",
