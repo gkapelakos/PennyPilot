@@ -33,7 +33,7 @@ class ConnectEmailScreen extends ConsumerWidget {
                   final account = await authService.signInWithGoogle();
                   if (account != null && context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Connected to ${account.email}')),
+                      SnackBar(content: Text('Connected to $account')),
                     );
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(

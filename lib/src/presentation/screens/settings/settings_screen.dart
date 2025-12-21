@@ -3,7 +3,9 @@ import 'package:pennypilot/src/presentation/screens/settings/privacy_security_sc
 import 'package:pennypilot/src/presentation/screens/settings/backup_screen.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pennypilot/src/presentation/providers/theme_provider.dart';
 import 'package:pennypilot/src/presentation/providers/email_provider.dart';
+import 'package:pennypilot/src/presentation/screens/settings/email_accounts_section.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -16,10 +18,66 @@ class SettingsScreen extends ConsumerWidget {
       ),
       body: ListView(
         children: [
-          ListTile(
-            leading: const Icon(Icons.dark_mode),
-            title: const Text('Dark Mode'),
-            trailing: Switch(value: false, onChanged: (val) {}),
+          // Appearance Section
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Text(
+              'Appearance',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SegmentedButton<ThemeMode>(
+              segments: const [
+                ButtonSegment(
+                  value: ThemeMode.light,
+                  label: Text('Light'),
+                  icon: Icon(Icons.light_mode),
+                ),
+                ButtonSegment(
+                  value: ThemeMode.dark,
+                  label: Text('Dark'),
+                  icon: Icon(Icons.dark_mode),
+                ),
+                ButtonSegment(
+                  value: ThemeMode.system,
+                  label: Text('System'),
+                  icon: Icon(Icons.brightness_auto),
+                ),
+              ],
+              selected: {ref.watch(themeModeProvider)},
+              onSelectionChanged: (Set<ThemeMode> newSelection) {
+                ref.read(themeModeProvider.notifier).setThemeMode(newSelection.first);
+              },
+            ),
+          ),
+          
+          const Divider(height: 32),
+
+          // Accounts Section
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Text(
+              'Accounts',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+          const EmailAccountsSection(), // We will create this widget next
+          const Divider(height: 32),
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: Text(
+              'General',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
           ),
           ListTile(
             leading: const Icon(Icons.security),
@@ -68,7 +126,7 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.info),
             title: const Text('About PennyPilot'),
-            subtitle: const Text('Version 1.0.0'),
+            subtitle: const Text('Version alpha.0.2'),
           ),
         ],
       ),

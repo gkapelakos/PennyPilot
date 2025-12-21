@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/app.dart';
+import 'package:pennypilot/src/presentation/providers/theme_provider.dart';
 import 'package:workmanager/workmanager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 @pragma('vm:entry-point')
 void callbackDispatcher() {
@@ -23,5 +25,12 @@ void main() async {
 
   // TODO: Initialize Isar
   
-  runApp(const ProviderScope(child: PennyPilotApp()));
+  final prefs = await SharedPreferences.getInstance();
+
+  runApp(ProviderScope(
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(prefs),
+    ],
+    child: const PennyPilotApp(),
+  ));
 }

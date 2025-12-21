@@ -5,6 +5,7 @@ import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/data/models/subscription_model.dart';
 import 'package:pennypilot/src/services/merchant_normalization_service.dart';
 import 'package:pennypilot/src/services/subscription_intelligence_service.dart';
+import 'package:pennypilot/src/services/receipt_extraction_service.dart';
 
 // Database service provider
 final databaseServiceProvider = Provider<DatabaseService>((ref) {
@@ -29,6 +30,15 @@ final subscriptionIntelligenceServiceProvider = Provider<SubscriptionIntelligenc
   final isar = ref.watch(isarProvider).value;
   if (isar == null) throw Exception('Database not initialized');
   return SubscriptionIntelligenceService(isar);
+});
+
+// Receipt extraction service provider
+final receiptExtractionServiceProvider = Provider<ReceiptExtractionService>((ref) {
+  final isar = ref.watch(isarProvider).value;
+  final merchantService = ref.watch(merchantNormalizationServiceProvider);
+  if (isar == null) throw Exception('Database not initialized');
+  
+  return ReceiptExtractionService(isar, merchantService);
 });
 
 // Transactions stream provider

@@ -44,6 +44,17 @@ class TransactionModel {
   /// Reference to subscription if applicable
   int? subscriptionId;
 
+  /// Transaction type (income or expense)
+  @Enumerated(EnumType.ordinal)
+  TransactionKind kind = TransactionKind.expense;
+
+  /// Origin of the transaction
+  @Enumerated(EnumType.ordinal)
+  TransactionOrigin origin = TransactionOrigin.emailDetected;
+
+  /// Whether this is a recurring transaction
+  bool isRecurring = false;
+  
   /// Overall extraction confidence level
   @Enumerated(EnumType.ordinal)
   ConfidenceLevel extractionConfidence = ConfidenceLevel.low;
@@ -73,5 +84,16 @@ enum ConfidenceLevel {
   high,    // 90-100% confidence
   medium,  // 60-89% confidence
   low,     // Below 60% confidence
+}
+
+enum TransactionKind {
+  income,
+  expense,
+}
+
+enum TransactionOrigin {
+  emailDetected,
+  manual,
+  imported,
 }
 

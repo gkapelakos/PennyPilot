@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/core/theme/app_theme.dart';
+import 'package:pennypilot/src/presentation/providers/theme_provider.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:pennypilot/src/presentation/screens/onboarding/onboarding_screen.dart';
 import 'package:pennypilot/src/presentation/screens/dashboard/dashboard_screen.dart';
@@ -12,6 +13,8 @@ class PennyPilotApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: Check if user is onboarded
     const bool isOnboarded = false; 
+    
+    final themeMode = ref.watch(themeModeProvider);
 
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
@@ -20,7 +23,7 @@ class PennyPilotApp extends ConsumerWidget {
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme(lightDynamic),
           darkTheme: AppTheme.darkTheme(darkDynamic),
-          themeMode: ThemeMode.system,
+          themeMode: themeMode,
           home: isOnboarded ? const DashboardScreen() : const OnboardingScreen(),
         );
       },

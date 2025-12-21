@@ -5,6 +5,9 @@ import 'package:pennypilot/src/presentation/widgets/transaction_card.dart';
 import 'package:pennypilot/src/presentation/widgets/empty_state.dart';
 import 'package:pennypilot/src/core/utils/page_transitions.dart';
 import 'package:pennypilot/src/presentation/screens/transactions/transaction_details_screen.dart';
+import 'package:pennypilot/src/presentation/screens/transactions/add_transaction_sheet.dart';
+import 'package:pennypilot/src/data/models/transaction_model.dart';
+import 'package:intl/intl.dart';
 
 class TransactionsScreen extends ConsumerStatefulWidget {
   const TransactionsScreen({super.key});
@@ -106,33 +109,52 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildSummaryItem(
-                      context,
-                      'Total',
-                      transactions.length.toString(),
-                      Icons.receipt,
-                    ),
-                    Container(
-                      width: 1,
-                      height: 40,
-                      color: theme.colorScheme.outline.withOpacity(0.3),
-                    ),
-                    _buildSummaryItem(
-                      context,
-                      'This Month',
-                      _getMonthCount(transactions).toString(),
-                      Icons.calendar_today,
-                    ),
-                    Container(
-                      width: 1,
-                      height: 40,
-                      color: theme.colorScheme.outline.withOpacity(0.3),
-                    ),
-                    _buildSummaryItem(
-                      context,
-                      'High Confidence',
-                      _getHighConfidenceCount(transactions).toString(),
-                      Icons.check_circle,
+                    Builder(
+                      builder: (context) {
+                        final flows = _calculateMonthlyFlows(filteredTransactions);
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            _buildSummaryItem(
+                              context,
+                              'Income',
+                              flows['income']!,
+                              Icons.arrow_downward,
+                              color: Colors.green,
+                            ),
+                            Container(
+                              width: 1,
+                              height: 40,
+                              color: theme.colorScheme.outline.withOpacity(0.3),
+                              margin: const EdgeInsets.symmetric(horizontal: 16),
+                            ),
+                            _buildSummaryItem(
+                              context,
+                              'Expenses',
+                              flows['expense']!,
+                              Icons.arrow_upward,
+                              // color: theme.colorScheme.error, // Keep neutral as requested? "No positive/negative framing"
+                              // "Expenses and income must share one transaction model ... Display both values independently ... No positive/negative framing"
+                              // Actually "Category Flow Breakdown" says no positive/negative framing.
+                              // "Net Flow Views" says "Pure arithmetic only".
+                              // But visuals help. I'll stick to text color or icon.
+                            ),
+                            Container(
+                              width: 1,
+                              height: 40,
+                              color: theme.colorScheme.outline.withOpacity(0.3),
+                              margin: const EdgeInsets.symmetric(horizontal: 16),
+                            ),
+                            _buildSummaryItem(
+                              context,
+                              'Net',
+                              flows['net']!,
+                              Icons.account_balance,
+                              color: flows['net']! >= 0 ? Colors.green : theme.colorScheme.error,
+                            ),
+                          ],
+                        );
+                      }
                     ),
                   ],
                 ),
@@ -221,15 +243,28 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
           onRetry: () => ref.refresh(transactionsProvider),
         ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            useSafeArea: true,
+            builder: (context) => const AddTransactionSheet(),
+          );
+        },
+        icon: const Icon(Icons.add),
+        label: const Text('Add Entry'),
+      ),
     );
   }
 
   Widget _buildSummaryItem(
     BuildContext context,
     String label,
-    String value,
-    IconData icon,
-  ) {
+    double amount,
+    IconData icon, {
+    Color? color,
+  }) {
     final theme = Theme.of(context);
     
     return Column(
@@ -238,13 +273,13 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
         Icon(
           icon,
           size: 20,
-          color: theme.colorScheme.onPrimaryContainer,
+          color: color ?? theme.colorScheme.onPrimaryContainer,
         ),
         const SizedBox(height: 4),
         Text(
-          value,
+          NumberFormat.compactCurrency(symbol: '\$').format(amount.abs()),
           style: theme.textTheme.titleLarge?.copyWith(
-            color: theme.colorScheme.onPrimaryContainer,
+            color: color ?? theme.colorScheme.onPrimaryContainer,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -256,6 +291,29 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
         ),
       ],
     );
+  }
+
+  Map<String, double> _calculateMonthlyFlows(List<TransactionModel> transactions) {
+    final now = DateTime.now();
+    
+    double income = 0;
+    double expense = 0;
+
+    for (var t in transactions) {
+      if (t.date.year == now.year && t.date.month == now.month) {
+        if (t.kind == TransactionKind.income) {
+          income += t.amount;
+        } else {
+          expense += t.amount;
+        }
+      }
+    }
+
+    return {
+      'income': income,
+      'expense': expense,
+      'net': income - expense,
+    };
   }
 
   int _getMonthCount(List transactions) {

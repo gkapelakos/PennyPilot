@@ -135,6 +135,23 @@ class TransactionDetailsScreen extends StatelessWidget {
                     value: timeFormat.format(transaction.date),
                   ),
                   
+                  _buildDetailRow(
+                    context,
+                    icon: transaction.kind == TransactionKind.income 
+                        ? Icons.arrow_downward 
+                        : Icons.arrow_upward,
+                    label: 'Type',
+                    value: transaction.kind.name[0].toUpperCase() + transaction.kind.name.substring(1),
+                  ),
+
+                  if (transaction.isRecurring)
+                    _buildDetailRow(
+                      context,
+                      icon: Icons.repeat,
+                      label: 'Recurring',
+                      value: 'Yes',
+                    ),
+
                   if (transaction.category != null)
                     _buildDetailRow(
                       context,
@@ -297,32 +314,38 @@ class TransactionDetailsScreen extends StatelessWidget {
                     ],
                   ),
                   
-                  if (transaction.originalEmailId != null) ...[
-                    const SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Source',
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.email,
-                              size: 16,
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              'Email',
-                              style: theme.textTheme.bodySmall,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Source',
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            transaction.origin == TransactionOrigin.emailDetected 
+                                ? Icons.email 
+                                : transaction.origin == TransactionOrigin.manual
+                                    ? Icons.edit
+                                    : Icons.file_upload,
+                            size: 16,
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            transaction.origin == TransactionOrigin.emailDetected
+                                ? 'Email'
+                                : transaction.origin == TransactionOrigin.manual
+                                    ? 'Manual Entry'
+                                    : 'Imported',
+                            style: theme.textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

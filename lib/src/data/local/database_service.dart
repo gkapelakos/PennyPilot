@@ -20,6 +20,11 @@ class DatabaseService {
 
   Future<Isar> _initDb() async {
     final dir = await getApplicationDocumentsDirectory();
+    
+    // Note: Isar v3.1.0 does not support encryption for the default engine.
+    // Encryption will be enabled when upgrading to Isar v4 or by switching to SQLite engine.
+    // For now, we rely on OS-level sandbox protection.
+    
     return await Isar.open(
       [
         TransactionModelSchema,

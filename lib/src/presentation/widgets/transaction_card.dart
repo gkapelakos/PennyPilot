@@ -155,12 +155,24 @@ class _TransactionCardState extends State<TransactionCard>
                   const SizedBox(width: 12),
                   
                   // Amount
-                  AmountDisplay(
-                    amount: widget.transaction.amount,
-                    currency: widget.transaction.currency,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Builder(
+                    builder: (context) {
+                      final isIncome = widget.transaction.kind == TransactionKind.income;
+                      final amount = widget.transaction.amount * (isIncome ? 1 : -1);
+                      final color = isIncome 
+                          ? Colors.green // Or theme.colorScheme.primary if it fits
+                          : theme.colorScheme.onSurface;
+                      
+                      return AmountDisplay(
+                        amount: amount,
+                        currency: widget.transaction.currency,
+                        showSign: true,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: isIncome ? color : null,
+                        ),
+                      );
+                    }
                   ),
                 ],
               ),

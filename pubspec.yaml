@@ -1,7 +1,7 @@
 name: pennypilot
 description: A local-first personal finance tracker.
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.0-alpha.0.2
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -24,36 +24,41 @@ dependencies:
   # UI
   cupertino_icons: ^1.0.2
   google_fonts: ^6.1.0
-  fl_chart: ^0.66.0
+  fl_chart: ^1.1.1
   intl: ^0.20.2
 
   # Background & Services
   workmanager: ^0.9.0
   
   # Auth & API
-  google_sign_in: ^6.1.6
-  googleapis: ^13.1.0
-  extension_google_sign_in_as_googleapis_auth: ^2.0.7
+  google_sign_in: 6.1.6
+  googleapis: ^15.0.0
+  extension_google_sign_in_as_googleapis_auth: ^2.0.13
 
   # Utils
   uuid: ^4.3.3
   logging: ^1.2.0
   json_annotation: ^4.8.1
   dynamic_color: ^1.6.8
-  flutter_secure_storage: ^9.0.0
-  file_picker: ^8.0.0
-  share_plus: ^7.2.1
+  flutter_secure_storage: ^10.0.0
+  file_picker: ^10.3.8
+  share_plus: ^12.0.1
   path: ^1.8.3
+  shared_preferences: ^2.5.4
+  url_launcher: ^6.3.2
+  window_to_front: ^0.0.3
+  googleapis_auth: ^2.0.0
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^6.0.0
   build_runner: ^2.4.8
   riverpod_generator: ^2.3.9
   isar_generator: ^3.1.0+1
   json_serializable: ^6.7.1
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true

@@ -1,27 +1,39 @@
-Running Gradle task 'assembleRelease'...                        
-Checking the license for package NDK (Side by side) 28.2.13676358 in /home/johnkap/Android/Sdk/licenses
-License for package NDK (Side by side) 28.2.13676358 accepted.
-Preparing "Install NDK (Side by side) 28.2.13676358 v.28.2.13676358".
-"Install NDK (Side by side) 28.2.13676358 v.28.2.13676358" ready.
-Installing NDK (Side by side) 28.2.13676358 in /home/johnkap/Android/Sdk/ndk/28.2.13676358
-"Install NDK (Side by side) 28.2.13676358 v.28.2.13676358" complete.
-"Install NDK (Side by side) 28.2.13676358 v.28.2.13676358" finished.
-
-FAILURE: Build failed with an exception.
-
-* What went wrong:
-A problem occurred configuring project ':isar_flutter_libs'.
-> Could not create an instance of type com.android.build.api.variant.impl.LibraryVariantBuilderImpl.
-   > Namespace not specified. Specify a namespace in the module's build file: /home/johnkap/.pub-cache/hosted/pub.dev/isar_flutter_libs-3.1.0+1/android/build.gradle. See https://d.android.com/r/tools/upgrade-assistant/set-namespace for information about setting the namespace.
-
-     If you've specified the package attribute in the source AndroidManifest.xml, you can use the AGP Upgrade Assistant to migrate to the namespace value in the build file. Refer to https://d.android.com/r/tools/upgrade-assistant/agp-upgrade-assistant for general information about using the AGP Upgrade Assistant.
-
-* Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
-
-BUILD FAILED in 4m 1s
-Running Gradle task 'assembleRelease'...                          241.6s
-Gradle task assembleRelease failed with exit code 1
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m21 Dec 13:26[0m [1;34m.[0m
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m 5 Dec 19:12[0m [1;34m..[0m
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m14 Dec 12:56[0m [1;34m.agent[0m
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m21 Dec 13:26[0m [1;34m.git[0m
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m 5 Dec 17:28[0m [1;34m.github[0m
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m 5 Dec 20:57[0m [1;34m.idea[0m
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m 5 Dec 20:29[0m [1;34mandroid[0m
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m 5 Dec 16:27[0m [1;34massets[0m
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m 5 Dec 20:18[0m [1;34mios[0m
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m 5 Dec 00:40[0m [1;34mlib[0m
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m 5 Dec 20:18[0m [1;34mlinux[0m
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m 5 Dec 20:18[0m [1;34mmacos[0m
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m14 Dec 13:28[0m [1;34mtest[0m
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m 5 Dec 20:18[0m [1;34mweb[0m
+[1;34md[33mr[31mw[32mx[0m[33mr[1;90m-[0m[32mx[33mr[1;90m-[0m[32mx[0m@    [1;90m-[0m [1;33mjohnkap[0m [34m 5 Dec 20:18[0m [1;34mwindows[0m
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@  [32m703[0m [1;33mjohnkap[0m [34m 5 Dec 20:18[0m .gitignore
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@ [1;32m1.7k[0m [1;33mjohnkap[0m [34m 5 Dec 20:18[0m .metadata
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@ [1;32m1.4k[0m [1;33mjohnkap[0m [34m 5 Dec 20:18[0m analysis_options.yaml
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@  [32m219[0m [1;33mjohnkap[0m [34m 5 Dec 20:17[0m build.log
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@ [1;32m1.8k[0m [1;33mjohnkap[0m [34m 5 Dec 20:23[0m build_2.log
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@ [1;32m1.7k[0m [1;33mjohnkap[0m [34m 5 Dec 20:25[0m build_3.log
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@  [32m655[0m [1;33mjohnkap[0m [34m 5 Dec 20:27[0m build_4.log
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@ [1;32m4.0k[0m [1;33mjohnkap[0m [34m 5 Dec 20:29[0m build_5.log
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@  [32m655[0m [1;33mjohnkap[0m [34m 5 Dec 20:32[0m build_6.log
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@  [32m864[0m [1;33mjohnkap[0m [34m 5 Dec 20:33[0m build_7.log
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@  [1;32m11k[0m [1;33mjohnkap[0m [34m14 Dec 12:56[0m ENHANCEMENT_PROGRESS.md
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@ [1;32m8.2k[0m [1;33mjohnkap[0m [34m14 Dec 12:56[0m IMPLEMENTATION_SUMMARY.md
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@ [1;32m3.2k[0m [1;33mjohnkap[0m [34m14 Dec 12:56[0m ISAR_ENUM_REFERENCE.md
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@    [32m0[0m [1;33mjohnkap[0m [34m21 Dec 13:28[0m output.txt
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@ [1;32m1.7k[0m [1;33mjohnkap[0m [34m 5 Dec 20:26[0m output_3.txt
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@  [32m655[0m [1;33mjohnkap[0m [34m 5 Dec 20:27[0m output_4.txt
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@ [1;32m4.0k[0m [1;33mjohnkap[0m [34m 5 Dec 20:31[0m output_5.txt
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@  [32m655[0m [1;33mjohnkap[0m [34m 5 Dec 20:32[0m output_6.txt
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@  [32m864[0m [1;33mjohnkap[0m [34m 5 Dec 20:34[0m output_7.txt
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@  [32m842[0m [1;33mjohnkap[0m [34m 5 Dec 20:18[0m pennypilot.iml
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@  [1;32m10k[0m [1;33mjohnkap[0m [34m14 Dec 12:56[0m PHASE_3_COMPLETE.md
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@  [1;32m11k[0m [1;33mjohnkap[0m [34m14 Dec 12:56[0m PHASE_4_COMPLETE.md
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@ [1;32m8.5k[0m [1;33mjohnkap[0m [34m14 Dec 12:56[0m PHASE_4_PROGRESS.md
+.[1;33mr[31mw[90m-[0m[33mr[1;90m--[0m[33mr[1;90m--[0m@ [1;32m1.8k[0m [1;33mjohnkap[0m [34m21 Dec 13:26[0m pubspec.yaml

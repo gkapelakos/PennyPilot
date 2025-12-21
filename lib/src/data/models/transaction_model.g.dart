@@ -63,58 +63,75 @@ const TransactionModelSchema = CollectionSchema(
       name: r'hasLineItems',
       type: IsarType.bool,
     ),
-    r'isSubscription': PropertySchema(
+    r'isRecurring': PropertySchema(
       id: 9,
+      name: r'isRecurring',
+      type: IsarType.bool,
+    ),
+    r'isSubscription': PropertySchema(
+      id: 10,
       name: r'isSubscription',
       type: IsarType.bool,
     ),
+    r'kind': PropertySchema(
+      id: 11,
+      name: r'kind',
+      type: IsarType.byte,
+      enumMap: _TransactionModelkindEnumValueMap,
+    ),
     r'merchantName': PropertySchema(
-      id: 10,
+      id: 12,
       name: r'merchantName',
       type: IsarType.string,
     ),
     r'notes': PropertySchema(
-      id: 11,
+      id: 13,
       name: r'notes',
       type: IsarType.string,
     ),
+    r'origin': PropertySchema(
+      id: 14,
+      name: r'origin',
+      type: IsarType.byte,
+      enumMap: _TransactionModeloriginEnumValueMap,
+    ),
     r'originalEmailId': PropertySchema(
-      id: 12,
+      id: 15,
       name: r'originalEmailId',
       type: IsarType.string,
     ),
     r'rawMerchantName': PropertySchema(
-      id: 13,
+      id: 16,
       name: r'rawMerchantName',
       type: IsarType.string,
     ),
     r'subscriptionId': PropertySchema(
-      id: 14,
+      id: 17,
       name: r'subscriptionId',
       type: IsarType.long,
     ),
     r'subtotalAmount': PropertySchema(
-      id: 15,
+      id: 18,
       name: r'subtotalAmount',
       type: IsarType.double,
     ),
     r'taxAmount': PropertySchema(
-      id: 16,
+      id: 19,
       name: r'taxAmount',
       type: IsarType.double,
     ),
     r'tipAmount': PropertySchema(
-      id: 17,
+      id: 20,
       name: r'tipAmount',
       type: IsarType.double,
     ),
     r'updatedAt': PropertySchema(
-      id: 18,
+      id: 21,
       name: r'updatedAt',
       type: IsarType.dateTime,
     ),
     r'userVerified': PropertySchema(
-      id: 19,
+      id: 22,
       name: r'userVerified',
       type: IsarType.bool,
     )
@@ -223,17 +240,20 @@ void _transactionModelSerialize(
   writer.writeDouble(offsets[6], object.discountAmount);
   writer.writeByte(offsets[7], object.extractionConfidence.index);
   writer.writeBool(offsets[8], object.hasLineItems);
-  writer.writeBool(offsets[9], object.isSubscription);
-  writer.writeString(offsets[10], object.merchantName);
-  writer.writeString(offsets[11], object.notes);
-  writer.writeString(offsets[12], object.originalEmailId);
-  writer.writeString(offsets[13], object.rawMerchantName);
-  writer.writeLong(offsets[14], object.subscriptionId);
-  writer.writeDouble(offsets[15], object.subtotalAmount);
-  writer.writeDouble(offsets[16], object.taxAmount);
-  writer.writeDouble(offsets[17], object.tipAmount);
-  writer.writeDateTime(offsets[18], object.updatedAt);
-  writer.writeBool(offsets[19], object.userVerified);
+  writer.writeBool(offsets[9], object.isRecurring);
+  writer.writeBool(offsets[10], object.isSubscription);
+  writer.writeByte(offsets[11], object.kind.index);
+  writer.writeString(offsets[12], object.merchantName);
+  writer.writeString(offsets[13], object.notes);
+  writer.writeByte(offsets[14], object.origin.index);
+  writer.writeString(offsets[15], object.originalEmailId);
+  writer.writeString(offsets[16], object.rawMerchantName);
+  writer.writeLong(offsets[17], object.subscriptionId);
+  writer.writeDouble(offsets[18], object.subtotalAmount);
+  writer.writeDouble(offsets[19], object.taxAmount);
+  writer.writeDouble(offsets[20], object.tipAmount);
+  writer.writeDateTime(offsets[21], object.updatedAt);
+  writer.writeBool(offsets[22], object.userVerified);
 }
 
 TransactionModel _transactionModelDeserialize(
@@ -256,17 +276,24 @@ TransactionModel _transactionModelDeserialize(
           ConfidenceLevel.high;
   object.hasLineItems = reader.readBool(offsets[8]);
   object.id = id;
-  object.isSubscription = reader.readBool(offsets[9]);
-  object.merchantName = reader.readString(offsets[10]);
-  object.notes = reader.readStringOrNull(offsets[11]);
-  object.originalEmailId = reader.readStringOrNull(offsets[12]);
-  object.rawMerchantName = reader.readStringOrNull(offsets[13]);
-  object.subscriptionId = reader.readLongOrNull(offsets[14]);
-  object.subtotalAmount = reader.readDoubleOrNull(offsets[15]);
-  object.taxAmount = reader.readDoubleOrNull(offsets[16]);
-  object.tipAmount = reader.readDoubleOrNull(offsets[17]);
-  object.updatedAt = reader.readDateTimeOrNull(offsets[18]);
-  object.userVerified = reader.readBool(offsets[19]);
+  object.isRecurring = reader.readBool(offsets[9]);
+  object.isSubscription = reader.readBool(offsets[10]);
+  object.kind =
+      _TransactionModelkindValueEnumMap[reader.readByteOrNull(offsets[11])] ??
+          TransactionKind.income;
+  object.merchantName = reader.readString(offsets[12]);
+  object.notes = reader.readStringOrNull(offsets[13]);
+  object.origin =
+      _TransactionModeloriginValueEnumMap[reader.readByteOrNull(offsets[14])] ??
+          TransactionOrigin.emailDetected;
+  object.originalEmailId = reader.readStringOrNull(offsets[15]);
+  object.rawMerchantName = reader.readStringOrNull(offsets[16]);
+  object.subscriptionId = reader.readLongOrNull(offsets[17]);
+  object.subtotalAmount = reader.readDoubleOrNull(offsets[18]);
+  object.taxAmount = reader.readDoubleOrNull(offsets[19]);
+  object.tipAmount = reader.readDoubleOrNull(offsets[20]);
+  object.updatedAt = reader.readDateTimeOrNull(offsets[21]);
+  object.userVerified = reader.readBool(offsets[22]);
   return object;
 }
 
@@ -300,24 +327,34 @@ P _transactionModelDeserializeProp<P>(
     case 9:
       return (reader.readBool(offset)) as P;
     case 10:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 11:
-      return (reader.readStringOrNull(offset)) as P;
+      return (_TransactionModelkindValueEnumMap[
+              reader.readByteOrNull(offset)] ??
+          TransactionKind.income) as P;
     case 12:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 13:
       return (reader.readStringOrNull(offset)) as P;
     case 14:
-      return (reader.readLongOrNull(offset)) as P;
+      return (_TransactionModeloriginValueEnumMap[
+              reader.readByteOrNull(offset)] ??
+          TransactionOrigin.emailDetected) as P;
     case 15:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 16:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 17:
-      return (reader.readDoubleOrNull(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 18:
-      return (reader.readDateTimeOrNull(offset)) as P;
+      return (reader.readDoubleOrNull(offset)) as P;
     case 19:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 20:
+      return (reader.readDoubleOrNull(offset)) as P;
+    case 21:
+      return (reader.readDateTimeOrNull(offset)) as P;
+    case 22:
       return (reader.readBool(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -333,6 +370,24 @@ const _TransactionModelextractionConfidenceValueEnumMap = {
   0: ConfidenceLevel.high,
   1: ConfidenceLevel.medium,
   2: ConfidenceLevel.low,
+};
+const _TransactionModelkindEnumValueMap = {
+  'income': 0,
+  'expense': 1,
+};
+const _TransactionModelkindValueEnumMap = {
+  0: TransactionKind.income,
+  1: TransactionKind.expense,
+};
+const _TransactionModeloriginEnumValueMap = {
+  'emailDetected': 0,
+  'manual': 1,
+  'imported': 2,
+};
+const _TransactionModeloriginValueEnumMap = {
+  0: TransactionOrigin.emailDetected,
+  1: TransactionOrigin.manual,
+  2: TransactionOrigin.imported,
 };
 
 Id _transactionModelGetId(TransactionModel object) {
@@ -1425,11 +1480,77 @@ extension TransactionModelQueryFilter
   }
 
   QueryBuilder<TransactionModel, TransactionModel, QAfterFilterCondition>
+      isRecurringEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isRecurring',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterFilterCondition>
       isSubscriptionEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isSubscription',
         value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterFilterCondition>
+      kindEqualTo(TransactionKind value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'kind',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterFilterCondition>
+      kindGreaterThan(
+    TransactionKind value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'kind',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterFilterCondition>
+      kindLessThan(
+    TransactionKind value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'kind',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterFilterCondition>
+      kindBetween(
+    TransactionKind lower,
+    TransactionKind upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'kind',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -1720,6 +1841,62 @@ extension TransactionModelQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'notes',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterFilterCondition>
+      originEqualTo(TransactionOrigin value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'origin',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterFilterCondition>
+      originGreaterThan(
+    TransactionOrigin value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'origin',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterFilterCondition>
+      originLessThan(
+    TransactionOrigin value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'origin',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterFilterCondition>
+      originBetween(
+    TransactionOrigin lower,
+    TransactionOrigin upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'origin',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -2577,6 +2754,20 @@ extension TransactionModelQuerySortBy
   }
 
   QueryBuilder<TransactionModel, TransactionModel, QAfterSortBy>
+      sortByIsRecurring() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isRecurring', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterSortBy>
+      sortByIsRecurringDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isRecurring', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterSortBy>
       sortByIsSubscription() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isSubscription', Sort.asc);
@@ -2587,6 +2778,19 @@ extension TransactionModelQuerySortBy
       sortByIsSubscriptionDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isSubscription', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterSortBy> sortByKind() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'kind', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterSortBy>
+      sortByKindDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'kind', Sort.desc);
     });
   }
 
@@ -2614,6 +2818,20 @@ extension TransactionModelQuerySortBy
       sortByNotesDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'notes', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterSortBy>
+      sortByOrigin() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'origin', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterSortBy>
+      sortByOriginDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'origin', Sort.desc);
     });
   }
 
@@ -2871,6 +3089,20 @@ extension TransactionModelQuerySortThenBy
   }
 
   QueryBuilder<TransactionModel, TransactionModel, QAfterSortBy>
+      thenByIsRecurring() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isRecurring', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterSortBy>
+      thenByIsRecurringDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isRecurring', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterSortBy>
       thenByIsSubscription() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isSubscription', Sort.asc);
@@ -2881,6 +3113,19 @@ extension TransactionModelQuerySortThenBy
       thenByIsSubscriptionDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isSubscription', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterSortBy> thenByKind() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'kind', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterSortBy>
+      thenByKindDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'kind', Sort.desc);
     });
   }
 
@@ -2908,6 +3153,20 @@ extension TransactionModelQuerySortThenBy
       thenByNotesDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'notes', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterSortBy>
+      thenByOrigin() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'origin', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QAfterSortBy>
+      thenByOriginDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'origin', Sort.desc);
     });
   }
 
@@ -3089,9 +3348,22 @@ extension TransactionModelQueryWhereDistinct
   }
 
   QueryBuilder<TransactionModel, TransactionModel, QDistinct>
+      distinctByIsRecurring() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isRecurring');
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QDistinct>
       distinctByIsSubscription() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isSubscription');
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QDistinct> distinctByKind() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'kind');
     });
   }
 
@@ -3106,6 +3378,13 @@ extension TransactionModelQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'notes', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionModel, QDistinct>
+      distinctByOrigin() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'origin');
     });
   }
 
@@ -3234,10 +3513,23 @@ extension TransactionModelQueryProperty
     });
   }
 
+  QueryBuilder<TransactionModel, bool, QQueryOperations> isRecurringProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isRecurring');
+    });
+  }
+
   QueryBuilder<TransactionModel, bool, QQueryOperations>
       isSubscriptionProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isSubscription');
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionKind, QQueryOperations>
+      kindProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'kind');
     });
   }
 
@@ -3251,6 +3543,13 @@ extension TransactionModelQueryProperty
   QueryBuilder<TransactionModel, String?, QQueryOperations> notesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'notes');
+    });
+  }
+
+  QueryBuilder<TransactionModel, TransactionOrigin, QQueryOperations>
+      originProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'origin');
     });
   }
 

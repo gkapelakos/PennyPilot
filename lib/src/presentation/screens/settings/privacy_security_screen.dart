@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
+import 'package:pennypilot/src/presentation/providers/auth_provider.dart';
 import 'package:isar/isar.dart';
 import 'package:pennypilot/src/data/local/database_service.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
@@ -374,15 +375,30 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
             style: FilledButton.styleFrom(
               backgroundColor: Colors.orange,
             ),
-            onPressed: () {
-              // TODO: Implement clear tokens logic
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Email tokens cleared'),
-                  backgroundColor: Colors.orange,
-                ),
-              );
+            onPressed: () async {
+              try {
+                final authService = ref.read(authServiceProvider);
+                await authService.signOut();
+                
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Email accounts disconnected and tokens cleared'),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                   ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error clearing tokens: $e'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              }
             },
             child: const Text('Clear Tokens'),
           ),

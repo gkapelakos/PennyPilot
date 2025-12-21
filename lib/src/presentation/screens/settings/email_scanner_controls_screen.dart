@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
+import 'package:pennypilot/src/presentation/providers/email_provider.dart';
 import 'package:isar/isar.dart';
 import 'package:pennypilot/src/data/models/email_sender_preference_model.dart';
 import 'package:pennypilot/src/presentation/widgets/empty_state.dart';
@@ -407,13 +408,29 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
     }
   }
 
-  void _rescanSender(EmailSenderPreferenceModel sender) {
+  void _rescanSender(EmailSenderPreferenceModel sender) async {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Rescanning emails from ${sender.senderDomain}...'),
+        content: Text('Rescanning emails for updates...'),
       ),
     );
-    // TODO: Implement rescan logic
+    
+    try {
+      // Currently scans all, optimization for specific sender can be added later
+      await ref.read(emailServiceProvider).scanEmails();
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Scan complete')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error scanning: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
   }
 
   void _editSenderNotes(BuildContext context, EmailSenderPreferenceModel sender) {
