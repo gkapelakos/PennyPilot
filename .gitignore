@@ -1,5 +1,6 @@
 # Miscellaneous
 .agent/
+**/*client_secret*.json
 lib/src/config/secrets.dart
 *.class
 *.log

@@ -53,11 +53,14 @@ To build the application for your specific platform:
 
 ---
 
+## 🗺 Roadmap
+
+For our long-term vision and upcoming features, check out the [PennyPilot Enhancement Plan](docs/pennypilot-enhancement-plan.md).
+
 ## 🆙 Development Workflows
 
 We use specific workflows for deployment and internal processes:
 - **GitHub Actions**: Automated builds and CI/CD.
-- **Internal Plan**: See our [Enhancement Plan](.agent/workflows/pennypilot-enhancement-plan.md) (Accessible to project maintainers).
 
 ---
 
