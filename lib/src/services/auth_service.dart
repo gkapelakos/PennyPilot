@@ -29,7 +29,7 @@ class AuthService extends ChangeNotifier {
   AuthService() {
     if (_isMobile) {
       _googleSignIn = GoogleSignIn(
-        clientId: GoogleOAuthConfig.mobileClientId,
+        clientId: Platform.isIOS ? GoogleOAuthConfig.mobileClientId : null,
         scopes: GoogleOAuthConfig.gmailReadOnlyScopes,
       );
     }
