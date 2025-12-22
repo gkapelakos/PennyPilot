@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/data/local/database_service.dart';
+import 'package:isar/isar.dart';
 
 final databaseServiceProvider = Provider<DatabaseService>((ref) {
   return DatabaseService();
 });
 
-// Keep isarProvider for existing code, but make it use DatabaseService
-final isarProvider = FutureProvider((ref) async {
-  final dbService = ref.watch(databaseServiceProvider);
-  return dbService.db;
+/// Should be overridden in main.dart with initialized Isar instance
+final isarProvider = Provider<Isar>((ref) {
+  throw UnimplementedError('isarProvider must be overridden with an initialized Isar instance');
 });

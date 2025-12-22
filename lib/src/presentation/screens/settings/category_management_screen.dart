@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
+import 'package:pennypilot/src/presentation/providers/database_provider.dart';
 import 'package:isar/isar.dart';
 import 'package:pennypilot/src/data/models/category_model.dart';
 import 'package:pennypilot/src/presentation/widgets/empty_state.dart';
 
 // Categories provider
-final categoriesProvider = StreamProvider<List<CategoryModel>>((ref) async* {
-  final isar = await ref.watch(isarProvider.future);
+final categoriesProvider = StreamProvider<List<CategoryModel>>((ref) {
+  final isar = ref.watch(isarProvider);
   
   yield* isar.categoryModels
       .where()
@@ -18,8 +19,8 @@ final categoriesProvider = StreamProvider<List<CategoryModel>>((ref) async* {
 });
 
 // Merchant category mappings provider
-final merchantMappingsProvider = StreamProvider<List<MerchantCategoryMappingModel>>((ref) async* {
-  final isar = await ref.watch(isarProvider.future);
+final merchantMappingsProvider = StreamProvider<List<MerchantCategoryMappingModel>>((ref) {
+  final isar = ref.watch(isarProvider);
   
   yield* isar.merchantCategoryMappingModels
       .where()
@@ -175,7 +176,7 @@ class _CategoryManagementScreenState extends ConsumerState<CategoryManagementScr
               onPressed: () async {
                 if (nameController.text.isEmpty) return;
                 
-                final isar = await ref.read(isarProvider.future);
+                final isar = ref.read(isarProvider);
                 final maxOrder = await isar.categoryModels
                     .where()
                     .sortByOrderDesc()
@@ -276,7 +277,7 @@ class _CategoryManagementScreenState extends ConsumerState<CategoryManagementScr
                     return;
                   }
                   
-                  final isar = await ref.read(isarProvider.future);
+                  final isar = ref.read(isarProvider);
                   
                   final mapping = MerchantCategoryMappingModel()
                     ..merchantName = merchantController.text
@@ -419,7 +420,7 @@ class _CategoryCard extends ConsumerWidget {
               ],
               onSelected: (value) async {
                 if (value == 'delete') {
-                  final isar = await ref.read(isarProvider.future);
+                  final isar = ref.read(isarProvider);
                   await isar.writeTxn(() async {
                     await isar.categoryModels.delete(category.id);
                   });
@@ -505,7 +506,7 @@ class _MerchantMappingCard extends ConsumerWidget {
         trailing: IconButton(
           icon: const Icon(Icons.delete, color: Colors.red),
           onPressed: () async {
-            final isar = await ref.read(isarProvider.future);
+            final isar = ref.read(isarProvider);
             await isar.writeTxn(() async {
               await isar.merchantCategoryMappingModels.delete(mapping.id);
             });

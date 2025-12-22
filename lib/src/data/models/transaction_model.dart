@@ -74,6 +74,12 @@ class TransactionModel {
   /// Whether user has manually verified this transaction
   bool userVerified = false;
 
+  /// Whether this transaction has been manually edited by the user
+  bool isManuallyEdited = false;
+
+  /// Timestamp of when the transaction was manually edited
+  DateTime? manualEditTimestamp;
+
   @Index()
   late DateTime createdAt;
 

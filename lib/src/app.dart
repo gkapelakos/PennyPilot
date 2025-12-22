@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/core/theme/app_theme.dart';
 import 'package:pennypilot/src/presentation/providers/theme_provider.dart';
+import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:pennypilot/src/presentation/screens/onboarding/onboarding_screen.dart';
 import 'package:pennypilot/src/presentation/screens/dashboard/dashboard_screen.dart';
@@ -11,8 +12,9 @@ class PennyPilotApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: Check if user is onboarded
-    const bool isOnboarded = false; 
+    // Check onboarding status from persistent state
+    final appState = ref.watch(appStateProvider);
+    final hasCompletedOnboarding = appState.hasCompletedOnboarding;
     
     final themeMode = ref.watch(themeModeProvider);
 
@@ -24,7 +26,7 @@ class PennyPilotApp extends ConsumerWidget {
           theme: AppTheme.lightTheme(lightDynamic),
           darkTheme: AppTheme.darkTheme(darkDynamic),
           themeMode: themeMode,
-          home: isOnboarded ? const DashboardScreen() : const OnboardingScreen(),
+          home: hasCompletedOnboarding ? const DashboardScreen() : const OnboardingScreen(),
         );
       },
     );

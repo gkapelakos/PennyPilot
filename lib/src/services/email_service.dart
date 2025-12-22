@@ -32,7 +32,8 @@ class EmailService {
 
     try {
       for (final email in emails) {
-        await _scanAccount(email);
+        await scanAccount(email);
+        await _authService.setLastSyncTime(email, DateTime.now());
       }
       
       // After scanning all accounts, run subscription intelligence
@@ -44,32 +45,45 @@ class EmailService {
     }
   }
 
-  Future<void> _scanAccount(String email) async {
+  Future<List<TransactionModel>> previewScan({int limit = 5}) async {
+    final emails = _authService.connectedEmails;
+    if (emails.isEmpty) return [];
+
+    final results = <TransactionModel>[];
+    
+    for (final email in emails) {
+      final accountResults = await scanAccount(email, dryRun: true, limit: limit);
+      results.addAll(accountResults);
+      if (results.length >= limit) break;
+    }
+    
+    return results.take(limit).toList();
+  }
+
+  Future<List<TransactionModel>> scanAccount(String email, {bool dryRun = false, int? limit}) async {
+    final results = <TransactionModel>[];
     try {
-      _logger.info('Scanning account: $email');
+      _logger.info('Scanning account: $email (dryRun: $dryRun)');
       final httpClient = await _authService.getClientForEmail(email);
       if (httpClient == null) {
         _logger.warning('Could not get authenticated client for $email');
-        return;
+        return [];
       }
 
       final gmailApi = GmailApi(httpClient);
       
       String? nextPageToken;
       int processedCount = 0;
+      final maxResults = limit ?? 100;
       
-      // Calculate search cutoff (e.g. 6 months ago or last sync)
-      // For now using fixed date from requirements/prompt suggestions
-      // but ideally we should track last sync date per account.
-      // Using a reasonable default:
-      final query = 'subject:(receipt OR invoice OR subscription OR order) -in:trash -in:spam after:2024/01/01';
+      final query = 'subject:(receipt OR invoice OR subscription OR order OR confirmation OR payment OR statement OR bill) -in:trash -in:spam after:2024/01/01';
 
       do {
         final response = await gmailApi.users.messages.list(
           'me', 
           q: query, 
           pageToken: nextPageToken,
-          maxResults: 20 // Batch size
+          maxResults: 20 
         );
         
         nextPageToken = response.nextPageToken;
@@ -79,26 +93,26 @@ class EmailService {
         }
         
         for (final msgHeader in response.messages!) {
-          // Check if already processed
-          final existing = await _isar.transactionModels
-              .filter()
-              .originalEmailIdEqualTo(msgHeader.id)
-              .findFirst();
-              
-          if (existing != null) {
-            // Already processed, skip
-            continue;
+          if (!dryRun) {
+            // Check if already processed
+            final existing = await _isar.transactionModels
+                .filter()
+                .originalEmailIdEqualTo(msgHeader.id)
+                .findFirst();
+                
+            if (existing != null) continue;
           }
           
-          await _processMessage(gmailApi, msgHeader.id!);
-          processedCount++;
+          final transaction = await _processMessage(gmailApi, msgHeader.id!, dryRun: dryRun);
+          if (transaction != null) {
+            results.add(transaction);
+            processedCount++;
+          }
+          
+          if (processedCount >= maxResults) break;
         }
         
-        // Safety break to prevent infinite loops during dev/testing
-        if (processedCount > 100) {
-           _logger.info('Reached limit of 100 processed emails for this run.');
-           break;
-        }
+        if (processedCount >= maxResults) break;
         
       } while (nextPageToken != null);
       
@@ -107,9 +121,10 @@ class EmailService {
     } catch (e, stack) {
       _logger.severe('Error scanning email account: $email', e, stack);
     }
+    return results;
   }
 
-  Future<void> _processMessage(GmailApi gmailApi, String messageId) async {
+  Future<TransactionModel?> _processMessage(GmailApi gmailApi, String messageId, {required bool dryRun}) async {
     try {
       final message = await gmailApi.users.messages.get(
         'me', 
@@ -136,8 +151,7 @@ class EmailService {
       
       // Filter out low confidence results unless they are very likely correct based on sender/subject
       if (extraction.overallConfidence == ConfidenceLevel.low && extraction.totalAmount == 0) {
-        // Skip junk
-        return;
+        return null;
       }
       
       // Create Transaction Model
@@ -150,7 +164,7 @@ class EmailService {
         ..discountAmount = extraction.discountAmount
         ..tipAmount = extraction.tipAmount
         ..date = extraction.date.year == DateTime.now().year && extraction.date.month == DateTime.now().month && extraction.date.day == DateTime.now().day && dateMillis > 0
-            ? date // Use email date if extraction failed to find a date in body
+            ? date 
             : extraction.date
         ..category = null // To be categorized later
         ..origin = TransactionOrigin.emailDetected
@@ -159,6 +173,10 @@ class EmailService {
         ..originalEmailId = messageId
         ..createdAt = DateTime.now()
         ..userVerified = false;
+        
+      if (dryRun) {
+        return transaction;
+      }
         
       // Save to database
       await _isar.writeTxn(() async {
@@ -179,9 +197,11 @@ class EmailService {
       });
       
       _logger.info('Saved transaction: ${transaction.merchantName} - \$${transaction.amount}');
+      return transaction;
       
     } catch (e) {
       _logger.warning('Failed to process message $messageId', e);
+      return null;
     }
   }
   
@@ -202,10 +222,34 @@ class EmailService {
     // Fallback to text/html
     body = _findPart(message.payload!, 'text/html');
     
-    // TODO: Strip HTML tags if using HTML part
-    // For now returning raw which might affect regex but usually regex ignores tags if simple
-    // A proper HTML stripper would be good here.
-    return body ?? '';
+    if (body != null) {
+      return _stripHtml(body);
+    }
+
+    return '';
+  }
+
+  String _stripHtml(String html) {
+    // Remove style and script tags first
+    var processed = html.replaceAll(RegExp(r'<(style|script)[^<>]*>.*?</\1>', multiLine: true, caseSensitive: false, dotAll: true), '');
+    
+    // Replace <br> and <p> with newlines to preserve structure
+    processed = processed.replaceAll(RegExp(r'<(br|p|div|tr)[^>]*>', caseSensitive: false), '\n');
+    
+    // Remove all other tags
+    processed = processed.replaceAll(RegExp(r'<[^>]*>', multiLine: true, caseSensitive: true), ' ');
+    
+    // Decode HTML entities (basic ones)
+    processed = processed
+        .replaceAll('&nbsp;', ' ')
+        .replaceAll('&amp;', '&')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&apos;', "'");
+        
+    // Collapse multiple spaces/newlines
+    return processed.replaceAll(RegExp(r'\s+'), ' ').trim();
   }
   
   String? _findPart(MessagePart part, String mimeType) {

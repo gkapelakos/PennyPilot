@@ -1,316 +1,323 @@
-# PennyPilot Enhancement - Implementation Summary
+# PennyPilot Feature Implementation Summary
 
-## 🎉 Phases 1-3 Complete!
+## Overview
+This document summarizes the implementation of core features for PennyPilot, a privacy-first, local-only Flutter finance tracking app.
 
-### Phase 1: Enhanced Data Models ✅
-**Status:** COMPLETE  
-**Files:** 7 new models, 2 enhanced models, all Isar schemas generated
+## ✅ Completed Features
 
-- Receipt line items with confidence scoring
-- Extraction metadata tracking
-- Merchant normalization rules (50+ defaults)
-- Email sender preferences
-- Custom categories with mappings
-- Enhanced transactions (raw/normalized merchants, breakdowns)
-- Enhanced subscriptions (lifecycle, price/cycle history)
+### 1. Email Ingestion (Read-Only) ✓
+**Status:** Fully Implemented
 
-### Phase 2: Core Services ✅
-**Status:** COMPLETE  
-**Files:** 4 new services, 1 defaults database
+**Implementation Details:**
+- Gmail email scanning via Gmail API (`lib/src/services/email_service.dart`)
+- Read-only OAuth authentication (desktop & mobile)
+- Fetches receipts, invoices, and billing emails using query filters
+- Respects pagination with configurable batch sizes (20 messages per page)
+- Rate limiting via safety break (max 100 emails per scan)
+- Persists raw message metadata locally in Isar database
+- HTML email body stripping for better text extraction
+- Deduplication: skips already-processed emails by checking `originalEmailId`
 
-- Merchant normalization with pattern matching
-- Receipt extraction with confidence scoring
-- Subscription intelligence with lifecycle tracking
-- Default merchant rules (Amazon, Netflix, Spotify, etc.)
+**Key Files:**
+- `lib/src/services/email_service.dart` - Main email scanning logic
+- `lib/src/services/auth_service.dart` - OAuth authentication (mobile & desktop)
+- `lib/src/config/google_oauth_config.dart` - OAuth configuration
 
-### Phase 3: Material You Integration ✅
-**Status:** COMPLETE  
-**Files:** 1 enhanced theme, 8 new UI components, 1 transitions utility
-
-- Comprehensive Material 3 theme
-- Dynamic color support
-- Neutral financial colors (no red/green)
-- Beautiful UI components (badges, cards, states)
-- Smooth Material 3 transitions
-
-## 📊 Statistics
-
-### Code Created
-- **New Models:** 7
-- **Enhanced Models:** 2
-- **New Services:** 4
-- **UI Components:** 8
-- **Utilities:** 2
-- **Documentation:** 5 files
-- **Total Lines:** ~4,500+
-
-### Features Delivered
-- ✅ Smarter receipt understanding
-- ✅ Subscription intelligence
-- ✅ Merchant normalization
-- ✅ Confidence scoring
-- ✅ Material You design
-- ✅ Smooth animations
-- ✅ Privacy-first architecture
-
-## 🎨 Design System
-
-### Colors
-- **Primary:** Dynamic from wallpaper (Android 12+)
-- **Confidence High:** Primary
-- **Confidence Medium:** Amber (#F57C00)
-- **Confidence Low:** Outline gray
-- **Lifecycle Active:** Blue (#0277BD)
-- **Lifecycle Trial:** Tertiary
-- **Lifecycle Paused:** Amber
-- **Lifecycle Ended:** Outline gray
-
-### Typography
-- **Font:** Outfit (Google Fonts)
-- **Amounts:** Roboto Mono (monospaced)
-- **Body Large:** 17px (increased for readability)
-- **Body Medium:** 15px (increased)
-
-### Motion
-- **Page Transitions:** 300ms shared axis
-- **Card Expansion:** 200ms ease in/out
-- **Micro-interactions:** 150ms
-
-## 📁 File Structure
-
-```
-lib/src/
-├── core/
-│   ├── theme/
-│   │   └── app_theme.dart (Enhanced)
-│   └── utils/
-│       └── page_transitions.dart (New)
-│
-├── data/
-│   ├── defaults/
-│   │   └── default_merchant_rules.dart (New)
-│   ├── local/
-│   │   └── database_service.dart (Enhanced)
-│   └── models/
-│       ├── category_model.dart (New)
-│       ├── email_sender_preference_model.dart (New)
-│       ├── extraction_metadata_model.dart (New)
-│       ├── merchant_normalization_rule_model.dart (New)
-│       ├── receipt_line_item_model.dart (New)
-│       ├── subscription_model.dart (Enhanced)
-│       └── transaction_model.dart (Enhanced)
-│
-├── presentation/
-│   └── widgets/
-│       ├── amount_display.dart (New)
-│       ├── confidence_badge.dart (New)
-│       ├── empty_state.dart (New)
-│       ├── lifecycle_badge.dart (New)
-│       ├── subscription_card.dart (New)
-│       └── transaction_card.dart (New)
-│
-└── services/
-    ├── merchant_normalization_service.dart (New)
-    ├── receipt_extraction_service.dart (New)
-    └── subscription_intelligence_service.dart (New)
-```
-
-## 🚀 What's Next: Phase 4
-
-### UI/UX Implementation
-1. **Enhanced Transaction Details Screen**
-   - Show confidence badges
-   - Display line items
-   - Raw vs normalized merchant
-   - Edit/verify functionality
-
-2. **Subscription Intelligence Screen**
-   - Timeline view
-   - Price change history
-   - Cycle change tracking
-   - "What changed" view
-
-3. **Email Scanner Controls**
-   - Sender management UI
-   - Per-sender toggles
-   - Dry-run preview
-   - Manual rescan
-
-4. **Category Management**
-   - Category editor
-   - Merchant mapping UI
-   - Uncategorized inbox
-   - Bulk operations
-
-5. **Time-Based Insights**
-   - Period selector (Month/Quarter/Year)
-   - Change detection
-   - Heatmap calendar
-   - Spending density visualization
-
-6. **Enhanced Privacy Screen**
-   - Reset AI understanding
-   - Export options (JSON/CSV)
-   - Storage usage display
-   - Merchant rules viewer
-
-## 🔐 Privacy Principles Maintained
-
-Throughout all phases:
-- ✅ All processing is local
-- ✅ No cloud servers
-- ✅ No telemetry
-- ✅ User owns all data
-- ✅ Transparent operations
-- ✅ No judgment or advice
-- ✅ Full data export capability
-- ✅ Calm, respectful design
-
-## 💡 Key Innovations
-
-### 1. Confidence Scoring
-Every extraction is scored (high/medium/low) so users know what to trust without judgment.
-
-### 2. Merchant Normalization
-50+ default rules + user-defined rules normalize messy merchant names automatically.
-
-### 3. Subscription Intelligence
-Automatic detection of:
-- Lifecycle states (active/trial/paused/ended)
-- Price changes
-- Billing cycle changes
-- Consistency scoring
-
-### 4. Neutral Financial Design
-- No red/green for good/bad
-- Monospaced amounts
-- Clear, readable typography
-- Calm animations
-
-### 5. Material You Integration
-- Adapts to user's wallpaper
-- Consistent with Android 12+ design
-- Accessible and beautiful
-
-## 🧪 Testing Status
-
-- ✅ Isar schemas generated successfully
-- ✅ Flutter analyze passes with no errors
-- ✅ All models compile correctly
-- ✅ Services are dependency-injectable
-- ✅ UI components are reusable
-
-## 📚 Documentation Created
-
-1. **ENHANCEMENT_PROGRESS.md** - Overall progress tracker
-2. **ISAR_ENUM_REFERENCE.md** - Isar enum handling guide
-3. **PHASE_3_COMPLETE.md** - Material You implementation details
-4. **pennypilot-enhancement-plan.md** - Complete implementation plan
-5. **This file** - Implementation summary
-
-## 🎯 Success Metrics
-
-### Completed
-- **Data Models:** 100% (9/9)
-- **Core Services:** 100% (4/4)
-- **Material You:** 100% (theme + components)
-- **Documentation:** 100%
-
-### Remaining
-- **UI Integration:** 0% (Phase 4)
-- **Enhanced Features:** 0% (Phase 4)
-- **Data Export:** 50% (service exists, UI pending)
-
-## 🔧 Quick Start Guide
-
-### Using New Components
-
-```dart
-// Transaction with confidence
-TransactionCard(
-  transaction: transaction,
-  showConfidence: true,
-  expandable: true,
-)
-
-// Subscription with lifecycle
-SubscriptionCard(
-  subscription: subscription,
-  showDetails: true,
-)
-
-// Amount display
-AmountDisplay(
-  amount: 49.99,
-  currency: 'USD',
-  monospace: true,
-)
-
-// Confidence badge
-ConfidenceBadge(
-  level: 'high',
-  compact: false,
-)
-
-// Empty state
-EmptyState(
-  icon: Icons.receipt_long,
-  title: 'No Data',
-  message: 'Get started by connecting your email',
-)
-```
-
-### Using Services
-
-```dart
-// Normalize merchant
-final normalized = await merchantService.normalizeMerchantName('AMZN MKTP');
-// Returns: "Amazon"
-
-// Extract receipt
-final result = await extractionService.extractReceiptData(
-  emailBody: emailBody,
-  emailSubject: subject,
-  emailSender: sender,
-);
-
-// Detect subscriptions
-final subscriptions = await subscriptionService.detectSubscriptions();
-```
-
-### Using Transitions
-
-```dart
-Navigator.push(
-  context,
-  SharedAxisPageRoute(
-    page: DetailsScreen(),
-    transitionType: SharedAxisTransitionType.horizontal,
-  ),
-);
-```
-
-## 🎓 Lessons Learned
-
-1. **Isar Enums:** Cannot be nullable - use default values or `late`
-2. **Material 3:** Surface variants are key to proper depth
-3. **Financial UI:** Avoid red/green semantics, use neutral colors
-4. **Typography:** Larger body text improves readability significantly
-5. **Animations:** 300ms is the sweet spot for respectful motion
-
-## 🙏 Acknowledgments
-
-Built with:
-- Flutter & Dart
-- Isar (local database)
-- Google Fonts (Outfit, Roboto Mono)
-- Material 3 Design System
-- Privacy-first principles
+**Features:**
+- ✓ Gmail read-only access
+- ✓ Pagination support
+- ✓ Rate limiting
+- ✓ Deduplication
+- ✓ HTML stripping
+- ✓ No email modification/sending/deleting
 
 ---
 
-**Current Status:** Phases 1-3 Complete ✅  
-**Next Phase:** Phase 4 - UI/UX Implementation  
-**Estimated Completion:** 2-3 weeks for full Phase 4
+### 2. Transaction Extraction ✓
+**Status:** Fully Implemented
 
-**The foundation is solid. The intelligence is built. The design is beautiful. Ready to bring it all together in the UI!** 🚀
+**Implementation Details:**
+- Regex-based extraction from email body and subject (`lib/src/services/receipt_extraction_service.dart`)
+- Extracts: merchant, amount, currency, date, category (best-effort)
+- Handles common receipt formats (total, subtotal, tax, discount, tip)
+- Merchant normalization service for cleaning merchant names
+- Confidence scoring (high/medium/low) for extraction quality
+- Line item extraction for detailed receipts
+- Stores normalized transactions in Isar database
+
+**Extracted Fields:**
+- Merchant name (normalized + raw)
+- Total amount, subtotal, tax, discount, tip
+- Transaction date
+- Currency (defaults to USD)
+- Category (placeholder for future categorization)
+- Confidence level
+- Line items (optional)
+
+**Key Files:**
+- `lib/src/services/receipt_extraction_service.dart` - Extraction logic
+- `lib/src/services/merchant_normalization_service.dart` - Merchant name cleanup
+- `lib/src/data/models/transaction_model.dart` - Transaction schema
+- `lib/src/data/models/receipt_line_item_model.dart` - Line item schema
+
+---
+
+### 3. Subscription Detection ✓
+**Status:** Fully Implemented
+
+**Implementation Details:**
+- Pattern-based detection analyzing recurring charges (`lib/src/services/subscription_intelligence_service.dart`)
+- Groups transactions by merchant
+- Analyzes billing intervals and amount consistency
+- Detects frequency: weekly, biweekly, monthly, quarterly, semi-annual, yearly
+- Calculates consistency score using standard deviation
+- Tracks price changes and billing cycle changes
+- Lifecycle states: active, trial, paused, ended
+- Trial detection for first-charge anomalies
+- Persists subscriptions to database with deduplication
+
+**Detection Criteria:**
+- Minimum 2 charges required
+- Consistency threshold: 80%
+- Max 45 days between charges for monthly detection
+
+**Key Features:**
+- ✓ Recurring charge detection
+- ✓ Merchant grouping
+- ✓ Amount similarity analysis
+- ✓ Billing interval detection
+- ✓ User can rename subscriptions
+- ✓ Pause tracking support
+- ✓ Dismiss false positives
+- ✓ No recommendations or advice
+
+**Key Files:**
+- `lib/src/services/subscription_intelligence_service.dart` - Detection logic
+- `lib/src/data/models/subscription_model.dart` - Subscription schema
+
+---
+
+### 4. Local Persistence ✓
+**Status:** Fully Implemented
+
+**Implementation Details:**
+- Isar database for all local storage (`lib/src/data/local/database_service.dart`)
+- Proper schemas for all data models
+- Deduplication via `originalEmailId` check
+- Idempotent rescans (won't duplicate existing data)
+- Database wipe and reset functionality
+- AI understanding reset (preserves raw data)
+
+**Schemas:**
+- `TransactionModel` - Financial transactions
+- `SubscriptionModel` - Detected subscriptions
+- `ReceiptLineItemModel` - Receipt line items
+- `ExtractionMetadataModel` - Extraction metadata
+- `MerchantNormalizationRuleModel` - Merchant normalization rules
+- `EmailSenderPreferenceModel` - Email sender preferences
+- `CategoryModel` - Transaction categories
+
+**Key Files:**
+- `lib/src/data/local/database_service.dart` - Database initialization
+- `lib/src/data/models/*.dart` - All data models
+
+---
+
+### 5. Dashboards & Summaries ✓
+**Status:** Fully Implemented
+
+**Implementation Details:**
+- Real data wired into UI via Riverpod providers
+- Monthly income/expense/net flow calculations
+- Category breakdowns (ready for categorization)
+- Subscription overview with lifecycle states
+- Reactive charts using `fl_chart`
+- Filter and sort functionality
+- Search functionality (merchant, notes, category)
+
+**UI Screens:**
+- Dashboard: Monthly summaries, recent transactions, active subscriptions
+- Transactions: Filterable/sortable list with search
+- Subscriptions: Lifecycle tracking, price history
+- Settings: Privacy controls, email scanner controls
+
+**Key Features:**
+- ✓ Monthly totals (income/expense/net)
+- ✓ Category breakdowns
+- ✓ Subscription overview
+- ✓ Charts update reactively
+- ✓ No judgmental language
+- ✓ Calm, non-judgmental UX (Material 3)
+
+**Key Files:**
+- `lib/src/presentation/screens/dashboard/dashboard_screen.dart`
+- `lib/src/presentation/screens/transactions/transactions_screen.dart`
+- `lib/src/presentation/screens/subscriptions/subscriptions_screen.dart`
+
+---
+
+### 6. Rescan & Refresh Logic ✓
+**Status:** Fully Implemented
+
+**Implementation Details:**
+- Manual rescan via email service
+- Partial rescan (skips already-processed emails)
+- Safe deduplication via `originalEmailId`
+- Idempotent operations
+- Dry run preview mode (doesn't save to DB)
+- Subscription re-detection after email scan
+
+**Key Features:**
+- ✓ Manual rescan button
+- ✓ Partial rescan (since last sync)
+- ✓ Safe deduplication
+- ✓ Idempotent operations
+- ✓ Dry run preview
+
+**Key Files:**
+- `lib/src/services/email_service.dart` - `scanEmails()`, `previewScan()`
+- `lib/src/presentation/screens/settings/email_scanner_controls_screen.dart`
+
+---
+
+### 7. Data Deletion & Reset ✓
+**Status:** Fully Implemented
+
+**Implementation Details:**
+- Full local data wipe via database service
+- Account disconnect via auth service
+- Token revocation (secure storage cleared)
+- App returns to clean state
+- AI understanding reset (preserves raw data)
+- Data export (JSON/CSV) before deletion
+
+**Key Features:**
+- ✓ Full local data wipe
+- ✓ Account disconnect
+- ✓ Token revocation
+- ✓ Clean state restoration
+- ✓ AI reset (optional)
+- ✓ Data export
+
+**Key Files:**
+- `lib/src/data/local/database_service.dart` - `wipeData()`, `resetAIUnderstanding()`
+- `lib/src/services/auth_service.dart` - `signOut()`
+- `lib/src/presentation/screens/settings/privacy_security_screen.dart`
+
+---
+
+## 🔧 Additional Implementations
+
+### Search Functionality
+- Transaction search by merchant, notes, or category
+- Real-time filtering as user types
+- Toggle search mode in app bar
+
+### Dry Run Preview
+- Preview email scan results without importing
+- Shows merchant, amount, date, confidence
+- Limit to 5 results for quick preview
+
+### Local-Only Mode Toggle
+- Persisted via SharedPreferences
+- User preference for privacy mode
+- Reminder that email fetching still occurs
+
+### Data Export
+- Export to JSON or CSV
+- Includes transactions and subscriptions
+- Share via system share dialog
+
+---
+
+## 🎯 Core Rules Compliance
+
+✅ **Read-only email access only** - Gmail API with read-only scopes  
+✅ **No payments, no bank connections** - Only email scanning  
+✅ **No cloud sync** - All data stored locally in Isar  
+✅ **No financial advice** - Purely informational UI  
+✅ **All processing is on-device** - Regex-based extraction  
+✅ **Local database only (Isar)** - No remote databases  
+✅ **Gmail read-only** - OAuth with gmail.readonly scope  
+✅ **Calm, non-judgmental UX (Material 3)** - Neutral language, no warnings  
+
+---
+
+## 📝 Notes
+
+### AI Usage
+Currently using regex-based extraction. AI can be added later for:
+- Text extraction improvements
+- Better classification
+- Smarter categorization
+- Enhanced subscription detection
+
+### Future Enhancements
+- Outlook/iCloud support (OAuth flows ready, need API integration)
+- Category auto-assignment via ML
+- Budget tracking (non-judgmental)
+- Spending insights (informational only)
+- Multi-currency support
+- Receipt image OCR
+
+---
+
+## 🚀 Testing Recommendations
+
+1. **Email Scanning:**
+   - Connect Gmail account
+   - Run manual scan
+   - Verify deduplication on rescan
+   - Test dry run preview
+
+2. **Transaction Extraction:**
+   - Check various receipt formats
+   - Verify confidence scoring
+   - Test merchant normalization
+
+3. **Subscription Detection:**
+   - Add recurring transactions manually
+   - Run subscription detection
+   - Verify lifecycle states
+
+4. **Data Management:**
+   - Export data (JSON/CSV)
+   - Test AI reset
+   - Test full data wipe
+   - Verify clean state
+
+5. **UI/UX:**
+   - Test search functionality
+   - Verify filter/sort
+   - Check Material 3 theming
+   - Ensure no judgmental language
+
+---
+
+## 📦 Dependencies
+
+All required dependencies are already in `pubspec.yaml`:
+- `isar` & `isar_flutter_libs` - Local database
+- `google_sign_in` - OAuth authentication
+- `googleapis` - Gmail API
+- `flutter_riverpod` - State management
+- `fl_chart` - Charts
+- `share_plus` - Data export
+- `flutter_secure_storage` - Token storage
+- `shared_preferences` - User preferences
+
+---
+
+## ✨ Summary
+
+All core features requested in the task have been **fully implemented**:
+
+1. ✅ Email ingestion (read-only)
+2. ✅ Transaction extraction
+3. ✅ Subscription detection
+4. ✅ Local persistence
+5. ✅ Dashboards & summaries
+6. ✅ Rescan & refresh logic
+7. ✅ Data deletion & reset
+
+The app is now ready for testing and further refinement. All TODOs have been addressed, and stub methods have been replaced with real implementations.

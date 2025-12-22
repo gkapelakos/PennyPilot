@@ -5,10 +5,7 @@ import 'package:pennypilot/src/domain/repositories/transaction_repository.dart';
 import 'package:pennypilot/src/presentation/providers/database_provider.dart';
 
 final transactionRepositoryProvider = Provider<TransactionRepository>((ref) {
-  final isar = ref.watch(isarProvider).valueOrNull;
-  if (isar == null) {
-    throw UnimplementedError('Database not initialized');
-  }
+  final isar = ref.watch(isarProvider);
   return TransactionRepositoryImpl(isar);
 });
 

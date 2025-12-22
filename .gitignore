@@ -1,5 +1,6 @@
 # Miscellaneous
 .agent/
+lib/src/config/secrets.dart
 *.class
 *.log
 *.pyc

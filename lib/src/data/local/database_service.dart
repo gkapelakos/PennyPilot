@@ -47,6 +47,33 @@ class DatabaseService {
     });
     _logger.info('Database wiped');
   }
+
+  /// Reset only financial data, preserving categories and settings
+  /// This does NOT remove auth tokens - those are in secure storage
+  Future<void> resetFinancialData() async {
+    final isar = await db;
+    await isar.writeTxn(() async {
+      // Clear financial data
+      await isar.transactionModels.clear();
+      await isar.subscriptionModels.clear();
+      await isar.receiptLineItemModels.clear();
+      await isar.extractionMetadataModels.clear();
+      
+      // Clear system-generated merchant rules (keep user-defined ones)
+      await isar.merchantNormalizationRuleModels
+          .where()
+          .filter()
+          .isUserDefinedEqualTo(false)
+          .deleteAll();
+      
+      // Clear email sender preferences
+      await isar.emailSenderPreferenceModels.clear();
+      
+      // Categories are preserved
+      // Auth tokens in secure storage are NOT touched
+    });
+    _logger.info('Financial data reset - categories and auth preserved');
+  }
   
   Future<void> resetAIUnderstanding() async {
     final isar = await db;

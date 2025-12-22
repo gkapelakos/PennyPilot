@@ -66,46 +66,90 @@ class ReceiptExtractionService {
 
   /// Extract merchant name from email
   MerchantExtraction _extractMerchant(String subject, String sender, String body) {
-    // Try to extract from sender email
-    final senderMatch = RegExp(r'@([a-zA-Z0-9-]+)\.')
-        .firstMatch(sender.toLowerCase());
+    final senderLower = sender.toLowerCase();
     
-    if (senderMatch != null) {
-      final domain = senderMatch.group(1)!;
-      // Common merchant domains
-      if (!['gmail', 'yahoo', 'outlook', 'hotmail', 'icloud'].contains(domain)) {
-        return MerchantExtraction(
-          name: _capitalize(domain),
-          confidence: ConfidenceLevel.medium,
-        );
-      }
-    }
+    // 1. Check for known "Trust List" domains
+    final trustList = {
+      'uber.com': 'Uber',
+      'lyft.com': 'Lyft',
+      'amazon.com': 'Amazon',
+      'steampowered.com': 'Steam',
+      'netflix.com': 'Netflix',
+      'spotify.com': 'Spotify',
+      'apple.com': 'Apple',
+      'microsoft.com': 'Microsoft',
+      'google.com': 'Google',
+      'starbucks.com': 'Starbucks',
+      'doordash.com': 'DoorDash',
+      'ubereats.com': 'Uber Eats',
+      'grubhub.com': 'Grubhub',
+      'deliveroo.com': 'Deliveroo',
+      'railway.app': 'Railway',
+      'digitalocean.com': 'DigitalOcean',
+      'heroku.com': 'Heroku',
+      'vercel.com': 'Vercel',
+      'github.com': 'GitHub',
+    };
 
-    // Try to extract from subject
-    final subjectPatterns = [
-      RegExp(r'receipt from (.+?)(?:\s|$)', caseSensitive: false),
-      RegExp(r'your (.+?) order', caseSensitive: false),
-      RegExp(r'thank you for shopping at (.+?)(?:\s|$)', caseSensitive: false),
-      RegExp(r'order confirmation - (.+?)(?:\s|$)', caseSensitive: false),
-    ];
-
-    for (var pattern in subjectPatterns) {
-      final match = pattern.firstMatch(subject);
-      if (match != null && match.group(1) != null) {
+    for (final entry in trustList.entries) {
+      if (senderLower.contains(entry.key)) {
         return MerchantExtraction(
-          name: match.group(1)!.trim(),
+          name: entry.value,
           confidence: ConfidenceLevel.high,
         );
       }
     }
 
-    // Fallback to sender display name
-    final displayNameMatch = RegExp(r'^([^<]+)').firstMatch(sender);
-    if (displayNameMatch != null) {
-      return MerchantExtraction(
-        name: displayNameMatch.group(1)!.trim(),
-        confidence: ConfidenceLevel.low,
-      );
+    // 2. Try to extract from sender display name
+    final nameAndEmailMatch = RegExp(r'^"?([^"<]+)"?\s*<([^>]+)>').firstMatch(sender);
+    if (nameAndEmailMatch != null) {
+      final displayName = nameAndEmailMatch.group(1)!.trim();
+      if (displayName.isNotEmpty && 
+          !displayName.contains('@') && 
+          !['no-reply', 'noreply', 'support', 'billing', 'customer'].contains(displayName.toLowerCase())) {
+        return MerchantExtraction(
+          name: displayName,
+          confidence: ConfidenceLevel.medium,
+        );
+      }
+    }
+
+    // 3. Try to extract from subject
+    final subjectPatterns = [
+      RegExp(r'receipt from (.*)', caseSensitive: false),
+      RegExp(r'your (.*) order', caseSensitive: false),
+      RegExp(r'thank you for shopping at (.*)', caseSensitive: false),
+      RegExp(r'order confirmation - (.*)', caseSensitive: false),
+      RegExp(r'invoice from (.*)', caseSensitive: false),
+      RegExp(r'your (.*) invoice', caseSensitive: false),
+      RegExp(r'payment to (.*)', caseSensitive: false),
+    ];
+
+    for (var pattern in subjectPatterns) {
+      final match = pattern.firstMatch(subject);
+      if (match != null && match.group(1) != null) {
+        var name = match.group(1)!.split('|')[0].split('-')[0].trim();
+        name = name.replaceAll(RegExp(r'\s*#\d+.*$'), '').trim();
+        
+        if (name.isNotEmpty) {
+          return MerchantExtraction(
+            name: name,
+            confidence: ConfidenceLevel.high,
+          );
+        }
+      }
+    }
+
+    // 4. Fallback to sender domain
+    final domainMatch = RegExp(r'@([a-zA-Z0-9-]+)\.').firstMatch(senderLower);
+    if (domainMatch != null) {
+      final domain = domainMatch.group(1)!;
+      if (!['gmail', 'yahoo', 'outlook', 'hotmail', 'icloud', 'me', 'live', 'msn'].contains(domain)) {
+        return MerchantExtraction(
+          name: _capitalize(domain),
+          confidence: ConfidenceLevel.medium,
+        );
+      }
     }
 
     return MerchantExtraction(
@@ -118,12 +162,16 @@ class ReceiptExtractionService {
   AmountExtraction _extractAmounts(String body, String subject) {
     final extraction = AmountExtraction();
 
-    // Look for total amount
+    // 1. Look for total amount in body with broader patterns
     final totalPatterns = [
       RegExp(r'total:?\s*\$?([0-9,]+\.[0-9]{2})', caseSensitive: false),
       RegExp(r'amount:?\s*\$?([0-9,]+\.[0-9]{2})', caseSensitive: false),
       RegExp(r'grand total:?\s*\$?([0-9,]+\.[0-9]{2})', caseSensitive: false),
       RegExp(r'order total:?\s*\$?([0-9,]+\.[0-9]{2})', caseSensitive: false),
+      RegExp(r'payment\s+(?:of|amount):?\s*\$?([0-9,]+\.[0-9]{2})', caseSensitive: false),
+      RegExp(r'charged:?\s*\$?([0-9,]+\.[0-9]{2})', caseSensitive: false),
+      RegExp(r'total\s+due:?\s*\$?([0-9,]+\.[0-9]{2})', caseSensitive: false),
+      RegExp(r'price:?\s*\$?([0-9,]+\.[0-9]{2})', caseSensitive: false),
     ];
 
     for (var pattern in totalPatterns) {
@@ -132,6 +180,25 @@ class ReceiptExtractionService {
         extraction.total = _parseAmount(match.group(1)!);
         extraction.confidence = ConfidenceLevel.high;
         break;
+      }
+    }
+
+    // 2. Heuristic: Look for the LARGEST amount in the body if it follows a "total" keyword
+    // This handles cases where "Total" appears twice but the final one is the real one.
+    if (extraction.total == 0) {
+      final allAmounts = RegExp(r'\$?([0-9,]+\.[0-9]{2})').allMatches(body);
+      if (allAmounts.isNotEmpty) {
+        double maxAmount = 0;
+        for (var m in allAmounts) {
+          final amt = _parseAmount(m.group(1)!);
+          if (amt > maxAmount) maxAmount = amt;
+        }
+        
+        // Only use max amount if the context suggests a receipt
+        if (maxAmount > 0 && (body.toLowerCase().contains('total') || subject.toLowerCase().contains('receipt'))) {
+          extraction.total = maxAmount;
+          extraction.confidence = ConfidenceLevel.medium;
+        }
       }
     }
 
@@ -146,7 +213,7 @@ class ReceiptExtractionService {
 
     // Look for tax
     final taxMatch = RegExp(
-      r'tax:?\s*\$?([0-9,]+\.[0-9]{2})',
+      r'(?:sales\s+)?tax:?\s*\$?([0-9,]+\.[0-9]{2})',
       caseSensitive: false,
     ).firstMatch(body);
     if (taxMatch != null) {
@@ -157,6 +224,7 @@ class ReceiptExtractionService {
     final discountPatterns = [
       RegExp(r'discount:?\s*-?\$?([0-9,]+\.[0-9]{2})', caseSensitive: false),
       RegExp(r'savings:?\s*-?\$?([0-9,]+\.[0-9]{2})', caseSensitive: false),
+      RegExp(r'promo:?\s*-?\$?([0-9,]+\.[0-9]{2})', caseSensitive: false),
     ];
     for (var pattern in discountPatterns) {
       final match = pattern.firstMatch(body);
@@ -168,7 +236,7 @@ class ReceiptExtractionService {
 
     // Look for tip
     final tipMatch = RegExp(
-      r'tip:?\s*\$?([0-9,]+\.[0-9]{2})',
+      r'(?:tip|gratuity):?\s*\$?([0-9,]+\.[0-9]{2})',
       caseSensitive: false,
     ).firstMatch(body);
     if (tipMatch != null) {

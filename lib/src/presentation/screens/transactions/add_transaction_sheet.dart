@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
+import 'package:pennypilot/src/presentation/providers/database_provider.dart';
 
 class AddTransactionSheet extends ConsumerStatefulWidget {
   const AddTransactionSheet({super.key});
@@ -75,7 +76,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
     setState(() => _isLoading = true);
 
     try {
-      final isar = await ref.read(isarProvider.future);
+      final isar = ref.read(isarProvider);
       
       final transaction = TransactionModel()
         ..kind = _kind

@@ -20,6 +20,13 @@ class TransactionRepositoryImpl implements TransactionRepository {
   }
 
   @override
+  Future<void> updateTransaction(TransactionModel transaction) async {
+    await isar.writeTxn(() async {
+      await isar.transactionModels.put(transaction);
+    });
+  }
+
+  @override
   Future<void> deleteTransaction(int id) async {
     await isar.writeTxn(() async {
       await isar.transactionModels.delete(id);

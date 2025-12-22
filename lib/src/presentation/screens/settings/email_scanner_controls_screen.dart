@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
+import 'package:pennypilot/src/presentation/providers/database_provider.dart';
 import 'package:pennypilot/src/presentation/providers/email_provider.dart';
 import 'package:isar/isar.dart';
 import 'package:pennypilot/src/data/models/email_sender_preference_model.dart';
+import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/presentation/widgets/empty_state.dart';
 import 'package:intl/intl.dart';
 
 // Email sender preferences provider
-final emailSenderPreferencesProvider = StreamProvider<List<EmailSenderPreferenceModel>>((ref) async* {
-  final isar = await ref.watch(isarProvider.future);
+final emailSenderPreferencesProvider = StreamProvider<List<EmailSenderPreferenceModel>>((ref) {
+  final isar = ref.watch(isarProvider);
   
   yield* isar.emailSenderPreferenceModels
       .where()
@@ -387,7 +389,7 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
   }
 
   void _toggleSenderScan(EmailSenderPreferenceModel sender, bool enabled) async {
-    final isar = await ref.read(isarProvider.future);
+    final isar = ref.read(isarProvider);
     
     await isar.writeTxn(() async {
       sender.scanEnabled = enabled;
@@ -455,7 +457,7 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
           ),
           FilledButton(
             onPressed: () async {
-              final isar = await ref.read(isarProvider.future);
+              final isar = ref.read(isarProvider);
               
               await isar.writeTxn(() async {
                 sender.userNotes = controller.text.isEmpty ? null : controller.text;
@@ -477,30 +479,132 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
     );
   }
 
-  void _showDryRunDialog(BuildContext context) {
+  void _showDryRunDialog(BuildContext context) async {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
         icon: const Icon(Icons.preview, size: 32),
         title: const Text('Dry Run Preview'),
-        content: const Text(
-          'This will show you what would be scanned from your emails '
-          'without actually importing anything.\n\n'
-          'This feature is coming soon!',
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'This will preview what would be scanned from your emails '
+              'without actually importing anything.',
+            ),
+            const SizedBox(height: 16),
+            const CircularProgressIndicator(),
+          ],
+        ),
+      ),
+    );
+
+    try {
+      final emailService = ref.read(emailServiceProvider);
+      final previewResults = await emailService.previewScan(limit: 5);
+      
+      if (context.mounted) {
+        Navigator.pop(context); // Close loading dialog
+        
+        if (previewResults.isEmpty) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              icon: const Icon(Icons.info_outline, size: 32),
+              title: const Text('No Results'),
+              content: const Text('No new receipt emails found to preview.'),
+              actions: [
+                FilledButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        } else {
+          _showPreviewResults(context, previewResults);
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context); // Close loading dialog
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Preview failed: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showPreviewResults(BuildContext context, List<TransactionModel> results) {
+    final theme = Theme.of(context);
+    final dateFormat = DateFormat('MMM d, y');
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Preview Results'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Found ${results.length} potential transactions',
+                style: theme.textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 16),
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: results.length,
+                  itemBuilder: (context, index) {
+                    final tx = results[index];
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          child: Text(tx.merchantName[0].toUpperCase()),
+                        ),
+                        title: Text(tx.merchantName),
+                        subtitle: Text(dateFormat.format(tx.date)),
+                        trailing: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              '\$${tx.amount.toStringAsFixed(2)}',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              tx.extractionConfidence.name,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: tx.extractionConfidence == ConfidenceLevel.high
+                                    ? Colors.green
+                                    : tx.extractionConfidence == ConfidenceLevel.medium
+                                        ? Colors.orange
+                                        : Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Close'),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Dry run coming soon')),
-              );
-            },
-            child: const Text('Run Preview'),
           ),
         ],
       ),

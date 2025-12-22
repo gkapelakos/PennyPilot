@@ -2,14 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/services/email_service.dart';
 import 'package:pennypilot/src/presentation/providers/auth_provider.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
+import 'package:pennypilot/src/presentation/providers/database_provider.dart';
 
 final emailServiceProvider = Provider<EmailService>((ref) {
   final authService = ref.watch(authServiceProvider);
   final receiptService = ref.watch(receiptExtractionServiceProvider);
   final subscriptionService = ref.watch(subscriptionIntelligenceServiceProvider);
-  final isar = ref.watch(isarProvider).value;
-  
-  if (isar == null) throw Exception('Database not initialized');
+  final isar = ref.watch(isarProvider);
   
   return EmailService(authService, receiptService, subscriptionService, isar);
 });

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/presentation/widgets/confidence_badge.dart';
 import 'package:pennypilot/src/presentation/widgets/amount_display.dart';
+import 'package:pennypilot/src/presentation/widgets/manual_edit_badge.dart';
+import 'package:pennypilot/src/presentation/screens/transactions/edit_transaction_screen.dart';
 import 'package:intl/intl.dart';
 
 class TransactionDetailsScreen extends StatelessWidget {
@@ -24,11 +26,19 @@ class TransactionDetailsScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () {
-              // TODO: Implement edit
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Edit coming soon')),
+            onPressed: () async {
+              final result = await Navigator.of(context).push<bool>(
+                MaterialPageRoute(
+                  builder: (context) => EditTransactionScreen(
+                    transaction: transaction,
+                  ),
+                ),
               );
+              
+              // If edit was successful, pop back to refresh the list
+              if (result == true && context.mounted) {
+                Navigator.of(context).pop();
+              }
             },
             tooltip: 'Edit',
           ),
@@ -62,6 +72,10 @@ class TransactionDetailsScreen extends StatelessWidget {
                     style: theme.textTheme.headlineSmall,
                     textAlign: TextAlign.center,
                   ),
+                  if (transaction.isManuallyEdited) ...[ 
+                    const SizedBox(height: 8),
+                    const ManualEditBadge(compact: false),
+                  ],
                   if (transaction.rawMerchantName != null &&
                       transaction.rawMerchantName != transaction.merchantName) ...[
                     const SizedBox(height: 8),

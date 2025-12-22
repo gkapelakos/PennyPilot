@@ -1,6 +1,7 @@
 import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'dart:convert';
+import 'dart:math' as math;
 import 'package:pennypilot/src/data/models/subscription_model.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
 
@@ -48,6 +49,30 @@ class SubscriptionIntelligenceService {
         detectedSubscriptions.add(subscription);
       }
     }
+
+    // Persist to database
+    await _isar.writeTxn(() async {
+      for (var subscription in detectedSubscriptions) {
+        // Check if subscription already exists for this service
+        final existing = await _isar.subscriptionModels
+            .filter()
+            .serviceNameEqualTo(subscription.serviceName)
+            .findFirst();
+
+        if (existing != null) {
+          // Update existing subscription but preserve user customizations
+          subscription.id = existing.id;
+          subscription.userConfirmed = existing.userConfirmed;
+          subscription.notes = existing.notes;
+          // Preserve category if user set one
+          if (existing.categoryId != null) {
+            subscription.categoryId = existing.categoryId;
+          }
+        }
+
+        await _isar.subscriptionModels.put(subscription);
+      }
+    });
 
     _logger.info('Detected ${detectedSubscriptions.length} potential subscriptions');
     return detectedSubscriptions;
@@ -135,7 +160,7 @@ class SubscriptionIntelligenceService {
       return diff * diff;
     }).reduce((a, b) => a + b) / daysBetween.length;
 
-    final stdDev = variance.sqrt();
+    final stdDev = math.sqrt(variance);
 
     // Convert to consistency score (lower stdDev = higher consistency)
     // If stdDev is 0, consistency is 100
@@ -398,14 +423,3 @@ class CycleChange {
   });
 }
 
-extension on double {
-  double sqrt() {
-    return this < 0 ? 0 : this.toStringAsFixed(2).toDouble();
-  }
-}
-
-extension on String {
-  double toDouble() {
-    return double.tryParse(this) ?? 0.0;
-  }
-}

@@ -5,13 +5,15 @@ import 'package:pennypilot/src/presentation/screens/settings/backup_screen.dart'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/theme_provider.dart';
 import 'package:pennypilot/src/presentation/providers/email_provider.dart';
-import 'package:pennypilot/src/presentation/screens/settings/email_accounts_section.dart';
+import 'package:pennypilot/src/presentation/providers/auth_provider.dart';
+import 'package:pennypilot/src/presentation/screens/settings/manage_accounts_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final connectedEmails = ref.watch(authServiceProvider).connectedEmails;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -67,7 +69,22 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ),
-          const EmailAccountsSection(), // We will create this widget next
+          ListTile(
+            leading: const Icon(Icons.manage_accounts),
+            title: const Text('Manage connected accounts'),
+            subtitle: Text(
+              connectedEmails.isEmpty 
+                ? 'No accounts connected' 
+                : '${connectedEmails.length} account(s) connected'
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ManageAccountsScreen()),
+              );
+            },
+          ),
           const Divider(height: 32),
 
           Padding(
@@ -126,7 +143,7 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.info),
             title: const Text('About PennyPilot'),
-            subtitle: const Text('Version alpha.0.2'),
+            subtitle: const Text('Version alpha1.0'),
           ),
         ],
       ),

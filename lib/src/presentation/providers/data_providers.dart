@@ -7,65 +7,54 @@ import 'package:pennypilot/src/services/merchant_normalization_service.dart';
 import 'package:pennypilot/src/services/subscription_intelligence_service.dart';
 import 'package:pennypilot/src/services/receipt_extraction_service.dart';
 
-// Database service provider
-final databaseServiceProvider = Provider<DatabaseService>((ref) {
-  return DatabaseService();
-});
-
-// Isar instance provider
-final isarProvider = FutureProvider<Isar>((ref) async {
-  final dbService = ref.watch(databaseServiceProvider);
-  return await dbService.db;
-});
+import 'package:pennypilot/src/presentation/providers/database_provider.dart';
+export 'package:pennypilot/src/presentation/providers/database_provider.dart';
 
 // Merchant normalization service provider
 final merchantNormalizationServiceProvider = Provider<MerchantNormalizationService>((ref) {
-  final isar = ref.watch(isarProvider).value;
-  if (isar == null) throw Exception('Database not initialized');
+  final isar = ref.watch(isarProvider);
   return MerchantNormalizationService(isar);
 });
 
 // Subscription intelligence service provider
 final subscriptionIntelligenceServiceProvider = Provider<SubscriptionIntelligenceService>((ref) {
-  final isar = ref.watch(isarProvider).value;
-  if (isar == null) throw Exception('Database not initialized');
+  final isar = ref.watch(isarProvider);
   return SubscriptionIntelligenceService(isar);
 });
 
 // Receipt extraction service provider
 final receiptExtractionServiceProvider = Provider<ReceiptExtractionService>((ref) {
-  final isar = ref.watch(isarProvider).value;
+  final isar = ref.watch(isarProvider);
   final merchantService = ref.watch(merchantNormalizationServiceProvider);
-  if (isar == null) throw Exception('Database not initialized');
   
   return ReceiptExtractionService(isar, merchantService);
 });
 
 // Transactions stream provider
-final transactionsProvider = StreamProvider<List<TransactionModel>>((ref) async* {
-  final isar = await ref.watch(isarProvider.future);
+final transactionsProvider = StreamProvider<List<TransactionModel>>((ref) {
+  final isar = ref.watch(isarProvider);
   
-  yield* isar.transactionModels
+  return isar.transactionModels
       .where()
       .sortByDateDesc()
       .watch(fireImmediately: true);
 });
 
 // Subscriptions stream provider
-final subscriptionsProvider = StreamProvider<List<SubscriptionModel>>((ref) async* {
-  final isar = await ref.watch(isarProvider.future);
+final subscriptionsProvider = StreamProvider<List<SubscriptionModel>>((ref) {
+  final isar = ref.watch(isarProvider);
   
-  yield* isar.subscriptionModels
+  return isar.subscriptionModels
       .where()
       .sortByNextRenewalDate()
       .watch(fireImmediately: true);
 });
 
 // Active subscriptions only
-final activeSubscriptionsProvider = StreamProvider<List<SubscriptionModel>>((ref) async* {
-  final isar = await ref.watch(isarProvider.future);
+final activeSubscriptionsProvider = StreamProvider<List<SubscriptionModel>>((ref) {
+  final isar = ref.watch(isarProvider);
   
-  yield* isar.subscriptionModels
+  return isar.subscriptionModels
       .filter()
       .lifecycleStateEqualTo(SubscriptionLifecycleState.active)
       .watch(fireImmediately: true);
@@ -79,16 +68,16 @@ final subscriptionStatsProvider = FutureProvider<Map<String, dynamic>>((ref) asy
 
 // Transaction count provider
 final transactionCountProvider = FutureProvider<int>((ref) async {
-  final isar = await ref.watch(isarProvider.future);
+  final isar = ref.watch(isarProvider);
   return await isar.transactionModels.count();
 });
 
 // Recent transactions (last 30 days)
-final recentTransactionsProvider = StreamProvider<List<TransactionModel>>((ref) async* {
-  final isar = await ref.watch(isarProvider.future);
+final recentTransactionsProvider = StreamProvider<List<TransactionModel>>((ref) {
+  final isar = ref.watch(isarProvider);
   final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30));
   
-  yield* isar.transactionModels
+  return isar.transactionModels
       .filter()
       .dateGreaterThan(thirtyDaysAgo)
       .sortByDateDesc()

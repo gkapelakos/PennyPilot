@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
+import 'package:pennypilot/src/presentation/screens/auth/connect_email_screen.dart';
 import 'package:pennypilot/src/presentation/widgets/transaction_card.dart';
 import 'package:pennypilot/src/presentation/widgets/empty_state.dart';
 import 'package:pennypilot/src/core/utils/page_transitions.dart';
+import 'package:pennypilot/src/presentation/screens/transactions/transactions_screen.dart';
 import 'package:pennypilot/src/presentation/screens/transactions/transaction_details_screen.dart';
 import 'package:pennypilot/src/presentation/screens/transactions/add_transaction_sheet.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
@@ -19,6 +21,15 @@ class TransactionsScreen extends ConsumerStatefulWidget {
 class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
   String _filterCategory = 'All';
   String _sortBy = 'date'; // 'date', 'amount', 'merchant'
+  String _searchQuery = '';
+  bool _isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,23 +38,43 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Transactions'),
+        title: _isSearching 
+            ? TextField(
+                controller: _searchController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: 'Search merchant or notes...',
+                  border: InputBorder.none,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value;
+                  });
+                },
+              )
+            : const Text('Transactions'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () => _showFilterSheet(context),
-            tooltip: 'Filter & Sort',
-          ),
-          IconButton(
-            icon: const Icon(Icons.search),
+            icon: Icon(_isSearching ? Icons.close : Icons.search),
             onPressed: () {
-              // TODO: Implement search
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Search coming soon')),
-              );
+               setState(() {
+                 if (_isSearching) {
+                   _isSearching = false;
+                   _searchQuery = '';
+                   _searchController.clear();
+                 } else {
+                   _isSearching = true;
+                 }
+               });
             },
-            tooltip: 'Search',
+            tooltip: _isSearching ? 'Close Search' : 'Search',
           ),
+          if (!_isSearching)
+            IconButton(
+              icon: const Icon(Icons.filter_list),
+              onPressed: () => _showFilterSheet(context),
+              tooltip: 'Filter & Sort',
+            ),
         ],
       ),
       body: transactionsAsync.when(
@@ -55,9 +86,11 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
               message: 'Connect your email to start tracking your spending',
               action: FilledButton.icon(
                 onPressed: () {
-                  // TODO: Navigate to email connect
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Email connection coming soon')),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ConnectEmailScreen(),
+                    ),
                   );
                 },
                 icon: const Icon(Icons.email),
@@ -72,6 +105,15 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
             filteredTransactions = transactions
                 .where((t) => t.category == _filterCategory)
                 .toList();
+          }
+          
+          if (_searchQuery.isNotEmpty) {
+             final query = _searchQuery.toLowerCase();
+             filteredTransactions = filteredTransactions.where((t) {
+               return t.merchantName.toLowerCase().contains(query) ||
+                      (t.notes?.toLowerCase().contains(query) ?? false) ||
+                      (t.category?.toLowerCase().contains(query) ?? false);
+             }).toList();
           }
 
           // Apply sorting
