@@ -5,7 +5,6 @@ import 'package:pennypilot/src/presentation/screens/auth/connect_email_screen.da
 import 'package:pennypilot/src/presentation/widgets/transaction_card.dart';
 import 'package:pennypilot/src/presentation/widgets/empty_state.dart';
 import 'package:pennypilot/src/core/utils/page_transitions.dart';
-import 'package:pennypilot/src/presentation/screens/transactions/transactions_screen.dart';
 import 'package:pennypilot/src/presentation/screens/transactions/transaction_details_screen.dart';
 import 'package:pennypilot/src/presentation/screens/transactions/add_transaction_sheet.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';

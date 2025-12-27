@@ -88,7 +88,7 @@ class _ReceiptScanScreenState extends ConsumerState<ReceiptScanScreen> {
                 height: 200,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(Icons.receipt_long, size: 64, color: Colors.grey),

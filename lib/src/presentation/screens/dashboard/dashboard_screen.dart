@@ -4,6 +4,7 @@ import 'package:pennypilot/src/presentation/screens/transactions/transactions_sc
 import 'package:pennypilot/src/presentation/screens/subscriptions/subscriptions_screen.dart';
 import 'package:pennypilot/src/presentation/screens/insights/insights_screen.dart';
 import 'package:pennypilot/src/presentation/screens/settings/settings_screen.dart';
+import 'package:pennypilot/src/presentation/screens/converter/converter_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   final bool isDemoMode;
@@ -28,6 +29,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       const SubscriptionsScreen(),
       const InsightsScreen(),
       const SettingsScreen(),
+      CurrencyConverterScreen(),
     ];
   }
 
@@ -67,6 +69,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             icon: Icon(Icons.settings_outlined),
             selectedIcon: Icon(Icons.settings),
             label: 'Settings',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.currency_exchange_outlined),
+            selectedIcon: Icon(Icons.currency_exchange),
+            label: 'Converter',
           ),
         ],
       ),

@@ -2,7 +2,6 @@ import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/data/models/receipt_line_item_model.dart';
-import 'package:pennypilot/src/data/models/extraction_metadata_model.dart';
 import 'package:pennypilot/src/services/merchant_normalization_service.dart';
 
 class ReceiptExtractionService {

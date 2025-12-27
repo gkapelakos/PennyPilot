@@ -72,7 +72,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           width: 200,
                           padding: const EdgeInsets.all(32),
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surfaceVariant,
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             shape: BoxShape.circle,
                           ),
                           child: Image.asset(

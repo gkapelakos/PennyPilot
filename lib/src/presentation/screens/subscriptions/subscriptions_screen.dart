@@ -7,7 +7,6 @@ import 'package:pennypilot/src/presentation/widgets/amount_display.dart';
 import 'package:pennypilot/src/data/models/subscription_model.dart';
 
 import 'package:pennypilot/src/presentation/screens/subscriptions/add_subscription_sheet.dart';
-import 'package:pennypilot/src/core/utils/page_transitions.dart';
 
 class SubscriptionsScreen extends ConsumerStatefulWidget {
   const SubscriptionsScreen({super.key});

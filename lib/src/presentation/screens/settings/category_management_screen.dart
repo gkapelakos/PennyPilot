@@ -242,7 +242,7 @@ class _CategoryManagementScreenState extends ConsumerState<CategoryManagementScr
                     decoration: const InputDecoration(
                       labelText: 'Category',
                     ),
-                    value: selectedCategoryId,
+                    initialValue: selectedCategoryId,
                     items: categories.map((cat) {
                       return DropdownMenuItem(
                         value: cat.id,

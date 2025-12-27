@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:pennypilot/src/data/models/subscription_model.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
-import 'package:pennypilot/src/presentation/providers/database_provider.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 
 class AddSubscriptionSheet extends ConsumerStatefulWidget {
@@ -21,7 +20,7 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
   
   DateTime _nextRenewalDate = DateTime.now().add(const Duration(days: 30));
   SubscriptionFrequency _frequency = SubscriptionFrequency.monthly;
-  SubscriptionLifecycleState _state = SubscriptionLifecycleState.active;
+  final SubscriptionLifecycleState _state = SubscriptionLifecycleState.active;
   int? _selectedCategoryId;
   bool _isLoading = false;
 
@@ -167,7 +166,7 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                 // Category selection
                 categoriesAsync.when(
                   data: (categories) => DropdownButtonFormField<int>(
-                    value: _selectedCategoryId,
+                    initialValue: _selectedCategoryId,
                     decoration: InputDecoration(
                       labelText: 'Category',
                       prefixIcon: const Icon(Icons.category),
@@ -186,7 +185,7 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
 
                 // Frequency selection
                 DropdownButtonFormField<SubscriptionFrequency>(
-                  value: _frequency,
+                  initialValue: _frequency,
                   decoration: InputDecoration(
                     labelText: 'Billing Cycle',
                     prefixIcon: const Icon(Icons.repeat),

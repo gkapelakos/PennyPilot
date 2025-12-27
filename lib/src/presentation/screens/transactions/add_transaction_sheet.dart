@@ -248,7 +248,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
                   
                   // Category Dropdown
                   DropdownButtonFormField<String>(
-                    value: _category,
+                    initialValue: _category,
                     decoration: InputDecoration(
                       labelText: 'Category',
                       prefixIcon: const Icon(Icons.category),

@@ -200,7 +200,6 @@ class AppTheme {
     if (isOled) {
       scheme = scheme.copyWith(
         surface: Colors.black,
-        background: Colors.black,
         surfaceContainerLow: const Color(0xFF0A0A0A),
         surfaceContainerHighest: const Color(0xFF121212),
       );

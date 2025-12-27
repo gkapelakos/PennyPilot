@@ -13,8 +13,8 @@ dependencies:
     sdk: flutter
 
   # State Management
-  flutter_riverpod: ^2.4.9
-  riverpod_annotation: ^2.3.3
+  flutter_riverpod: 
+  riverpod_annotation: 
 
   # Database
   isar: ^3.1.0+1
@@ -31,9 +31,9 @@ dependencies:
   workmanager: ^0.9.0
   
   # Auth & API
-  google_sign_in: 6.1.6
-  googleapis: ^15.0.0
-  extension_google_sign_in_as_googleapis_auth: ^2.0.13
+  google_sign_in: 
+  googleapis: 
+  extension_google_sign_in_as_googleapis_auth: 
 
   # Utils
   uuid: ^4.3.3
@@ -50,24 +50,28 @@ dependencies:
   googleapis_auth: ^2.0.0
   http: ^1.2.1
   cryptography: ^2.5.0
-  google_mlkit_text_recognition: ^0.13.0
+  google_mlkit_text_recognition: 
   image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  build_runner: ^2.4.8
+  build_runner: 
   mockito: ^5.4.4
-  riverpod_generator: ^2.3.9
+  riverpod_generator: 
   isar_generator: ^3.1.0+1
-  json_serializable: ^6.7.1
+  json_serializable: 
   flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
   assets:
     - assets/pennypilot_logo.png
+
+google_ml_kit:
+  text_recognition:
+    latin: true
 
 flutter_launcher_icons:
   android: "launcher_icon"

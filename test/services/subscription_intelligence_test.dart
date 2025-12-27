@@ -1,8 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:isar/isar.dart';
-import 'package:mockito/mockito.dart';
 import 'package:pennypilot/src/services/subscription_intelligence_service.dart';
-import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/data/models/subscription_model.dart';
 
 void main() {

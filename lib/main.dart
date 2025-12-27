@@ -11,7 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
     // TODO: Implement background task handling
-    print("Native called background task: $task");
+    debugPrint("Native called background task: $task");
     return Future.value(true);
   });
 }

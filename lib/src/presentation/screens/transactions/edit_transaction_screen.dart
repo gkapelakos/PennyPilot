@@ -245,7 +245,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
 
             // Category
             DropdownButtonFormField<String>(
-              value: _selectedCategory,
+              initialValue: _selectedCategory,
               decoration: const InputDecoration(
                 labelText: 'Category',
                 border: OutlineInputBorder(),
@@ -290,7 +290,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
 
             // Transaction Type
             DropdownButtonFormField<TransactionKind>(
-              value: _transactionKind,
+              initialValue: _transactionKind,
               decoration: const InputDecoration(
                 labelText: 'Type',
                 border: OutlineInputBorder(),
@@ -396,10 +396,10 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
               onPressed: _isSaving
                   ? null
                   : () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.all(16),
               ),
+              child: const Text('Cancel'),
             ),
 
             const SizedBox(height: 32),
