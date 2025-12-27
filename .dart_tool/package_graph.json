@@ -14,6 +14,7 @@
         "file_picker",
         "fl_chart",
         "flutter",
+        "flutter_colorpicker",
         "flutter_localizations",
         "flutter_riverpod",
         "flutter_secure_storage",
@@ -191,6 +192,13 @@
         "stream_channel",
         "test_api",
         "vector_math"
+      ]
+    },
+    {
+      "name": "flutter_colorpicker",
+      "version": "1.1.0",
+      "dependencies": [
+        "flutter"
       ]
     },
     {

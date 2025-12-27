@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pennypilot/src/presentation/screens/settings/manage_categories_screen.dart';
 import 'package:pennypilot/src/presentation/screens/settings/privacy_security_screen.dart';
 import 'package:pennypilot/src/presentation/screens/settings/backup_screen.dart';
 
@@ -127,6 +128,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () => _showCurrencyPicker(context, ref),
+          ),
+          ListTile(
+            leading: const Icon(Icons.category),
+            title: const Text('Manage Categories'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ManageCategoriesScreen()),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.security),
