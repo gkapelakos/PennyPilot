@@ -16,6 +16,42 @@ class SubscriptionIntelligenceService {
 
   SubscriptionIntelligenceService(this._isar);
 
+  Future<void> evaluateSubscription(SubscriptionModel subscription) async {
+    subscription.anomalies.clear();
+
+    // Price change detection
+    if (subscription.priceHistoryJson != null) {
+      final priceHistory = jsonDecode(subscription.priceHistoryJson!) as List<dynamic>;
+      if (priceHistory.length >= 2) {
+        final lastPrice = priceHistory[priceHistory.length - 1] as double;
+        final previousPrice = priceHistory[priceHistory.length - 2] as double;
+
+        if (lastPrice > previousPrice) {
+          subscription.anomalies.add(SubscriptionAnomaly.priceHike.name);
+        } else if (lastPrice < previousPrice) {
+          subscription.anomalies.add(SubscriptionAnomaly.priceDrop.name);
+        }
+      }
+    }
+
+    // Zombie subscription detection
+    if (subscription.lifecycleState == SubscriptionLifecycleState.active) {
+      final recentTransactions = await _isar.transactionModels
+          .filter()
+          .merchantNameContains(subscription.serviceName, caseSensitive: false)
+          .dateGreaterThan(DateTime.now().subtract(const Duration(days: 90)))
+          .findAll();
+
+      if (recentTransactions.isEmpty) {
+        subscription.anomalies.add(SubscriptionAnomaly.zombie.name);
+      }
+    }
+
+    await _isar.writeTxn(() async {
+      await _isar.subscriptionModels.put(subscription);
+    });
+  }
+
   /// Detect subscriptions from transaction patterns
   Future<List<SubscriptionModel>> detectSubscriptions() async {
     _logger.info('Analyzing transactions for subscription patterns...');
@@ -451,4 +487,3 @@ class CycleChange {
     required this.newFrequency,
   });
 }
-

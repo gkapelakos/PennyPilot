@@ -20,8 +20,6 @@ class SettingsScreen extends ConsumerStatefulWidget {
 }
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
-  int _aboutTapCount = 0;
-
   @override
   Widget build(BuildContext context) {
     final connectedEmails = ref.watch(authServiceProvider).connectedEmails;
@@ -195,22 +193,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.info),
+            leading: const Icon(Icons.info_outline),
             title: const Text('About PennyPilot'),
-            subtitle: Text(
-              'Version 1.0.0-alpha.1.3${_aboutTapCount == 1 ? ' (Press 2 more to open GitHub)' : _aboutTapCount == 2 ? ' (Press 1 more to open GitHub)' : ''}',
+            subtitle: const Text('Version 1.0.0-alpha.1.5'),
+            onTap: () => launchUrl(
+              Uri.parse('https://github.com/Its-Juice/PennyPilot'),
+              mode: LaunchMode.externalApplication,
             ),
-            onTap: () {
-              setState(() {
-                _aboutTapCount++;
-              });
-              if (_aboutTapCount >= 3) {
-                setState(() {
-                  _aboutTapCount = 0;
-                });
-                launchUrl(Uri.parse('https://github.com/Its-Juice/PennyPilot'), mode: LaunchMode.externalApplication);
-              }
-            },
           ),
         ],
       ),
