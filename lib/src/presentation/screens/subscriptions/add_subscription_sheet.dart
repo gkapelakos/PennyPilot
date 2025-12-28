@@ -52,23 +52,21 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
     try {
       final isar = ref.read(isarProvider);
       
-      final preferredCurrency = ref.read(appStateProvider).currencyCode;
-      final subscription = SubscriptionModel()
-        ..serviceName = _nameController.text.trim()
-        ..amount = double.parse(_amountController.text.replaceAll(RegExp(r'[^0-9.]'), ''))
-        ..nextRenewalDate = _nextRenewalDate
-        ..frequency = _frequency
-        ..lifecycleState = _state
-        ..categoryId = _selectedCategoryId
-        ..firstSeenDate = DateTime.now()
-        ..chargeCount = 0
-        ..frequencyConsistency = 100
-        ..detectionSource = SubscriptionDetectionSource.manual
-        ..currency = preferredCurrency
-        ..notes = _notesController.text.trim()
-        ..userConfirmed = true
-        ..createdAt = DateTime.now()
-        ..updatedAt = DateTime.now();
+      final subscription = SubscriptionModel(
+        serviceName: _nameController.text.trim(),
+        amount: double.parse(_amountController.text.replaceAll(RegExp(r'[^0-9.]'), '')),
+        nextRenewalDate: _nextRenewalDate,
+        frequency: _frequency,
+        lifecycleState: _state,
+        categoryId: _selectedCategoryId,
+        firstSeenDate: DateTime.now(),
+        chargeCount: 0,
+        frequencyConsistency: 100,
+        detectionSource: SubscriptionDetectionSource.manual,
+        notes: _notesController.text.trim(),
+        userConfirmed: true,
+        createdAt: DateTime.now(),
+      );
 
       await isar.writeTxn(() async {
         await isar.subscriptionModels.put(subscription);
@@ -120,7 +118,7 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                     width: 32,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.onSurfaceVariant.withOpacity(0.4),
+                      color: theme.colorScheme.onSurfaceVariant.withAlpha(102),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -151,7 +149,7 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
                     labelText: 'Amount',
-                    prefixText: '${CurrencyInfo.getSymbol(ref.watch(appStateProvider).currencyCode)} ',
+                    prefixText: '${ref.watch(appStateProvider.select((s) => s.currencyCode))} ',
                     prefixIcon: const Icon(Icons.payments),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                   ),
@@ -166,12 +164,12 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                 // Category selection
                 categoriesAsync.when(
                   data: (categories) => DropdownButtonFormField<int>(
-                    initialValue: _selectedCategoryId,
                     decoration: InputDecoration(
                       labelText: 'Category',
                       prefixIcon: const Icon(Icons.category),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     ),
+                    initialValue: _selectedCategoryId,
                     items: categories.map((c) => DropdownMenuItem(
                       value: c.id,
                       child: Text(c.name),
@@ -179,18 +177,18 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                     onChanged: (val) => setState(() => _selectedCategoryId = val),
                   ),
                   loading: () => const LinearProgressIndicator(),
-                  error: (e, s) => Text('Error loading categories'),
+                  error: (e, s) => const Text('Error loading categories'),
                 ),
                 const SizedBox(height: 16),
 
                 // Frequency selection
                 DropdownButtonFormField<SubscriptionFrequency>(
-                  initialValue: _frequency,
                   decoration: InputDecoration(
                     labelText: 'Billing Cycle',
                     prefixIcon: const Icon(Icons.repeat),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                   ),
+                  initialValue: _frequency,
                   items: SubscriptionFrequency.values.map((f) => DropdownMenuItem(
                     value: f,
                     child: Text(f.name[0].toUpperCase() + f.name.substring(1)),

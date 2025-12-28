@@ -144,7 +144,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
               width: 32,
               height: 4,
               decoration: BoxDecoration(
-                color: theme.colorScheme.onSurfaceVariant.withOpacity(0.4),
+                color: theme.colorScheme.onSurfaceVariant.withAlpha(102),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -207,7 +207,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
                       prefixText: '${CurrencyInfo.getSymbol(ref.watch(appStateProvider).currencyCode)} ',
                       border: InputBorder.none,
                       hintStyle: theme.textTheme.displaySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.3),
+                        color: theme.colorScheme.onSurface.withAlpha(77),
                       ),
                     ),
                     validator: (value) {
@@ -233,7 +233,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       filled: true,
-                      fillColor: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                      fillColor: theme.colorScheme.surfaceContainerHighest.withAlpha(77),
                     ),
                     textCapitalization: TextCapitalization.sentences,
                     validator: (value) {
@@ -256,7 +256,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       filled: true,
-                      fillColor: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                      fillColor: theme.colorScheme.surfaceContainerHighest.withAlpha(77),
                     ),
                     items: categories.map((c) => DropdownMenuItem(
                       value: c,
@@ -280,7 +280,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         filled: true,
-                        fillColor: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                        fillColor: theme.colorScheme.surfaceContainerHighest.withAlpha(77),
                       ),
                       child: Text(
                         DateFormat.yMMMd().format(_selectedDate),

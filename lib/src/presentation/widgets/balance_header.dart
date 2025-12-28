@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
 
 class BalanceHeader extends ConsumerWidget {
@@ -16,7 +15,7 @@ class BalanceHeader extends ConsumerWidget {
 
     return Card(
       elevation: 0,
-      color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.5),
+      color: Theme.of(context).colorScheme.primaryContainer.withAlpha(128),
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -28,7 +27,7 @@ class BalanceHeader extends ConsumerWidget {
                 Text(
                   'MONTHLY SPEND',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.7),
+                        color: Theme.of(context).colorScheme.onPrimaryContainer.withAlpha(178),
                         letterSpacing: 1.2,
                       ),
                 ),

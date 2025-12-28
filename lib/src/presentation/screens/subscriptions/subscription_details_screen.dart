@@ -260,7 +260,7 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                                       color: (change.changePercent > 0
                                               ? Colors.orange
                                               : Colors.green)
-                                          .withOpacity(0.1),
+                                          .withAlpha(25),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: Text(

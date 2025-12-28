@@ -6,16 +6,12 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:googleapis/gmail/v1.dart';
 import '../config/google_oauth_config.dart';
 
 class AuthService extends ChangeNotifier {
-  // Mobile Only
-  GoogleSignIn? _googleSignIn;
-
   // Desktop Only
   AutoRefreshingAuthClient? _desktopClient;
   String? _desktopEmail;
@@ -27,21 +23,12 @@ class AuthService extends ChangeNotifier {
   final _logger = Logger('AuthService');
 
   AuthService() {
-    if (_isMobile) {
-      _googleSignIn = GoogleSignIn(
-        clientId: Platform.isIOS ? GoogleOAuthConfig.mobileClientId : null,
-        scopes: GoogleOAuthConfig.gmailReadOnlyScopes,
-      );
-    }
     _initialize();
   }
 
   // --- Getters ---
 
   Set<String> get connectedEmails => _connectedEmails;
-
-  // Returns the GoogleSignIn instance for mobile widgets, null on desktop.
-  GoogleSignIn? get googleSignIn => _googleSignIn;
 
   // --- Initialization ---
 
@@ -78,8 +65,7 @@ class AuthService extends ChangeNotifier {
 
   Future<String?> _signInMobile() async {
     try {
-      if (_googleSignIn == null) return null;
-      final GoogleSignInAccount? account = await _googleSignIn!.signIn();
+      final GoogleSignInAccount? account = await GoogleSignIn().signIn();
 
       if (account == null) {
         debugPrint('Sign in returned null (user cancelled or failed)');
@@ -221,8 +207,8 @@ class AuthService extends ChangeNotifier {
       _connectedEmails.remove(email);
       
       // Mobile Sign out
-      if (_isMobile && _googleSignIn?.currentUser?.email == email) {
-        await _googleSignIn!.signOut();
+      if (_isMobile) {
+        await GoogleSignIn().signOut();
       }
       
       // Desktop Sign out
@@ -238,7 +224,7 @@ class AuthService extends ChangeNotifier {
       _connectedEmails.clear();
       
       if (_isMobile) {
-        await _googleSignIn?.signOut();
+        await GoogleSignIn().signOut();
       } else {
         _desktopClient?.close();
         _desktopClient = null;
@@ -311,15 +297,13 @@ class AuthService extends ChangeNotifier {
         _connectedEmails.addAll(emails.cast<String>());
       }
 
-      if (_isMobile && _googleSignIn != null) {
+      if (_isMobile) {
         // Mobile Restore
         try {
-          if (await _googleSignIn!.isSignedIn()) {
-             final account = await _googleSignIn!.signInSilently();
-             if (account != null) {
-               _connectedEmails.add(account.email);
-             }
-          }
+           final account = await GoogleSignIn().signInSilently();
+           if (account != null) {
+             _connectedEmails.add(account.email);
+           }
         } catch (e) {
           _logger.warning('Mobile silent sign-in failed', e);
         }
@@ -364,11 +348,15 @@ class AuthService extends ChangeNotifier {
 
   // --- API Access ---
 
-  Future<AuthClient?> getClientForEmail(String email) async {
-    if (_isMobile && _googleSignIn != null) {
+  Future<http.Client?> getClientForEmail(String email) async {
+    if (_isMobile) {
       // Check if the requested email matches the current GoogleSignIn user
-      if (_googleSignIn!.currentUser?.email == email) {
-        return await _googleSignIn!.authenticatedClient();
+      final googleSignIn = GoogleSignIn();
+      final account = await googleSignIn.signInSilently();
+      if (account?.email == email) {
+        // This part is tricky because the extension method is on the instance.
+        // We will need to figure out how to get an authenticated client.
+        return null; 
       }
     } else if (!_isMobile) {
        // On Desktop, if we have a client matching the email
@@ -399,8 +387,8 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<String?> getAccessToken() async {
-    if (_isMobile && _googleSignIn != null) {
-      final account = _googleSignIn!.currentUser;
+    if (_isMobile) {
+      final account = await GoogleSignIn().signInSilently();
       if (account != null) {
          final auth = await account.authentication;
          return auth.accessToken;

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:pennypilot/src/data/models/category_model.dart';
-import 'package:pennypilot/src/data/models/transaction_model.dart';
-import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
 
 class CategoriesScroller extends ConsumerWidget {

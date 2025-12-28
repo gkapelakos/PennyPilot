@@ -4,7 +4,6 @@ import 'package:pennypilot/src/presentation/screens/transactions/transactions_sc
 import 'package:pennypilot/src/presentation/screens/subscriptions/subscriptions_screen.dart';
 import 'package:pennypilot/src/presentation/screens/insights/insights_screen.dart';
 import 'package:pennypilot/src/presentation/screens/settings/settings_screen.dart';
-import 'package:pennypilot/src/presentation/screens/converter/converter_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   final bool isDemoMode;
@@ -29,7 +28,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       const SubscriptionsScreen(),
       const InsightsScreen(),
       const SettingsScreen(),
-      CurrencyConverterScreen(),
     ];
   }
 
@@ -75,11 +73,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   selectedIcon: Icon(Icons.settings),
                   label: Text('Settings'),
                 ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.currency_exchange_outlined),
-                  selectedIcon: Icon(Icons.currency_exchange),
-                  label: Text('Converter'),
-                ),
               ],
             ),
           Expanded(
@@ -96,6 +89,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   _selectedIndex = index;
                 });
               },
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              type: BottomNavigationBarType.fixed,
               items: const [
                 BottomNavigationBarItem(
                   icon: Icon(Icons.dashboard_outlined),
@@ -121,11 +116,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   icon: Icon(Icons.settings_outlined),
                   activeIcon: Icon(Icons.settings),
                   label: 'Settings',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.currency_exchange_outlined),
-                  activeIcon: Icon(Icons.currency_exchange),
-                  label: 'Converter',
                 ),
               ],
             ),

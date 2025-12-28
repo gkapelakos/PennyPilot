@@ -190,27 +190,28 @@ class SubscriptionIntelligenceService {
       }
     }
 
-    final subscription = SubscriptionModel()
-      ..serviceName = merchant
-      ..amount = amount
-      ..nextRenewalDate = nextRenewal
-      ..frequency = frequency
-      ..lifecycleState = lifecycleState
-      ..firstSeenDate = transactions.first.date
-      ..lastChargedDate = latestTransaction.date
-      ..priceHistoryJson = jsonEncode(priceHistory)
-      ..cycleHistoryJson = jsonEncode(cycleHistory)
-      ..frequencyConsistency = consistency.round()
-      ..detectionSource = SubscriptionDetectionSource.pattern
-      ..isTrial = isTrial
-      ..chargeCount = transactions.length
-      ..averageDaysBetweenCharges = avgDays
-      ..currency = latestTransaction.currency
-      ..userConfirmed = false
-      ..isZombie = isZombie
-      ..zombieReason = zombieReason
-      ..lastPriceHikePercent = priceHikePercent
-      ..createdAt = DateTime.now();
+    final subscription = SubscriptionModel(
+      serviceName: merchant,
+      amount: amount,
+      nextRenewalDate: nextRenewal,
+      frequency: frequency,
+      lifecycleState: lifecycleState,
+      firstSeenDate: transactions.first.date,
+      createdAt: DateTime.now(),
+      lastChargedDate: latestTransaction.date,
+      priceHistoryJson: jsonEncode(priceHistory),
+      cycleHistoryJson: jsonEncode(cycleHistory),
+      frequencyConsistency: consistency.round(),
+      detectionSource: SubscriptionDetectionSource.pattern,
+      isTrial: isTrial,
+      chargeCount: transactions.length,
+      averageDaysBetweenCharges: avgDays,
+      currency: latestTransaction.currency,
+      userConfirmed: false,
+      isZombie: isZombie,
+      zombieReason: zombieReason,
+      lastPriceHikePercent: priceHikePercent,
+    );
 
     return subscription;
   }

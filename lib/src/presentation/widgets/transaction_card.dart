@@ -135,7 +135,7 @@ class _TransactionCardState extends State<TransactionCard>
                                 ),
                                 decoration: BoxDecoration(
                                   color: theme.colorScheme.secondaryContainer
-                                      .withOpacity(0.5),
+                                      .withAlpha(128),
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Text(

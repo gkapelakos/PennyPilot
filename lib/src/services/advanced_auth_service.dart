@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -104,19 +103,19 @@ class AuthService {
 
   Future<void> initialize() async {
     // Restore accounts from storage
-    if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
-      await _restoreDesktopAccounts();
-    } else {
+    // if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+    //   await _restoreDesktopAccounts();
+    // } else {
       await _restoreMobileSession();
-    }
+    // }
   }
 
   Future<AuthClient?> signIn() async {
-    if (Platform.isAndroid || Platform.isIOS) {
+    // if (Platform.isAndroid || Platform.isIOS) {
       return _signInMobile();
-    } else {
-      return _signInDesktop();
-    }
+    // } else {
+      // return _signInDesktop();
+    // }
   }
   
   Future<AuthClient?> _signInMobile() async {
@@ -159,7 +158,7 @@ class AuthService {
       // parsing id_token if available or calling userinfo
       
       // Placeholder for email extraction (Needs implementation)
-      final email = "user@example.com"; // TODO: Extract real email
+      const email = "user@example.com"; // TODO: Extract real email
       
       final authClient = DesktopAuthClient(client, email);
       _connectedAccounts[email] = authClient;
@@ -178,19 +177,17 @@ class AuthService {
       await client.signOut();
       _connectedAccounts.remove(email);
       
-      if (Platform.isLinux) {
+      // if (Platform.isLinux) {
          await _removeDesktopAccount(email);
-      }
+      // }
     }
   }
 
   // Mobile Restore
   Future<void> _restoreMobileSession() async {
-    if (await _googleSignIn.isSignedIn()) {
-      final account = _googleSignIn.currentUser ?? await _googleSignIn.signInSilently();
-      if (account != null) {
-        _connectedAccounts[account.email] = MobileAuthClient(account, _googleSignIn);
-      }
+    final account = await _googleSignIn.signInSilently();
+    if (account != null) {
+      _connectedAccounts[account.email] = MobileAuthClient(account, _googleSignIn);
     }
   }
 
@@ -203,8 +200,8 @@ class AuthService {
     // Warning: Validation needed for credentials serialization
     // This is a simplified example. securely storing refresh token is key.
     
-    // accounts[client.email] = client.toJson();
-    // await _storage.write(key: 'desktop_accounts', value: json.encode(accounts));
+    accounts[client.email] = client.toJson();
+    await _storage.write(key: 'desktop_accounts', value: json.encode(accounts));
   }
   
   Future<void> _restoreDesktopAccounts() async {
@@ -214,7 +211,4 @@ class AuthService {
   Future<void> _removeDesktopAccount(String email) async {
     // Remove from storage
   }
-  
-  // Public getter for mobile compatibility (returns primary)
-  GoogleSignIn get googleSignIn => _googleSignIn;
 }

@@ -162,6 +162,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             leading: const Icon(Icons.refresh),
             title: const Text('Rescan Emails'),
             onTap: () async {
+              if (!mounted) return;
               try {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Scanning emails...')),

@@ -369,7 +369,7 @@ class _CategoryCard extends ConsumerWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: color.withOpacity(0.2),
+            color: color.withAlpha(51),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Center(

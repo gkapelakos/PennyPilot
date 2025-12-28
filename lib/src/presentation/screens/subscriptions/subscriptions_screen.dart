@@ -225,7 +225,7 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
         Icon(
           icon,
           size: 18,
-          color: theme.colorScheme.onSecondaryContainer.withOpacity(0.8),
+          color: theme.colorScheme.onSecondaryContainer.withAlpha(204),
         ),
         const SizedBox(height: 4),
         Text(
@@ -238,7 +238,7 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
         Text(
           label,
           style: theme.textTheme.labelSmall?.copyWith(
-            color: theme.colorScheme.onSecondaryContainer.withOpacity(0.7),
+            color: theme.colorScheme.onSecondaryContainer.withAlpha(178),
           ),
         ),
       ],

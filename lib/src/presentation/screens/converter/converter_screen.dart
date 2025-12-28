@@ -3,15 +3,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/currency_provider.dart';
 
 class CurrencyConverterScreen extends ConsumerStatefulWidget {
+  const CurrencyConverterScreen({super.key});
+
   @override
-  _CurrencyConverterScreenState createState() => _CurrencyConverterScreenState();
+  ConsumerState<CurrencyConverterScreen> createState() =>
+      _CurrencyConverterScreenState();
 }
 
-class _CurrencyConverterScreenState extends Consumer<CurrencyConverterScreen> {
+class _CurrencyConverterScreenState extends ConsumerState<CurrencyConverterScreen> {
   final _amountController = TextEditingController();
   String _fromCurrency = 'USD';
   String _toCurrency = 'EUR';
   double _convertedAmount = 0.0;
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    super.dispose();
+  }
 
   void _convert(Map<String, dynamic> exchangeRates) {
     final amount = double.tryParse(_amountController.text);
@@ -30,21 +39,21 @@ class _CurrencyConverterScreenState extends Consumer<CurrencyConverterScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Currency Converter'),
+        title: const Text('Currency Converter'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: exchangeRatesState.when(
           data: (exchangeRates) {
             if (exchangeRates.isEmpty) {
-              return Center(child: Text('No exchange rates available.'));
+              return const Center(child: Text('No exchange rates available.'));
             }
             // Ensure default currencies are valid
             if (!exchangeRates.keys.contains(_fromCurrency)) {
               _fromCurrency = exchangeRates.keys.first;
             }
-            if (!exchangeRates.keys.contains(_toCurrency)) {
-              _toCurrency = exchangeRates.keys.skip(1).first;
+            if (!exchangeRates.keys.contains(_toCurrency) || _fromCurrency == _toCurrency) {
+               _toCurrency = exchangeRates.keys.firstWhere((k) => k != _fromCurrency, orElse: () => exchangeRates.keys.first);
             }
 
             return Column(
@@ -52,18 +61,18 @@ class _CurrencyConverterScreenState extends Consumer<CurrencyConverterScreen> {
               children: [
                 TextFormField(
                   controller: _amountController,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  decoration: InputDecoration(
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  decoration: const InputDecoration(
                     labelText: 'Amount',
                     border: OutlineInputBorder(),
                   ),
                   onChanged: (_) => _convert(exchangeRates),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   children: [
                     Expanded(child: _buildCurrencySelector('From', _fromCurrency, (val) => setState(() => _fromCurrency = val!), exchangeRates)),
-                    IconButton(icon: Icon(Icons.swap_horiz), onPressed: () {
+                    IconButton(icon: const Icon(Icons.swap_horiz), onPressed: () {
                       setState(() {
                         final temp = _fromCurrency;
                         _fromCurrency = _toCurrency;
@@ -74,9 +83,9 @@ class _CurrencyConverterScreenState extends Consumer<CurrencyConverterScreen> {
                     Expanded(child: _buildCurrencySelector('To', _toCurrency, (val) => setState(() => _toCurrency = val!), exchangeRates)),
                   ],
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 Container(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(8),
@@ -84,7 +93,7 @@ class _CurrencyConverterScreenState extends Consumer<CurrencyConverterScreen> {
                   child: Column(
                     children: [
                       Text('Converted Amount', style: Theme.of(context).textTheme.labelLarge),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         '${_convertedAmount.toStringAsFixed(2)} $_toCurrency',
                         style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -95,16 +104,19 @@ class _CurrencyConverterScreenState extends Consumer<CurrencyConverterScreen> {
                     ],
                   ),
                 ),
-                 SizedBox(height: 20),
-                 Text(
-                  'Last updated: ${exchangeRatesState.value?['last_updated_utc'] ?? 'N/A'}',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall,
-                )
+                 const SizedBox(height: 20),
+                 exchangeRatesState.maybeWhen(
+                   data: (data) => Text(
+                    'Last updated: ${data['last_updated_utc'] ?? 'N/A'}',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  orElse: () => const SizedBox.shrink(),
+                ),
               ],
             );
           },
-          loading: () => Center(child: CircularProgressIndicator()),
+          loading: () => const Center(child: CircularProgressIndicator()),
           error: (err, stack) => Center(child: Text('Error: $err')),
         ),
       ),
@@ -113,11 +125,11 @@ class _CurrencyConverterScreenState extends Consumer<CurrencyConverterScreen> {
 
   Widget _buildCurrencySelector(String title, String value, ValueChanged<String?> onChanged, Map<String, dynamic> exchangeRates) {
     return DropdownButtonFormField<String>(
-      value: value,
       decoration: InputDecoration(
         labelText: title,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
+      initialValue: value,
       items: exchangeRates.keys.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
       onChanged: (val) {
         if (val != null) {

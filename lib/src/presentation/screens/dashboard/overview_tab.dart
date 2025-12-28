@@ -179,7 +179,7 @@ class OverviewTab extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(vertical: 24),
         child: Column(
           children: [
-            Icon(Icons.receipt_long_outlined, size: 48, color: Theme.of(context).colorScheme.outline.withOpacity(0.5)),
+            Icon(Icons.receipt_long_outlined, size: 48, color: Theme.of(context).colorScheme.outline.withAlpha(128)),
             const SizedBox(height: 16),
             const Text('No transactions yet.', style: TextStyle(fontWeight: FontWeight.w500)),
             const SizedBox(height: 4),

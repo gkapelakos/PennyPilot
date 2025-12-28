@@ -226,7 +226,7 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: isOled ? BorderSide(color: scheme.outlineVariant.withOpacity(0.5), width: 0.5) : BorderSide.none,
+          side: isOled ? BorderSide(color: scheme.outlineVariant.withAlpha(128), width: 0.5) : BorderSide.none,
         ),
         clipBehavior: Clip.antiAlias,
         color: isOled ? const Color(0xFF0A0A0A) : scheme.surfaceContainerLow,

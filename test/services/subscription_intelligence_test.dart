@@ -30,18 +30,18 @@ void main() {
     String? priceHistoryJson,
     required SubscriptionLifecycleState lifecycleState,
   }) {
-    return SubscriptionModel()
-      ..serviceName = serviceName
-      ..amount = amount
-      ..nextRenewalDate = DateTime.now().add(const Duration(days: 30))
-      ..frequency = SubscriptionFrequency.monthly
-      ..lifecycleState = lifecycleState
-      ..firstSeenDate = DateTime.now()
-      ..frequencyConsistency = 100
-      ..detectionSource = SubscriptionDetectionSource.manual
-      ..chargeCount = 1
-      ..createdAt = DateTime.now()
-      ..priceHistoryJson = priceHistoryJson;
+    return SubscriptionModel(
+      serviceName: serviceName,
+      amount: amount,
+      nextRenewalDate: DateTime.now().add(const Duration(days: 30)),
+      frequency: SubscriptionFrequency.monthly,
+      lifecycleState: lifecycleState,
+      firstSeenDate: DateTime.now(),
+      frequencyConsistency: 100,
+      detectionSource: SubscriptionDetectionSource.manual,
+      chargeCount: 1,
+      createdAt: DateTime.now(),
+    )..priceHistoryJson = priceHistoryJson;
   }
 
   group('SubscriptionIntelligenceService Tests', () {

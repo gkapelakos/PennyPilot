@@ -1,7 +1,7 @@
 name: pennypilot
 description: A local-first personal finance tracker.
 publish_to: 'none'
-version: 1.0.0-alpha.1.5
+version: 1.0.0-alpha.1.5.1
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -11,61 +11,50 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-
-  # State Management
-  flutter_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.5
-
-  # Database
-  isar: ^3.1.0+1
-  isar_flutter_libs: ^3.1.0+1
-  path_provider: ^2.1.2
-
-  # UI
-  cupertino_icons: ^1.0.2
-  google_fonts: ^6.1.0
-  fl_chart: ^1.1.1
-  intl: ^0.20.2
-
-  # Background & Services
-  workmanager: ^0.9.0
-  
-  # Auth & API
-  google_sign_in: ^6.2.1
-  googleapis: ^13.1.0
-  extension_google_sign_in_as_googleapis_auth: ^2.0.13
-
-  # Utils
-  uuid: ^4.3.3
-  logging: ^1.2.0
-  json_annotation: ^4.8.1
-  dynamic_color: ^1.6.8
-  flutter_secure_storage: ^10.0.0
-  file_picker: ^10.3.8
-  share_plus: ^12.0.1
-  path: ^1.8.3
-  shared_preferences: ^2.5.4
-  url_launcher: ^6.3.2
-  window_to_front: ^0.0.3
-  googleapis_auth: ^2.0.0
-  http: ^1.2.1
-  cryptography: ^2.5.0
-  google_mlkit_text_recognition: ^0.11.0
-  image_picker: ^1.1.2
-  flutter_colorpicker: ^1.1.0
-  flutter_dotenv: ^5.1.0
+  flutter_riverpod: any
+  riverpod_annotation: any
+  isar: any
+  isar_flutter_libs: any
+  path_provider: any
+  cupertino_icons: any
+  google_fonts: any
+  fl_chart: any
+  intl: any
+  workmanager: any
+  google_sign_in: any
+  googleapis: any
+  extension_google_sign_in_as_googleapis_auth: any
+  uuid: any
+  logging: any
+  json_annotation: any
+  dynamic_color: any
+  flutter_secure_storage: any
+  file_picker: any
+  share_plus: any
+  path: any
+  shared_preferences: any
+  url_launcher: any
+  window_to_front: any
+  googleapis_auth: any
+  http: any
+  cryptography: any
+  google_mlkit_text_recognition: any
+  image_picker: any
+  flutter_colorpicker: any
+  flutter_dotenv: any
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
-  build_runner: ^2.4.9
-  mockito: ^5.4.4
-  mocktail: ^1.0.0
-  riverpod_generator: ^2.4.0
-  isar_generator: ^3.1.0+1
-  json_serializable: ^6.8.0
-  flutter_launcher_icons: ^0.14.4
+  flutter_lints: any
+  build_runner: any
+  mockito: any
+  mocktail: any
+  riverpod_generator: any
+  isar_generator: any
+  json_serializable: any
+  flutter_launcher_icons: any
+  analyzer: ^5.13.0
 
 flutter:
   uses-material-design: true
@@ -80,7 +69,7 @@ flutter_launcher_icons:
   android: "launcher_icon"
   ios: false
   image_path: "assets/pennypilot_logo.png"
-  min_sdk_android: 21 # android min sdk min:16, default 21
+  min_sdk_android: 21
   web:
     generate: true
     image_path: "assets/pennypilot_logo.png"
@@ -89,4 +78,4 @@ flutter_launcher_icons:
   windows:
     generate: true
     image_path: "assets/pennypilot_logo.png"
-    icon_size: 48 # min:48, max:256, default: 48
+    icon_size: 48

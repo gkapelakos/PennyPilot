@@ -177,9 +177,9 @@ class SubscriptionCard extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.errorContainer.withOpacity(0.5),
+                      color: theme.colorScheme.errorContainer.withAlpha(128),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: theme.colorScheme.error.withOpacity(0.3)),
+                      border: Border.all(color: theme.colorScheme.error.withAlpha(77)),
                     ),
                     child: Row(
                       children: [

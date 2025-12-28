@@ -178,7 +178,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                             Container(
                               width: 1,
                               height: 40,
-                              color: theme.colorScheme.outline.withOpacity(0.3),
+                              color: theme.colorScheme.outline.withAlpha(77),
                               margin: const EdgeInsets.symmetric(horizontal: 16),
                             ),
                             _buildSummaryItem(
@@ -186,16 +186,11 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                               'Expenses',
                               flows['expense']!,
                               Icons.arrow_upward,
-                              // color: theme.colorScheme.error, // Keep neutral as requested? "No positive/negative framing"
-                              // "Expenses and income must share one transaction model ... Display both values independently ... No positive/negative framing"
-                              // Actually "Category Flow Breakdown" says no positive/negative framing.
-                              // "Net Flow Views" says "Pure arithmetic only".
-                              // But visuals help. I'll stick to text color or icon.
                             ),
                             Container(
                               width: 1,
                               height: 40,
-                              color: theme.colorScheme.outline.withOpacity(0.3),
+                              color: theme.colorScheme.outline.withAlpha(77),
                               margin: const EdgeInsets.symmetric(horizontal: 16),
                             ),
                             _buildSummaryItem(
@@ -341,7 +336,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
         Text(
           label,
           style: theme.textTheme.labelSmall?.copyWith(
-            color: theme.colorScheme.onPrimaryContainer.withOpacity(0.8),
+            color: theme.colorScheme.onPrimaryContainer.withAlpha(204),
           ),
         ),
       ],
@@ -369,19 +364,6 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
       'expense': expense,
       'net': income - expense,
     };
-  }
-
-  int _getMonthCount(List transactions) {
-    final now = DateTime.now();
-    return transactions.where((t) {
-      return t.date.year == now.year && t.date.month == now.month;
-    }).length;
-  }
-
-  int _getHighConfidenceCount(List transactions) {
-    return transactions.where((t) {
-      return t.extractionConfidence.name == 'high';
-    }).length;
   }
 
   void _showFilterSheet(BuildContext context) {

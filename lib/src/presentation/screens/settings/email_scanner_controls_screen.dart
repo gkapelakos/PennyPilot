@@ -100,7 +100,7 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
                     Container(
                       width: 1,
                       height: 40,
-                      color: theme.colorScheme.outline.withOpacity(0.3),
+                      color: theme.colorScheme.outline.withAlpha(77),
                     ),
                     _buildSummaryItem(
                       context,
@@ -111,7 +111,7 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
                     Container(
                       width: 1,
                       height: 40,
-                      color: theme.colorScheme.outline.withOpacity(0.3),
+                      color: theme.colorScheme.outline.withAlpha(77),
                     ),
                     _buildSummaryItem(
                       context,
@@ -210,7 +210,7 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
         Text(
           label,
           style: theme.textTheme.labelSmall?.copyWith(
-            color: theme.colorScheme.onPrimaryContainer.withOpacity(0.8),
+            color: theme.colorScheme.onPrimaryContainer.withAlpha(204),
           ),
         ),
       ],
@@ -504,38 +504,36 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
       final emailService = ref.read(emailServiceProvider);
       final previewResults = await emailService.previewScan(limit: 5);
       
-      if (context.mounted) {
-        Navigator.pop(context); // Close loading dialog
-        
-        if (previewResults.isEmpty) {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              icon: const Icon(Icons.info_outline, size: 32),
-              title: const Text('No Results'),
-              content: const Text('No new receipt emails found to preview.'),
-              actions: [
-                FilledButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('OK'),
-                ),
-              ],
-            ),
-          );
-        } else {
-          _showPreviewResults(context, previewResults);
-        }
-      }
-    } catch (e) {
-      if (context.mounted) {
-        Navigator.pop(context); // Close loading dialog
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Preview failed: $e'),
-            backgroundColor: Colors.red,
+      if (!mounted) return;
+      Navigator.pop(context); // Close loading dialog
+      
+      if (previewResults.isEmpty) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            icon: const Icon(Icons.info_outline, size: 32),
+            title: const Text('No Results'),
+            content: const Text('No new receipt emails found to preview.'),
+            actions: [
+              FilledButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
           ),
         );
+      } else {
+        _showPreviewResults(context, previewResults);
       }
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.pop(context); // Close loading dialog
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Preview failed: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 

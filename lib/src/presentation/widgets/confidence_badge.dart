@@ -26,10 +26,10 @@ class ConfidenceBadge extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withAlpha(26),
             borderRadius: BorderRadius.circular(6),
             border: Border.all(
-              color: color.withOpacity(0.3),
+              color: color.withAlpha(77),
               width: 1,
             ),
           ),
@@ -45,10 +45,10 @@ class ConfidenceBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withAlpha(26),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: color.withOpacity(0.3),
+          color: color.withAlpha(77),
           width: 1,
         ),
       ),

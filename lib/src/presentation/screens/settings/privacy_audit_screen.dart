@@ -52,7 +52,7 @@ class PrivacyAuditScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 32),
           Card(
-            color: Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3),
+            color: Theme.of(context).colorScheme.primaryContainer.withAlpha(77),
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
