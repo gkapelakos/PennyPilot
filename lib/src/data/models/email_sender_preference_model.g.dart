@@ -182,20 +182,21 @@ EmailSenderPreferenceModel _emailSenderPreferenceModelDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = EmailSenderPreferenceModel();
-  object.averageConfidence = reader.readDoubleOrNull(offsets[0]);
-  object.createdAt = reader.readDateTime(offsets[1]);
-  object.id = id;
-  object.isRecognizedMerchant = reader.readBool(offsets[2]);
-  object.lastScannedDate = reader.readDateTimeOrNull(offsets[3]);
-  object.scanEnabled = reader.readBool(offsets[4]);
-  object.senderDisplayName = reader.readStringOrNull(offsets[5]);
-  object.senderDomain = reader.readString(offsets[6]);
-  object.senderEmail = reader.readString(offsets[7]);
-  object.totalEmailsProcessed = reader.readLong(offsets[8]);
-  object.totalTransactionsExtracted = reader.readLong(offsets[9]);
-  object.updatedAt = reader.readDateTimeOrNull(offsets[10]);
-  object.userNotes = reader.readStringOrNull(offsets[11]);
+  final object = EmailSenderPreferenceModel(
+    averageConfidence: reader.readDoubleOrNull(offsets[0]),
+    createdAt: reader.readDateTime(offsets[1]),
+    id: id,
+    isRecognizedMerchant: reader.readBoolOrNull(offsets[2]) ?? false,
+    lastScannedDate: reader.readDateTimeOrNull(offsets[3]),
+    scanEnabled: reader.readBoolOrNull(offsets[4]) ?? true,
+    senderDisplayName: reader.readStringOrNull(offsets[5]),
+    senderDomain: reader.readString(offsets[6]),
+    senderEmail: reader.readString(offsets[7]),
+    totalEmailsProcessed: reader.readLongOrNull(offsets[8]) ?? 0,
+    totalTransactionsExtracted: reader.readLongOrNull(offsets[9]) ?? 0,
+    updatedAt: reader.readDateTimeOrNull(offsets[10]),
+    userNotes: reader.readStringOrNull(offsets[11]),
+  );
   return object;
 }
 
@@ -211,11 +212,11 @@ P _emailSenderPreferenceModelDeserializeProp<P>(
     case 1:
       return (reader.readDateTime(offset)) as P;
     case 2:
-      return (reader.readBool(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 3:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 4:
-      return (reader.readBool(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? true) as P;
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
@@ -223,9 +224,9 @@ P _emailSenderPreferenceModelDeserializeProp<P>(
     case 7:
       return (reader.readString(offset)) as P;
     case 8:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 9:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 10:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 11:

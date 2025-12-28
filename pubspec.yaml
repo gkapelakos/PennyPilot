@@ -13,8 +13,8 @@ dependencies:
     sdk: flutter
 
   # State Management
-  flutter_riverpod: 
-  riverpod_annotation: 
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
 
   # Database
   isar: ^3.1.0+1
@@ -31,9 +31,9 @@ dependencies:
   workmanager: ^0.9.0
   
   # Auth & API
-  google_sign_in: 
-  googleapis: 
-  extension_google_sign_in_as_googleapis_auth: 
+  google_sign_in: ^6.2.1
+  googleapis: ^13.1.0
+  extension_google_sign_in_as_googleapis_auth: ^2.0.13
 
   # Utils
   uuid: ^4.3.3
@@ -50,20 +50,21 @@ dependencies:
   googleapis_auth: ^2.0.0
   http: ^1.2.1
   cryptography: ^2.5.0
-  google_mlkit_text_recognition: 
+  google_mlkit_text_recognition: ^0.11.0
   image_picker: ^1.1.2
   flutter_colorpicker: ^1.1.0
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  build_runner: 
+  build_runner: ^2.4.9
   mockito: ^5.4.4
   mocktail: ^1.0.0
-  riverpod_generator: 
+  riverpod_generator: ^2.4.0
   isar_generator: ^3.1.0+1
-  json_serializable: 
+  json_serializable: ^6.8.0
   flutter_launcher_icons: ^0.14.4
 
 flutter:

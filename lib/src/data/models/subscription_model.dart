@@ -10,25 +10,25 @@ enum SubscriptionAnomaly {
 
 @collection
 class SubscriptionModel {
-  Id id = Isar.autoIncrement;
+  Id id;
 
   /// Service/merchant name
   @Index()
-  late String serviceName;
+  String serviceName;
 
   /// Current amount
-  late double amount;
+  double amount;
 
   /// Next expected renewal date
-  late DateTime nextRenewalDate;
+  DateTime nextRenewalDate;
 
   /// Billing frequency
   @Enumerated(EnumType.ordinal)
-  late SubscriptionFrequency frequency;
+  SubscriptionFrequency frequency;
 
   /// Lifecycle state
   @Enumerated(EnumType.ordinal)
-  late SubscriptionLifecycleState lifecycleState;
+  SubscriptionLifecycleState lifecycleState;
 
   /// Category ID reference
   int? categoryId;
@@ -38,7 +38,7 @@ class SubscriptionModel {
 
   /// First time this subscription was detected
   @Index()
-  late DateTime firstSeenDate;
+  DateTime firstSeenDate;
 
   /// Last time we saw a charge for this subscription
   DateTime? lastChargedDate;
@@ -51,38 +51,38 @@ class SubscriptionModel {
 
   /// Frequency consistency score (0-100)
   /// 100 = perfectly consistent, 0 = highly irregular
-  late int frequencyConsistency;
+  int frequencyConsistency;
 
   /// How this subscription was detected
   @Enumerated(EnumType.ordinal)
-  late SubscriptionDetectionSource detectionSource;
+  SubscriptionDetectionSource detectionSource;
 
   /// Detected anomalies
-  List<String> anomalies = [];
+  List<String> anomalies;
 
   /// Whether this is currently in a trial period
-  bool isTrial = false;
+  bool isTrial;
 
   /// Trial end date (if applicable)
   DateTime? trialEndDate;
 
   /// Number of charges detected for this subscription
-  late int chargeCount;
+  int chargeCount;
 
   /// Average days between charges
   double? averageDaysBetweenCharges;
 
   /// Currency code
-  String currency = 'USD';
+  String currency;
 
   /// User notes
   String? notes;
 
   /// Whether user has confirmed this is a subscription
-  bool userConfirmed = false;
+  bool userConfirmed;
 
   /// Whether this is flagged as a "Zombie" subscription (unused or price hiked)
-  bool isZombie = false;
+  bool isZombie;
 
   /// Reason for zombie flagging
   String? zombieReason;
@@ -91,9 +91,39 @@ class SubscriptionModel {
   double? lastPriceHikePercent;
 
   @Index()
-  late DateTime createdAt;
+  DateTime createdAt;
 
   DateTime? updatedAt;
+
+  SubscriptionModel({
+    this.id = Isar.autoIncrement,
+    required this.serviceName,
+    required this.amount,
+    required this.nextRenewalDate,
+    this.frequency = SubscriptionFrequency.unknown,
+    this.lifecycleState = SubscriptionLifecycleState.active,
+    this.categoryId,
+    this.category,
+    required this.firstSeenDate,
+    this.lastChargedDate,
+    this.priceHistoryJson,
+    this.cycleHistoryJson,
+    this.frequencyConsistency = 100,
+    this.detectionSource = SubscriptionDetectionSource.manual,
+    this.anomalies = const [],
+    this.isTrial = false,
+    this.trialEndDate,
+    this.chargeCount = 0,
+    this.averageDaysBetweenCharges,
+    this.currency = 'USD',
+    this.notes,
+    this.userConfirmed = false,
+    this.isZombie = false,
+    this.zombieReason,
+    this.lastPriceHikePercent,
+    required this.createdAt,
+    this.updatedAt,
+  });
 }
 
 enum SubscriptionFrequency {

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "987388936424",
+    "project_id": "pennypilot-30ca9",
+    "storage_bucket": "pennypilot-30ca9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:987388936424:android:db59a19484209647b5495d",
+        "android_client_info": {
+          "package_name": "com.example.pennypilot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4K4MiPyZt4jYNtrUuM8-YEZ7064UEuU4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

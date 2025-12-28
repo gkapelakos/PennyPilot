@@ -293,40 +293,41 @@ SubscriptionModel _subscriptionModelDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = SubscriptionModel();
-  object.amount = reader.readDouble(offsets[0]);
-  object.anomalies = reader.readStringList(offsets[1]) ?? [];
-  object.averageDaysBetweenCharges = reader.readDoubleOrNull(offsets[2]);
-  object.category = reader.readStringOrNull(offsets[3]);
-  object.categoryId = reader.readLongOrNull(offsets[4]);
-  object.chargeCount = reader.readLong(offsets[5]);
-  object.createdAt = reader.readDateTime(offsets[6]);
-  object.currency = reader.readString(offsets[7]);
-  object.cycleHistoryJson = reader.readStringOrNull(offsets[8]);
-  object.detectionSource = _SubscriptionModeldetectionSourceValueEnumMap[
-          reader.readByteOrNull(offsets[9])] ??
-      SubscriptionDetectionSource.email;
-  object.firstSeenDate = reader.readDateTime(offsets[10]);
-  object.frequency = _SubscriptionModelfrequencyValueEnumMap[
-          reader.readByteOrNull(offsets[11])] ??
-      SubscriptionFrequency.weekly;
-  object.frequencyConsistency = reader.readLong(offsets[12]);
-  object.id = id;
-  object.isTrial = reader.readBool(offsets[13]);
-  object.isZombie = reader.readBool(offsets[14]);
-  object.lastChargedDate = reader.readDateTimeOrNull(offsets[15]);
-  object.lastPriceHikePercent = reader.readDoubleOrNull(offsets[16]);
-  object.lifecycleState = _SubscriptionModellifecycleStateValueEnumMap[
-          reader.readByteOrNull(offsets[17])] ??
-      SubscriptionLifecycleState.active;
-  object.nextRenewalDate = reader.readDateTime(offsets[18]);
-  object.notes = reader.readStringOrNull(offsets[19]);
-  object.priceHistoryJson = reader.readStringOrNull(offsets[20]);
-  object.serviceName = reader.readString(offsets[21]);
-  object.trialEndDate = reader.readDateTimeOrNull(offsets[22]);
-  object.updatedAt = reader.readDateTimeOrNull(offsets[23]);
-  object.userConfirmed = reader.readBool(offsets[24]);
-  object.zombieReason = reader.readStringOrNull(offsets[25]);
+  final object = SubscriptionModel(
+    amount: reader.readDouble(offsets[0]),
+    anomalies: reader.readStringList(offsets[1]) ?? const [],
+    averageDaysBetweenCharges: reader.readDoubleOrNull(offsets[2]),
+    category: reader.readStringOrNull(offsets[3]),
+    categoryId: reader.readLongOrNull(offsets[4]),
+    chargeCount: reader.readLongOrNull(offsets[5]) ?? 0,
+    createdAt: reader.readDateTime(offsets[6]),
+    currency: reader.readStringOrNull(offsets[7]) ?? 'USD',
+    cycleHistoryJson: reader.readStringOrNull(offsets[8]),
+    detectionSource: _SubscriptionModeldetectionSourceValueEnumMap[
+            reader.readByteOrNull(offsets[9])] ??
+        SubscriptionDetectionSource.manual,
+    firstSeenDate: reader.readDateTime(offsets[10]),
+    frequency: _SubscriptionModelfrequencyValueEnumMap[
+            reader.readByteOrNull(offsets[11])] ??
+        SubscriptionFrequency.unknown,
+    frequencyConsistency: reader.readLongOrNull(offsets[12]) ?? 100,
+    id: id,
+    isTrial: reader.readBoolOrNull(offsets[13]) ?? false,
+    isZombie: reader.readBoolOrNull(offsets[14]) ?? false,
+    lastChargedDate: reader.readDateTimeOrNull(offsets[15]),
+    lastPriceHikePercent: reader.readDoubleOrNull(offsets[16]),
+    lifecycleState: _SubscriptionModellifecycleStateValueEnumMap[
+            reader.readByteOrNull(offsets[17])] ??
+        SubscriptionLifecycleState.active,
+    nextRenewalDate: reader.readDateTime(offsets[18]),
+    notes: reader.readStringOrNull(offsets[19]),
+    priceHistoryJson: reader.readStringOrNull(offsets[20]),
+    serviceName: reader.readString(offsets[21]),
+    trialEndDate: reader.readDateTimeOrNull(offsets[22]),
+    updatedAt: reader.readDateTimeOrNull(offsets[23]),
+    userConfirmed: reader.readBoolOrNull(offsets[24]) ?? false,
+    zombieReason: reader.readStringOrNull(offsets[25]),
+  );
   return object;
 }
 
@@ -340,7 +341,7 @@ P _subscriptionModelDeserializeProp<P>(
     case 0:
       return (reader.readDouble(offset)) as P;
     case 1:
-      return (reader.readStringList(offset) ?? []) as P;
+      return (reader.readStringList(offset) ?? const []) as P;
     case 2:
       return (reader.readDoubleOrNull(offset)) as P;
     case 3:
@@ -348,29 +349,29 @@ P _subscriptionModelDeserializeProp<P>(
     case 4:
       return (reader.readLongOrNull(offset)) as P;
     case 5:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 6:
       return (reader.readDateTime(offset)) as P;
     case 7:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? 'USD') as P;
     case 8:
       return (reader.readStringOrNull(offset)) as P;
     case 9:
       return (_SubscriptionModeldetectionSourceValueEnumMap[
               reader.readByteOrNull(offset)] ??
-          SubscriptionDetectionSource.email) as P;
+          SubscriptionDetectionSource.manual) as P;
     case 10:
       return (reader.readDateTime(offset)) as P;
     case 11:
       return (_SubscriptionModelfrequencyValueEnumMap[
               reader.readByteOrNull(offset)] ??
-          SubscriptionFrequency.weekly) as P;
+          SubscriptionFrequency.unknown) as P;
     case 12:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset) ?? 100) as P;
     case 13:
-      return (reader.readBool(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 14:
-      return (reader.readBool(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 15:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 16:
@@ -392,7 +393,7 @@ P _subscriptionModelDeserializeProp<P>(
     case 23:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 24:
-      return (reader.readBool(offset)) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 25:
       return (reader.readStringOrNull(offset)) as P;
     default:
