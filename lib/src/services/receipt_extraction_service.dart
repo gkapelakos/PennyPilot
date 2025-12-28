@@ -1,15 +1,13 @@
-import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/data/models/receipt_line_item_model.dart';
 import 'package:pennypilot/src/services/merchant_normalization_service.dart';
 
 class ReceiptExtractionService {
-  final Isar _isar;
   final MerchantNormalizationService _merchantService;
   final _logger = Logger('ReceiptExtractionService');
 
-  ReceiptExtractionService(this._isar, this._merchantService);
+  ReceiptExtractionService(this._merchantService);
 
   /// Extract receipt data from email content
   Future<ExtractionResult> extractReceiptData({

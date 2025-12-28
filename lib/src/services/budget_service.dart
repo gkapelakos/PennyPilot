@@ -1,12 +1,10 @@
 import 'package:isar/isar.dart';
-import 'package:logging/logging.dart';
 import 'package:pennypilot/src/data/models/budget_model.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/data/models/subscription_model.dart';
 
 class BudgetService {
   final Isar _isar;
-  final _logger = Logger('BudgetService');
 
   BudgetService(this._isar);
 

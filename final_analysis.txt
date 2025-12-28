@@ -1,0 +1,15 @@
+Analyzing PennyPilot...                                         
+
+   info • 'Share' is deprecated and shouldn't be used. Use SharePlus instead • lib/src/presentation/screens/settings/privacy_security_screen.dart:379:13 • deprecated_member_use
+   info • 'shareXFiles' is deprecated and shouldn't be used. Use SharePlus.instance.share() instead • lib/src/presentation/screens/settings/privacy_security_screen.dart:379:19 • deprecated_member_use
+warning • The declaration '_signInDesktop' isn't referenced • lib/src/services/advanced_auth_service.dart:139:23 • unused_element
+warning • The declaration '_restoreDesktopAccounts' isn't referenced • lib/src/services/advanced_auth_service.dart:207:16 • unused_element
+   info • 'Share' is deprecated and shouldn't be used. Use SharePlus instead • lib/src/services/backup_service.dart:29:15 • deprecated_member_use
+   info • 'shareXFiles' is deprecated and shouldn't be used. Use SharePlus.instance.share() instead • lib/src/services/backup_service.dart:29:21 • deprecated_member_use
+   info • 'Share' is deprecated and shouldn't be used. Use SharePlus instead • lib/src/services/backup_service.dart:37:15 • deprecated_member_use
+   info • 'shareXFiles' is deprecated and shouldn't be used. Use SharePlus.instance.share() instead • lib/src/services/backup_service.dart:37:21 • deprecated_member_use
+warning • Unused import: 'package:logging/logging.dart' • lib/src/services/budget_service.dart:2:8 • unused_import
+   info • Don't invoke 'print' in production code • lib/src/services/currency_api_service.dart:24:7 • avoid_print
+warning • Unused import: 'package:isar/isar.dart' • lib/src/services/receipt_extraction_service.dart:1:8 • unused_import
+
+11 issues found. (ran in 1.7s)

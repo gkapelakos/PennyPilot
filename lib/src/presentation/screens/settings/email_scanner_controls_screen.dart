@@ -504,10 +504,11 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
       final emailService = ref.read(emailServiceProvider);
       final previewResults = await emailService.previewScan(limit: 5);
       
-      if (!mounted) return;
+      if (!context.mounted) return;
       Navigator.pop(context); // Close loading dialog
       
       if (previewResults.isEmpty) {
+        if (!context.mounted) return;
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -526,7 +527,7 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
         _showPreviewResults(context, previewResults);
       }
     } catch (e) {
-      if (!mounted) return;
+      if (!context.mounted) return;
       Navigator.pop(context); // Close loading dialog
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

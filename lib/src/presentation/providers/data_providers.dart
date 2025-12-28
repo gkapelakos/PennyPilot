@@ -24,10 +24,9 @@ final subscriptionIntelligenceServiceProvider = Provider<SubscriptionIntelligenc
 
 // Receipt extraction service provider
 final receiptExtractionServiceProvider = Provider<ReceiptExtractionService>((ref) {
-  final isar = ref.watch(isarProvider);
   final merchantService = ref.watch(merchantNormalizationServiceProvider);
   
-  return ReceiptExtractionService(isar, merchantService);
+  return ReceiptExtractionService(merchantService);
 });
 
 // Transactions stream provider

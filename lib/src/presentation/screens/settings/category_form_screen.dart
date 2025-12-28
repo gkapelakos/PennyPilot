@@ -33,7 +33,7 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       final isar = ref.read(isarProvider);
-      final hexColor = '#${_color.red.toRadixString(16).padLeft(2, '0')}${_color.green.toRadixString(16).padLeft(2, '0')}${_color.blue.toRadixString(16).padLeft(2, '0')}'.toUpperCase();
+      final hexColor = '#${(_color.r * 255).toInt().toRadixString(16).padLeft(2, '0')}${(_color.g * 255).toInt().toRadixString(16).padLeft(2, '0')}${(_color.b * 255).toInt().toRadixString(16).padLeft(2, '0')}'.toUpperCase();
 
 
       await isar.writeTxn(() async {

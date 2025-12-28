@@ -376,7 +376,7 @@ class _PrivacySecurityScreenState extends ConsumerState<PrivacySecurityScreen> {
       }
 
       // Share the file
-      await SharePlus.shareXFiles(
+      await Share.shareXFiles(
         [XFile.fromData(
           utf8.encode(content),
           mimeType: format == 'json' ? 'application/json' : 'text/csv',

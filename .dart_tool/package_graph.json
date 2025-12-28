@@ -412,7 +412,7 @@
     },
     {
       "name": "extension_google_sign_in_as_googleapis_auth",
-      "version": "3.0.0",
+      "version": "2.0.13",
       "dependencies": [
         "flutter",
         "google_sign_in",
@@ -423,7 +423,7 @@
     },
     {
       "name": "googleapis",
-      "version": "15.0.0",
+      "version": "11.4.0",
       "dependencies": [
         "_discoveryapis_commons",
         "http"
@@ -431,7 +431,7 @@
     },
     {
       "name": "google_sign_in",
-      "version": "7.2.0",
+      "version": "6.1.6",
       "dependencies": [
         "flutter",
         "google_sign_in_android",
@@ -594,7 +594,7 @@
     },
     {
       "name": "meta",
-      "version": "1.16.0",
+      "version": "1.17.0",
       "dependencies": []
     },
     {
@@ -777,7 +777,7 @@
     },
     {
       "name": "test_api",
-      "version": "0.7.6",
+      "version": "0.7.7",
       "dependencies": [
         "async",
         "boolean_selector",
@@ -1378,42 +1378,6 @@
       ]
     },
     {
-      "name": "google_sign_in_web",
-      "version": "1.1.0",
-      "dependencies": [
-        "flutter",
-        "flutter_web_plugins",
-        "google_identity_services_web",
-        "google_sign_in_platform_interface",
-        "http",
-        "web"
-      ]
-    },
-    {
-      "name": "google_sign_in_platform_interface",
-      "version": "3.1.0",
-      "dependencies": [
-        "flutter",
-        "plugin_platform_interface"
-      ]
-    },
-    {
-      "name": "google_sign_in_ios",
-      "version": "6.2.4",
-      "dependencies": [
-        "flutter",
-        "google_sign_in_platform_interface"
-      ]
-    },
-    {
-      "name": "google_sign_in_android",
-      "version": "7.2.7",
-      "dependencies": [
-        "flutter",
-        "google_sign_in_platform_interface"
-      ]
-    },
-    {
       "name": "workmanager_apple",
       "version": "0.9.1+2",
       "dependencies": [
@@ -1714,6 +1678,42 @@
       "name": "vm_service",
       "version": "15.0.2",
       "dependencies": []
+    },
+    {
+      "name": "google_sign_in_platform_interface",
+      "version": "2.5.0",
+      "dependencies": [
+        "flutter",
+        "plugin_platform_interface"
+      ]
+    },
+    {
+      "name": "google_sign_in_web",
+      "version": "0.12.4+4",
+      "dependencies": [
+        "flutter",
+        "flutter_web_plugins",
+        "google_identity_services_web",
+        "google_sign_in_platform_interface",
+        "http",
+        "web"
+      ]
+    },
+    {
+      "name": "google_sign_in_ios",
+      "version": "5.9.0",
+      "dependencies": [
+        "flutter",
+        "google_sign_in_platform_interface"
+      ]
+    },
+    {
+      "name": "google_sign_in_android",
+      "version": "6.2.1",
+      "dependencies": [
+        "flutter",
+        "google_sign_in_platform_interface"
+      ]
     }
   ],
   "configVersion": 1
