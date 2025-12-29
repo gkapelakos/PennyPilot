@@ -1,3 +1,88 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+.idx/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Visual Studio Code related
+.vscode/
+*.code-workspace
+.history/
+
+# Flutter/Dart related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Symbolica links to the Flutter SDK
+/bin/cache/
+/bin/flutter/
+/bin/dart/
+
+# Android related
+**/android/**/generated/
+**/android/configurations/
+**/android/local.properties
+**/android/key.properties
+**/android/app/src/main/res/values/strings.xml
+*.jks
+*.keystore
+*.apk
+*.aab
+
+# iOS related
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.[mh]
+**/ios/Runner/config/
+**/ios/Pods/
+**/ios/.generated/
+**/ios/.symlinks/
+**/ios/Podfile.lock
+
+# macOS related
+**/macos/Flutter/ephemeral/
+**/macos/Flutter/Generated.xcconfig
+**/macos/Flutter/flutter_export_environment.sh
+**/macos/Pods/
+**/macos/Podfile.lock
+
+# Linux related
+**/linux/flutter/ephemeral/
+**/linux/flutter/generated_config.cmake
+
+# Windows related
+**/windows/flutter/ephemeral/
+**/windows/flutter/generated_config.cmake
+**/windows/flutter/generated_plugins.cmake
 
 # Secrets
 lib/src/config/secrets.dart
+
+# Isar leftovers
+libisar.so

@@ -36,17 +36,17 @@ subprojects {
         if (project.plugins.hasPlugin("com.android.library") || project.plugins.hasPlugin("com.android.application")) {
             try {
                 val android = project.extensions.getByName("android")
-                // Try setting compileSdkVersion to 34
+                // Try setting compileSdkVersion to 36
                 val setCompileSdkVersion = android.javaClass.getMethod("setCompileSdkVersion", Int::class.javaPrimitiveType)
-                setCompileSdkVersion.invoke(android, 34)
-                println("Forced compileSdkVersion to 34 for ${project.name}")
+                setCompileSdkVersion.invoke(android, 36)
+                println("Forced compileSdkVersion to 36 for ${project.name}")
             } catch (e: Exception) {
                 // Try with String if Int fails
                 try {
                     val android = project.extensions.getByName("android")
                     val setCompileSdkVersion = android.javaClass.getMethod("setCompileSdkVersion", String::class.java)
-                    setCompileSdkVersion.invoke(android, "android-34")
-                    println("Forced compileSdkVersion to android-34 for ${project.name}")
+                    setCompileSdkVersion.invoke(android, "android-36")
+                    println("Forced compileSdkVersion to android-36 for ${project.name}")
                 } catch (e2: Exception) {
                     println("Failed to set compileSdkVersion for ${project.name}: ${e2.message}")
                 }
