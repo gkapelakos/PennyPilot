@@ -31,13 +31,21 @@ jobs:
           EOF
 
       - name: Create google-services.json
+        env:
+          GS_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: |
-          cat <<'EOF' > android/app/google-services.json
-          ${{ secrets.GOOGLE_SERVICES_JSON }}
-          EOF
+          if [ -z "$GS_JSON" ]; then
+            echo "::error::The GOOGLE_SERVICES_JSON secret is empty or not set in GitHub Secrets!"
+            exit 1
+          fi
+          echo "$GS_JSON" > android/app/google-services.json
 
       - name: Validate google-services.json
-        run: jq . android/app/google-services.json
+        run: |
+          if ! jq . android/app/google-services.json; then
+            echo "::error::google-services.json is not a valid JSON file. Please check your GitHub Secret content."
+            exit 1
+          fi
 
       - name: Generate Launcher Icons
         run: flutter pub run flutter_launcher_icons
