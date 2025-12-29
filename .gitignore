@@ -83,6 +83,7 @@
 
 # Secrets
 lib/src/config/secrets.dart
+**/android/app/google-services.json
 
 # Isar leftovers
 libisar.so
