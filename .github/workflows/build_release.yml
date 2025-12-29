@@ -31,9 +31,13 @@ jobs:
           EOF
 
       - name: Create google-services.json
-        env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
+        run: |
+          cat <<'EOF' > android/app/google-services.json
+          ${{ secrets.GOOGLE_SERVICES_JSON }}
+          EOF
+
+      - name: Validate google-services.json
+        run: jq . android/app/google-services.json
 
       - name: Generate Launcher Icons
         run: flutter pub run flutter_launcher_icons
