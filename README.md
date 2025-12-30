@@ -19,13 +19,13 @@ It automatically scans your inbox (Gmail) for receipts and subscriptions, extrac
 
 | Feature | Description |
 | :--- | :--- |
-| **🛡️ Privacy First** | 100% local data processing. No cloud sync, no tracking, no data selling. |
-| **📧 Smart Inbox Scan** | Automatically detects receipts from Amazon, Uber, Spotify, and more. |
-| **🔄 Subscription Tracker** | Intelligent detection of recurring bills with renewal alerts. |
-| **📊 Insights & Analytics** | Beautiful charts and spending breakdowns per category. |
-| **⚡ Local-First Speed** | High-performance transactions using the Isar database. |
-| **🎨 Material You** | Professional Material 3 UI with adaptive themes and dark mode. |
-| **💻 Multi-Platform** | Seamless experience across Android, Linux, and Windows. |
+| **Privacy First** | 100% local data processing. No cloud sync, no tracking, no data selling. |
+| **Smart Inbox Scan** | Automatically detects receipts from Amazon, Uber, Spotify, and more. |
+| **Subscription Tracker** | Intelligent detection of recurring bills with renewal alerts. |
+| **Insights & Analytics** | Beautiful charts and spending breakdowns per category. |
+| **Local-First Speed** | High-performance transactions using the Isar database. |
+| **Material You** | Professional Material 3 UI with adaptive themes and dark mode. |
+| **Multi-Platform** | Seamless experience across Android, Linux, and Windows. |
 
 ---
 
@@ -39,7 +39,7 @@ It automatically scans your inbox (Gmail) for receipts and subscriptions, extrac
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Prerequisites
 - [Flutter SDK](https://docs.flutter.dev/get-started/install) installed and configured.
@@ -73,7 +73,7 @@ PennyPilot is built on the philosophy that **Financial Data is Private Data**.
 
 ---
 
-## 🗺 Roadmap
+## Roadmap
 
 We are constantly evolving. Our current focus includes:
 - [ ] **On-Device LLM**: Using Google's Gemini Nano for even smarter merchant extraction.
@@ -85,7 +85,7 @@ See our [Full Enhancement Plan](docs/pennypilot-enhancement-plan.md) for more.
 
 ---
 
-## 📄 License
+## License
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
