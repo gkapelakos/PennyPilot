@@ -13,12 +13,6 @@
 
 It automatically scans your inbox (Gmail) for receipts and subscriptions, extracting transaction details locally. **Your emails never leave your device.**
 
-### 📸 Visual Preview
-
-<p align="center">
-  <img src="assets/pennypilot_mockup.png" width="400" alt="PennyPilot Dashboard Mockup">
-</p>
-
 ---
 
 ## ✨ Core Features
