@@ -31,6 +31,8 @@
   "manageConnectedAccounts": "Gérer les comptes connectés",
   "noAccountsConnected": "Aucun compte connecté",
   "accountsConnected": "{count, plural, =1{1 compte connecté} other{{count} comptes connectés}}",
+  "language": "Langue",
+  "selectLanguage": "Choisir la langue",
   "general": "Général",
   "primaryCurrency": "Devise principale",
   "manageCategories": "Gérer les catégories",

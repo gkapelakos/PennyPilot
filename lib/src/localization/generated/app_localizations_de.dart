@@ -120,6 +120,12 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
+  String get language => 'Sprache';
+
+  @override
+  String get selectLanguage => 'Sprache auswählen';
+
+  @override
   String get general => 'Allgemein';
 
   @override

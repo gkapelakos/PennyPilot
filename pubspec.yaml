@@ -16,7 +16,6 @@ dependencies:
   isar: any
   isar_flutter_libs: any
   path_provider: any
-  cupertino_icons: any
   google_fonts: any
   intl: any
   workmanager: any

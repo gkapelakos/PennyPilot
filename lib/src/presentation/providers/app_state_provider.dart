@@ -13,8 +13,10 @@ class AppStateNotifier extends StateNotifier<AppState> {
   static AppState _initialState(SharedPreferences prefs) {
     return AppState(
       hasCompletedOnboarding: prefs.getBool('hasCompletedOnboarding') ?? false,
+      hasSelectedLanguage: prefs.getBool('hasSelectedLanguage') ?? false,
       lastAppVersion: prefs.getString('lastAppVersion'),
       currencyCode: prefs.getString('currencyCode') ?? 'USD',
+      languageCode: prefs.getString('languageCode'),
       firstLaunchDate: prefs.getString('firstLaunchDate') != null
           ? DateTime.parse(prefs.getString('firstLaunchDate')!)
           : null,
@@ -25,6 +27,20 @@ class AppStateNotifier extends StateNotifier<AppState> {
   Future<void> setCurrency(String code) async {
     await prefs.setString('currencyCode', code);
     state = state.copyWith(currencyCode: code);
+  }
+
+  /// Update language
+  Future<void> setLanguage(String? code) async {
+    if (code == null) {
+      await prefs.remove('languageCode');
+    } else {
+      await prefs.setString('languageCode', code);
+      await prefs.setBool('hasSelectedLanguage', true);
+    }
+    state = state.copyWith(
+      languageCode: code,
+      hasSelectedLanguage: true,
+    );
   }
 
   /// Mark onboarding as completed
@@ -59,15 +75,19 @@ class AppStateNotifier extends StateNotifier<AppState> {
   /// Factory reset - clears all app state
   Future<void> factoryResetAppState() async {
     await prefs.remove('hasCompletedOnboarding');
+    await prefs.remove('hasSelectedLanguage');
     await prefs.remove('lastAppVersion');
     await prefs.remove('firstLaunchDate');
     await prefs.remove('currencyCode');
+    await prefs.remove('languageCode');
     
     state = const AppState(
       hasCompletedOnboarding: false,
+      hasSelectedLanguage: false,
       lastAppVersion: null,
       firstLaunchDate: null,
       currencyCode: 'USD',
+      languageCode: null,
     );
   }
 }
@@ -75,28 +95,36 @@ class AppStateNotifier extends StateNotifier<AppState> {
 /// Immutable state for app-level settings
 class AppState {
   final bool hasCompletedOnboarding;
+  final bool hasSelectedLanguage;
   final String? lastAppVersion;
   final DateTime? firstLaunchDate;
   final String currencyCode;
+  final String? languageCode;
 
   const AppState({
     required this.hasCompletedOnboarding,
+    this.hasSelectedLanguage = false,
     this.lastAppVersion,
     this.firstLaunchDate,
     this.currencyCode = 'USD',
+    this.languageCode,
   });
 
   AppState copyWith({
     bool? hasCompletedOnboarding,
+    bool? hasSelectedLanguage,
     String? lastAppVersion,
     DateTime? firstLaunchDate,
     String? currencyCode,
+    String? languageCode,
   }) {
     return AppState(
       hasCompletedOnboarding: hasCompletedOnboarding ?? this.hasCompletedOnboarding,
+      hasSelectedLanguage: hasSelectedLanguage ?? this.hasSelectedLanguage,
       lastAppVersion: lastAppVersion ?? this.lastAppVersion,
       firstLaunchDate: firstLaunchDate ?? this.firstLaunchDate,
       currencyCode: currencyCode ?? this.currencyCode,
+      languageCode: languageCode ?? this.languageCode,
     );
   }
 }

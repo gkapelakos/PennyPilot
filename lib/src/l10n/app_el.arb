@@ -31,6 +31,8 @@
   "manageConnectedAccounts": "Διαχείριση συνδεδεμένων λογαριασμών",
   "noAccountsConnected": "Κανένας συνδεδεμένος λογαριασμός",
   "accountsConnected": "{count, plural, =1{1 λογαριασμός συνδεδεμένος} other{{count} λογαριασμοί συνδεδεμένοι}}",
+  "language": "Γλώσσα",
+  "selectLanguage": "Επιλογή Γλώσσας",
   "general": "Γενικά",
   "primaryCurrency": "Κύριο Νόμισμα",
   "manageCategories": "Διαχείριση Κατηγοριών",

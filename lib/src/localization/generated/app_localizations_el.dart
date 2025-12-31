@@ -119,6 +119,12 @@ class AppLocalizationsEl extends AppLocalizations {
   }
 
   @override
+  String get language => 'Γλώσσα';
+
+  @override
+  String get selectLanguage => 'Επιλογή Γλώσσας';
+
+  @override
   String get general => 'Γενικά';
 
   @override

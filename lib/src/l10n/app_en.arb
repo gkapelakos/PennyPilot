@@ -66,6 +66,8 @@
       }
     }
   },
+  "language": "Language",
+  "selectLanguage": "Select Language",
   "general": "General",
   "primaryCurrency": "Primary Currency",
   "manageCategories": "Manage Categories",

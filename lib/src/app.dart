@@ -7,6 +7,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 import 'package:pennypilot/src/presentation/screens/onboarding/onboarding_screen.dart';
+import 'package:pennypilot/src/presentation/screens/onboarding/language_selection_screen.dart';
 import 'package:pennypilot/src/presentation/screens/dashboard/dashboard_screen.dart';
 
 import 'package:pennypilot/src/presentation/widgets/biometric_gate.dart';
@@ -19,6 +20,7 @@ class PennyPilotApp extends ConsumerWidget {
     // Check onboarding status from persistent state
     final appState = ref.watch(appStateProvider);
     final hasCompletedOnboarding = appState.hasCompletedOnboarding;
+    final hasSelectedLanguage = appState.hasSelectedLanguage;
     
     final themeState = ref.watch(themeModeProvider);
 
@@ -30,6 +32,7 @@ class PennyPilotApp extends ConsumerWidget {
           theme: AppTheme.lightTheme(lightDynamic),
           darkTheme: AppTheme.darkTheme(darkDynamic, isOled: themeState.isOledMode),
           themeMode: themeState.mode,
+          locale: appState.languageCode != null ? Locale(appState.languageCode!) : null,
           localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -38,7 +41,11 @@ class PennyPilotApp extends ConsumerWidget {
           ],
           supportedLocales: AppLocalizations.supportedLocales,
           home: BiometricGate(
-            child: hasCompletedOnboarding ? const DashboardScreen() : const OnboardingScreen(),
+            child: !hasSelectedLanguage
+                ? const LanguageSelectionScreen()
+                : hasCompletedOnboarding
+                    ? const DashboardScreen()
+                    : const OnboardingScreen(),
           ),
         );
       },

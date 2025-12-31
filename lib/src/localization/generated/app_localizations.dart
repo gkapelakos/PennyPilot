@@ -288,6 +288,18 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{1 account connected} other{{count} accounts connected}}'**
   String accountsConnected(int count);
 
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @selectLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
+  String get selectLanguage;
+
   /// No description provided for @general.
   ///
   /// In en, this message translates to:

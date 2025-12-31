@@ -75,6 +75,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         onTap: () => _showCurrencyPicker(context, ref),
                       ),
                       ListTile(
+                        leading: const Icon(Icons.language),
+                        title: Text(l10n.language),
+                        subtitle: Text(
+                          _getLanguageName(ref.watch(appStateProvider).languageCode)
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => _showLanguagePicker(context, ref),
+                      ),
+                      ListTile(
                         leading: const Icon(Icons.category),
                         title: Text(l10n.manageCategories),
                         trailing: const Icon(Icons.chevron_right),
@@ -258,5 +267,71 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
       ),
     );
+  }
+
+  void _showLanguagePicker(BuildContext context, WidgetRef ref) {
+    final languages = [
+      {'code': 'en', 'name': 'English', 'native': 'English'},
+      {'code': 'de', 'name': 'German', 'native': 'Deutsch'},
+      {'code': 'fr', 'name': 'French', 'native': 'Français'},
+      {'code': 'el', 'name': 'Greek', 'native': 'Ελληνικά'},
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              child: Text(
+                AppLocalizations.of(context)!.selectLanguage,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
+            ...languages.map((lang) {
+              final isSelected = ref.watch(appStateProvider).languageCode == lang['code'];
+              return ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: isSelected
+                      ? Theme.of(context).colorScheme.primaryContainer
+                      : Theme.of(context).colorScheme.surfaceContainerHigh,
+                  child: Text(
+                    lang['native']![0].toUpperCase(),
+                    style: TextStyle(
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.onPrimaryContainer
+                          : Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                ),
+                title: Text(lang['native']!),
+                subtitle: Text(lang['name']!),
+                trailing: isSelected ? const Icon(Icons.check, color: Colors.green) : null,
+                onTap: () {
+                  ref.read(appStateProvider.notifier).setLanguage(lang['code']);
+                  Navigator.pop(context);
+                },
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getLanguageName(String? code) {
+    switch (code) {
+      case 'de':
+        return 'Deutsch';
+      case 'fr':
+        return 'Français';
+      case 'el':
+        return 'Ελληνικά';
+      default:
+        return 'English';
+    }
   }
 }
