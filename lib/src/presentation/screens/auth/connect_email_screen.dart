@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/auth_provider.dart';
 import 'package:pennypilot/src/presentation/screens/dashboard/dashboard_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 
 class ConnectEmailScreen extends ConsumerWidget {
   const ConnectEmailScreen({super.key});

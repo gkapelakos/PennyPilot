@@ -6,7 +6,7 @@ import 'package:pennypilot/src/presentation/screens/transactions/transactions_sc
 import 'package:pennypilot/src/presentation/screens/subscriptions/subscriptions_screen.dart';
 import 'package:pennypilot/src/presentation/screens/insights/insights_screen.dart';
 import 'package:pennypilot/src/presentation/screens/settings/settings_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   final bool isDemoMode;

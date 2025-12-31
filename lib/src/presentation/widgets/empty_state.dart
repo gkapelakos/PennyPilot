@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 
 /// Empty state widget with icon and message
 class EmptyState extends StatelessWidget {

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 import 'package:pennypilot/src/presentation/screens/auth/connect_email_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});

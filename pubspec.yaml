@@ -23,7 +23,6 @@ dependencies:
   google_sign_in: ^6.2.4
   googleapis: ^11.4.0
   mediapipe_genai: ^0.0.1
-  uuid: any
   logging: any
   json_annotation: any
   dynamic_color: any
@@ -33,14 +32,12 @@ dependencies:
   path: any
   shared_preferences: any
   url_launcher: any
-  window_to_front: any
   googleapis_auth: any
   http: any
   cryptography: any
   google_mlkit_text_recognition: any
   image_picker: any
   flutter_colorpicker: any
-  flutter_dotenv: any
   lottie: any
   fl_chart: any
   local_auth: any
@@ -62,8 +59,8 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
-  assets:
-    - assets/pennypilot_logo.png
+  # assets:
+  #   - assets/pennypilot_logo.png
 
 google_ml_kit:
   text_recognition:

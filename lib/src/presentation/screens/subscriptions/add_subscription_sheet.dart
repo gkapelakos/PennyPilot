@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:pennypilot/src/data/models/subscription_model.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 
 class AddSubscriptionSheet extends ConsumerStatefulWidget {
   const AddSubscriptionSheet({super.key});

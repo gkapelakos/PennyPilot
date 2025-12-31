@@ -12,7 +12,7 @@ import 'package:pennypilot/src/presentation/widgets/category_pie_chart.dart';
 import 'package:pennypilot/src/presentation/widgets/status_dialogs.dart';
 import 'package:intl/intl.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 
 class OverviewTab extends ConsumerWidget {
   final bool isDemoMode;

@@ -11,7 +11,7 @@ import 'package:pennypilot/src/presentation/screens/settings/privacy_audit_scree
 import 'package:pennypilot/src/presentation/screens/settings/manage_accounts_screen.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});

@@ -11,7 +11,7 @@ import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:intl/intl.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 import 'package:pennypilot/src/presentation/screens/transactions/receipt_scan_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 
 class TransactionsScreen extends ConsumerStatefulWidget {
   const TransactionsScreen({super.key});
