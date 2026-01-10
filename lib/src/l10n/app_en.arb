@@ -194,6 +194,8 @@
   "serviceName": "Service Name",
   "serviceNameHint": "e.g. Netflix, Spotify",
   "required": "Required",
+  "today": "Today",
+  "yesterday": "Yesterday",
   "invalid": "Invalid",
   "billingCycle": "Billing Cycle",
   "nextRenewalDate": "Next Renewal Date",

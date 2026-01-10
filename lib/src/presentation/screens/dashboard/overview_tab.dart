@@ -13,6 +13,8 @@ import 'package:pennypilot/src/presentation/widgets/status_dialogs.dart';
 import 'package:intl/intl.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
+import 'package:pennypilot/src/presentation/widgets/transaction_card.dart';
+import 'package:pennypilot/src/presentation/widgets/amount_display.dart';
 
 class OverviewTab extends ConsumerWidget {
   final bool isDemoMode;
@@ -92,7 +94,7 @@ class OverviewTab extends ConsumerWidget {
                     if (transactions.isEmpty) return _buildEmptyTransactions(context);
                     final displayTransactions = transactions.take(3).toList();
                     return Column(
-                      children: displayTransactions.map((t) => TransactionCard(
+                      children: displayTransactions.map<Widget>((t) => TransactionCard(
                         transaction: t,
                         expandable: false,
                         showConfidence: false,

@@ -166,7 +166,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ListTile(
                 leading: const Icon(Icons.receipt_long),
                 title: Text(l10n.addEntry),
-                onPressed: () {
+                onTap: () {
                   Navigator.pop(context);
                   showModalBottomSheet(
                     context: context,
@@ -179,7 +179,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ListTile(
                 leading: const Icon(Icons.subscriptions),
                 title: Text(l10n.addSubscription),
-                onPressed: () {
+                onTap: () {
                   Navigator.pop(context);
                   showModalBottomSheet(
                     context: context,
@@ -192,7 +192,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ListTile(
                 leading: const Icon(Icons.document_scanner),
                 title: Text(l10n.scanReceipt),
-                onPressed: () {
+                onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
@@ -203,7 +203,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ListTile(
                 leading: const Icon(Icons.sync),
                 title: Text(l10n.scanEmails),
-                onPressed: () async {
+                onTap: () async {
                   Navigator.pop(context);
                   _performEmailScan(context);
                 },
