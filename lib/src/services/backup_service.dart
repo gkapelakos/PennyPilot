@@ -8,6 +8,7 @@ import 'package:logging/logging.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:csv/csv.dart';
+import 'package:pennypilot/src/data/models/transaction_model.dart';
 
 class BackupService {
   final DatabaseService _databaseService;

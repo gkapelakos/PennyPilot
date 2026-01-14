@@ -3,6 +3,7 @@ import 'package:csv/csv.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:pennypilot/src/data/models/transaction_model.dart';
 
 class DataExportService {
   final Isar _isar;

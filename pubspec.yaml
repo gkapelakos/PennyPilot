@@ -38,7 +38,7 @@ dependencies:
   image_picker: any
   flutter_colorpicker: any
   lottie: ^2.7.0
-  fl_chart: ^0.62.0
+  fl_chart: ^1.1.1
   local_auth: any
   csv: ^5.0.3
 

@@ -1,5 +1,6 @@
 import 'package:isar/isar.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
+import 'package:pennypilot/src/data/models/category_model.dart';
 
 class InsightsService {
   final Isar _isar;

@@ -1,6 +1,7 @@
 import 'package:isar/isar.dart';
 import 'package:pennypilot/src/data/models/budget_model.dart';
 import 'package:pennypilot/src/data/models/subscription_model.dart';
+import 'package:pennypilot/src/data/models/transaction_model.dart';
 
 class BudgetService {
   final Isar _isar;

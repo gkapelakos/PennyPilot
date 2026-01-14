@@ -179,6 +179,7 @@ class _Indicator extends StatelessWidget {
     required this.color,
     required this.text,
     required this.isSquare,
+    this.size = 16.0,
   });
 
   @override
