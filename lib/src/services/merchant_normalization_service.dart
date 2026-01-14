@@ -167,6 +167,36 @@ class MerchantNormalizationService {
     _logger.info('Added user rule: "$rawName" -> "$normalizedName"');
   }
 
+  /// Learn from a manual user edit
+  Future<void> learnFromUserEdit(String rawName, String userNormalizedName) async {
+    if (rawName == userNormalizedName) return;
+    
+    // Check if we already have a user rule for this
+    final existing = await _isar.merchantNormalizationRuleModels
+        .filter()
+        .rawNameEqualTo(rawName)
+        .isUserDefinedEqualTo(true)
+        .findFirst();
+        
+    if (existing != null) {
+      if (existing.normalizedName != userNormalizedName) {
+        await _isar.writeTxn(() async {
+          existing.normalizedName = userNormalizedName;
+          existing.lastUsedAt = DateTime.now();
+          await _isar.merchantNormalizationRuleModels.put(existing);
+        });
+      }
+      return;
+    }
+
+    // Create new rule
+    await addUserRule(
+      rawName: rawName,
+      normalizedName: userNormalizedName,
+      matchType: MatchType.exact,
+    );
+  }
+
   /// Get all user-defined rules
   Future<List<MerchantNormalizationRuleModel>> getUserRules() async {
     return await _isar.merchantNormalizationRuleModels

@@ -9,6 +9,9 @@ import 'package:pennypilot/src/services/receipt_extraction_service.dart';
 import 'package:pennypilot/src/services/llm_extraction_service.dart';
 import 'package:pennypilot/src/services/categorization_service.dart';
 import 'package:pennypilot/src/services/startup_service.dart';
+import 'package:pennypilot/src/services/insights_service.dart';
+import 'package:pennypilot/src/services/data_export_service.dart';
+import 'package:pennypilot/src/services/budget_service.dart';
 
 import 'package:pennypilot/src/presentation/providers/database_provider.dart';
 export 'package:pennypilot/src/presentation/providers/database_provider.dart';
@@ -53,6 +56,24 @@ final receiptExtractionServiceProvider = Provider<ReceiptExtractionService>((ref
   final llmService = ref.watch(llmExtractionServiceProvider);
   
   return ReceiptExtractionService(merchantService, llmService);
+});
+
+// Insights service provider
+final insightsServiceProvider = Provider<InsightsService>((ref) {
+  final isar = ref.watch(isarProvider);
+  return InsightsService(isar);
+});
+
+// Data export service provider
+final dataExportServiceProvider = Provider<DataExportService>((ref) {
+  final isar = ref.watch(isarProvider);
+  return DataExportService(isar);
+});
+
+// Budget service provider
+final budgetServiceProvider = Provider<BudgetService>((ref) {
+  final isar = ref.watch(isarProvider);
+  return BudgetService(isar);
 });
 
 // Transactions stream provider

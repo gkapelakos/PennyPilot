@@ -17,7 +17,12 @@ class BudgetService {
   }
 
   /// Set or update budget
-  Future<void> setBudget({int? categoryId, required double limitAmount}) async {
+  Future<void> setBudget({
+    int? categoryId,
+    required double limitAmount,
+    BudgetPeriod period = BudgetPeriod.monthly,
+    bool rollover = false,
+  }) async {
     await _isar.writeTxn(() async {
       final existing = await _isar.budgetModels
           .filter()
@@ -29,10 +34,65 @@ class BudgetService {
         ..createdAt = DateTime.now();
 
       budget.limitAmount = limitAmount;
+      budget.period = period;
+      budget.rollover = rollover;
       budget.updatedAt = DateTime.now();
 
       await _isar.budgetModels.put(budget);
     });
+  }
+
+  /// Process rollovers for a new period
+  Future<void> processRollovers() async {
+    final now = DateTime.now();
+    // Logic to detect if we've entered a new period and apply carry-overs
+    // For now, let's implement a trigger-based rollover for simplicity
+    await _isar.writeTxn(() async {
+      final budgets = await _isar.budgetModels.filter().rolloverEqualTo(true).findAll();
+      for (var budget in budgets) {
+        // Find spending in the previous period
+        final startOfPrevPeriod = _getStartOfPreviousPeriod(budget.period, now);
+        final endOfPrevPeriod = _getStartOfCurrentPeriod(budget.period, now).subtract(const Duration(seconds: 1));
+        
+        final transactions = await _isar.transactionModels
+            .filter()
+            .dateBetween(startOfPrevPeriod, endOfPrevPeriod)
+            .categoryIdEqualTo(budget.categoryId)
+            .findAll();
+            
+        final spent = transactions.fold<double>(0, (sum, t) => sum + t.amount);
+        final remaining = budget.limitAmount + budget.carryOverAmount - spent;
+        
+        if (remaining > 0) {
+          budget.carryOverAmount = remaining;
+          budget.updatedAt = now;
+          await _isar.budgetModels.put(budget);
+        }
+      }
+    });
+  }
+
+  DateTime _getStartOfCurrentPeriod(BudgetPeriod period, DateTime now) {
+    switch (period) {
+      case BudgetPeriod.weekly:
+        return now.subtract(Duration(days: now.weekday - 1));
+      case BudgetPeriod.monthly:
+        return DateTime(now.year, now.month, 1);
+      default:
+        return DateTime(now.year, now.month, 1);
+    }
+  }
+
+  DateTime _getStartOfPreviousPeriod(BudgetPeriod period, DateTime now) {
+    final currentStart = _getStartOfCurrentPeriod(period, now);
+    switch (period) {
+      case BudgetPeriod.weekly:
+        return currentStart.subtract(const Duration(days: 7));
+      case BudgetPeriod.monthly:
+        return DateTime(currentStart.year, currentStart.month - 1, 1);
+      default:
+        return DateTime(currentStart.year, currentStart.month - 1, 1);
+    }
   }
 
   /// Calculate "Safe-to-Spend" amount for the remainder of the month
@@ -69,14 +129,15 @@ class BudgetService {
 
     final upcomingSubTotal = subscriptions.fold<double>(0, (sum, s) => sum + s.amount);
 
-    final remainingMonthly = (totalBudget.limitAmount - spentSoFar - upcomingSubTotal).clamp(0.0, double.infinity);
+    final totalLimit = totalBudget.limitAmount + totalBudget.carryOverAmount;
+    final remainingMonthly = (totalLimit - spentSoFar - upcomingSubTotal).clamp(0.0, double.infinity);
     final dailySafeAmount = remainingMonthly / remainingDays;
 
     return SafeToSpendResult(
       isBudgetSet: true,
       dailySafeAmount: dailySafeAmount,
       remainingMonthly: remainingMonthly,
-      totalLimit: totalBudget.limitAmount,
+      totalLimit: totalLimit,
       spentSoFar: spentSoFar,
       upcomingSubs: upcomingSubTotal,
     );

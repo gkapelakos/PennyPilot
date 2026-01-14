@@ -7,7 +7,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 import 'package:pennypilot/src/presentation/screens/onboarding/onboarding_screen.dart';
-import 'package:pennypilot/src/presentation/screens/onboarding/language_selection_screen.dart';
+import 'package:pennypilot/src/presentation/screens/onboarding/startup_screen.dart';
 import 'package:pennypilot/src/presentation/screens/dashboard/dashboard_screen.dart';
 
 import 'package:pennypilot/src/presentation/widgets/biometric_gate.dart';
@@ -42,7 +42,7 @@ class PennyPilotApp extends ConsumerWidget {
           supportedLocales: AppLocalizations.supportedLocales,
           home: BiometricGate(
             child: !hasSelectedLanguage
-                ? const LanguageSelectionScreen()
+                ? const StartupScreen()
                 : hasCompletedOnboarding
                     ? const DashboardScreen()
                     : const OnboardingScreen(),

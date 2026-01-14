@@ -17,6 +17,14 @@ class PrivacyService {
     await _prefs.setBool('isLocalOnlyMode', enabled);
   }
 
+  // --- Search & Privacy ---
+
+  bool get isSensitiveDataMasked => _prefs.getBool('isSensitiveDataMasked') ?? false;
+
+  Future<void> setSensitiveDataMasked(bool enabled) async {
+    await _prefs.setBool('isSensitiveDataMasked', enabled);
+  }
+
   // --- Biometric Lock ---
 
   bool get isBiometricEnabled => _prefs.getBool('isBiometricEnabled') ?? false;

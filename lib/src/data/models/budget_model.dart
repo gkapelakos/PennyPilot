@@ -16,13 +16,28 @@ class BudgetModel {
   /// Currency code
   String currency = 'USD';
 
-  /// Whether this budget is active
-  bool isActive = true;
+  /// Period for the budget
+  @Enumerated(EnumType.ordinal)
+  BudgetPeriod period = BudgetPeriod.monthly;
+
+  /// Whether to roll over remaining budget to the next period
+  bool rollover = false;
+
+  /// Carried over amount from previous period
+  double carryOverAmount = 0;
 
   @Index()
   late DateTime createdAt;
 
   DateTime? updatedAt;
+}
+
+enum BudgetPeriod {
+  weekly,
+  biweekly,
+  monthly,
+  quarterly,
+  yearly,
 }
 
 @collection

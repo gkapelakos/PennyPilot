@@ -16,14 +16,16 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-
   Future<void> _completeOnboarding() async {
     await ref.read(appStateProvider.notifier).completeOnboarding();
     
     if (mounted) {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => const ConnectEmailScreen(),
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => const ConnectEmailScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
         ),
       );
     }
@@ -32,39 +34,43 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    
     final List<Map<String, dynamic>> pages = [
       {
         'title': l10n.onboardingTitle1,
         'description': l10n.onboardingDesc1,
         'lottie': 'https://lottie.host/8e202511-2b62-4f38-bc0c-8433ecbc6f5b/vU6pYvIq4Z.json',
+        'color': theme.colorScheme.primaryContainer,
       },
       {
         'title': l10n.onboardingTitle2,
         'description': l10n.onboardingDesc2,
         'lottie': 'https://lottie.host/7a85e683-93d4-470a-9d6e-df457d383822/TfTfTfTfTf.json',
+        'color': theme.colorScheme.secondaryContainer,
       },
       {
         'title': l10n.onboardingTitle3,
         'description': l10n.onboardingDesc3,
         'lottie': 'https://lottie.host/8040b2e8-569b-4379-9134-e3ac5e6f3649/v6k6q6p6Vv.json',
+        'color': theme.colorScheme.tertiaryContainer,
       },
     ];
 
     return Scaffold(
       body: Stack(
         children: [
-          // Background Gradient
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Theme.of(context).colorScheme.primary.withAlpha(20),
-                    Theme.of(context).colorScheme.surface,
-                  ],
-                ),
+          // Background Glow
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 500),
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: const Alignment(0.7, -0.6),
+                radius: 1.2,
+                colors: [
+                  pages[_currentPage]['color']!.withAlpha(40),
+                  theme.colorScheme.surface,
+                ],
               ),
             ),
           ),
@@ -72,13 +78,39 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           SafeArea(
             child: Column(
               children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: TextButton(
-                    onPressed: _completeOnboarding,
-                    child: Text(l10n.skip),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Back button if not first page
+                      if (_currentPage > 0)
+                        IconButton(
+                          onPressed: () {
+                            _pageController.previousPage(
+                              duration: const Duration(milliseconds: 400),
+                              curve: Curves.easeInOut,
+                            );
+                          },
+                          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                        )
+                      else
+                        const SizedBox(width: 48),
+                        
+                      TextButton(
+                        onPressed: _completeOnboarding,
+                        child: Text(
+                          l10n.skip,
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+                
                 Expanded(
                   child: PageView.builder(
                     controller: _pageController,
@@ -90,34 +122,45 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     itemCount: pages.length,
                     itemBuilder: (context, index) {
                       return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(
-                              height: 300,
-                              child: Lottie.network(
-                                pages[index]['lottie']!,
-                                fit: BoxFit.contain,
+                            ScaleTransition(
+                              scale: AlwaysStoppedAnimation(_currentPage == index ? 1.0 : 0.8),
+                              child: Container(
+                                height: 320,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(40),
+                                  // Subtle glass effect for the image container
+                                  color: theme.colorScheme.surfaceContainerHigh.withAlpha(50),
+                                ),
+                                padding: const EdgeInsets.all(24),
+                                child: Lottie.network(
+                                  pages[index]['lottie']!,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) => 
+                                    const Icon(Icons.blur_on_rounded, size: 100),
+                                ),
                               ),
                             ),
                             const SizedBox(height: 48),
                             Text(
                               pages[index]['title']!,
                               textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                  ),
+                              style: theme.textTheme.headlineLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.onSurface,
+                              ),
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 16),
                             Text(
                               pages[index]['description']!,
                               textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                    height: 1.5,
-                                  ),
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                                height: 1.6,
+                              ),
                             ),
                           ],
                         ),
@@ -127,10 +170,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 ),
                 
                 Padding(
-                  padding: const EdgeInsets.all(40.0),
+                  padding: const EdgeInsets.all(32.0),
                   child: Column(
                     children: [
-                      // Page Indicators
+                      // Page Indicators (Modern Pill Style)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(
@@ -138,18 +181,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           (index) => AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             margin: const EdgeInsets.only(right: 8),
-                            height: 8,
-                            width: _currentPage == index ? 24 : 8,
+                            height: 6,
+                            width: _currentPage == index ? 24 : 6,
                             decoration: BoxDecoration(
                               color: _currentPage == index
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context).colorScheme.primary.withAlpha(50),
-                              borderRadius: BorderRadius.circular(4),
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.outlineVariant,
+                              borderRadius: BorderRadius.circular(3),
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 48),
+                      const SizedBox(height: 40),
                       
                       // Action Button
                       SizedBox(
@@ -159,23 +202,37 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           onPressed: () {
                             if (_currentPage < pages.length - 1) {
                               _pageController.nextPage(
-                                duration: const Duration(milliseconds: 600),
-                                curve: Curves.easeOutCubic,
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeOutQuart,
                               );
                             } else {
                               _completeOnboarding();
                             }
                           },
                           style: FilledButton.styleFrom(
+                            backgroundColor: theme.colorScheme.primary,
+                            foregroundColor: theme.colorScheme.onPrimary,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(20),
                             ),
+                            elevation: 0,
                           ),
-                          child: Text(
-                            _currentPage == pages.length - 1 ? l10n.getStarted : l10n.continueText,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            child: Row(
+                              key: ValueKey(_currentPage),
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  _currentPage == pages.length - 1 ? l10n.getStarted : l10n.continueText,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.chevron_right_rounded),
+                              ],
                             ),
                           ),
                         ),
