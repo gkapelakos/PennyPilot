@@ -7,9 +7,7 @@ import 'package:pennypilot/src/services/auth_service.dart';
 import 'package:logging/logging.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:isar/isar.dart';
 import 'package:csv/csv.dart';
-import 'package:pennypilot/src/data/models/transaction_model.dart';
 
 class BackupService {
   final DatabaseService _databaseService;
@@ -21,13 +19,13 @@ class BackupService {
     try {
       final dbPath = await _databaseService.getDatabasePath();
       final dbFile = File(dbPath);
-      
+
       if (!await dbFile.exists()) {
         throw Exception('Database file not found');
       }
 
       final dbBytes = await dbFile.readAsBytes();
-      
+
       if (passphrase == null || passphrase.isEmpty) {
         // Plain export
         // ignore: deprecated_member_use
@@ -38,9 +36,10 @@ class BackupService {
         final tempDir = await getTemporaryDirectory();
         final encryptedFile = File('${tempDir.path}/pennypilot_backup.enc');
         await encryptedFile.writeAsBytes(encryptedData);
-        
+
         // ignore: deprecated_member_use
-        await Share.shareXFiles([XFile(encryptedFile.path)], text: 'PennyPilot Encrypted Backup');
+        await Share.shareXFiles([XFile(encryptedFile.path)],
+            text: 'PennyPilot Encrypted Backup');
         _logger.info('Encrypted backup exported');
       }
     } catch (e) {
@@ -53,9 +52,17 @@ class BackupService {
     try {
       final isar = await _databaseService.db;
       final transactions = await isar.transactionModels.where().findAll();
-      
+
       final List<List<dynamic>> rows = [
-        ['Date', 'Merchant', 'Amount', 'Currency', 'Category ID', 'Confidence', 'Items']
+        [
+          'Date',
+          'Merchant',
+          'Amount',
+          'Currency',
+          'Category ID',
+          'Confidence',
+          'Items'
+        ]
       ];
 
       for (final t in transactions) {
@@ -76,7 +83,8 @@ class BackupService {
       await csvFile.writeAsString(csvData);
 
       // ignore: deprecated_member_use
-      await Share.shareXFiles([XFile(csvFile.path)], text: 'PennyPilot Transactions CSV');
+      await Share.shareXFiles([XFile(csvFile.path)],
+          text: 'PennyPilot Transactions CSV');
     } catch (e) {
       _logger.severe('CSV Export failed', e);
       rethrow;
@@ -87,14 +95,14 @@ class BackupService {
   Future<void> nuclearWipe(AuthService authService) async {
     try {
       _logger.warning('EXECUTING NUCLEAR WIPE');
-      
+
       // 1. Revoke OAuth Tokens and clear secure storage
       await authService.signOut();
-      
+
       // 2. Clear Isar Database
       final isar = await _databaseService.db;
       await isar.writeTxn(() => isar.clear());
-      
+
       _logger.info('Nuclear wipe complete');
     } catch (e) {
       _logger.severe('Nuclear wipe failed', e);
@@ -109,30 +117,31 @@ class BackupService {
         final backupPath = result.files.single.path!;
         final backupFile = File(backupPath);
         final backupBytes = await backupFile.readAsBytes();
-        
+
         Uint8List dataToImport;
 
         if (passphrase != null && passphrase.isNotEmpty) {
           try {
             dataToImport = await _decryptData(backupBytes, passphrase);
           } catch (e) {
-            throw Exception('Decryption failed. Invalid passphrase or corrupted file.');
+            throw Exception(
+                'Decryption failed. Invalid passphrase or corrupted file.');
           }
         } else {
           dataToImport = backupBytes;
         }
 
         final dbPath = await _databaseService.getDatabasePath();
-        
+
         // Close DB before overwriting
         final isar = await _databaseService.db;
         if (isar.isOpen) {
           await isar.close();
         }
-        
+
         // Overwrite file
         await File(dbPath).writeAsBytes(dataToImport);
-        
+
         _logger.info('Backup imported successfully');
       }
     } catch (e) {
@@ -145,7 +154,7 @@ class BackupService {
     final algorithm = AesGcm.with256bits();
     final secretKey = await _deriveKey(passphrase);
     final nonce = algorithm.newNonce();
-    
+
     final secretBox = await algorithm.encrypt(
       data,
       secretKey: secretKey,
@@ -154,17 +163,19 @@ class BackupService {
 
     // Format: [version(1) | salt(16) | nonce(12) | ciphertext]
     // For simplicity here, we'll just prepend nonce and fixed salt
-    final salt = Uint8List(16); // In a real app, generate and store a unique salt
+    final salt =
+        Uint8List(16); // In a real app, generate and store a unique salt
     final combined = BytesBuilder()
       ..addByte(1) // version
       ..add(salt)
       ..add(nonce)
       ..add(secretBox.concatenation());
-    
+
     return combined.toBytes();
   }
 
-  Future<Uint8List> _decryptData(Uint8List encryptedData, String passphrase) async {
+  Future<Uint8List> _decryptData(
+      Uint8List encryptedData, String passphrase) async {
     if (encryptedData.length < 1 + 16 + 12) {
       throw Exception('Invalid encrypted data');
     }
@@ -178,7 +189,7 @@ class BackupService {
 
     final algorithm = AesGcm.with256bits();
     final secretKey = await _deriveKey(passphrase);
-    
+
     final mac = ciphertext.sublist(ciphertext.length - 16);
     final actualCiphertext = ciphertext.sublist(0, ciphertext.length - 16);
 
@@ -202,10 +213,10 @@ class BackupService {
       iterations: 10000,
       bits: 256,
     );
-    
+
     // Fixed salt for simplicity in this turn, should be randomized per backup in production
     final salt = Uint8List.fromList('PennyPilotSalt123'.codeUnits);
-    
+
     return await pbkdf2.deriveKeyFromPassword(
       password: passphrase,
       nonce: salt,

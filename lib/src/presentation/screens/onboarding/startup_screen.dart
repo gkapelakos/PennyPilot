@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 import 'package:pennypilot/src/presentation/screens/onboarding/onboarding_screen.dart';
-import 'package:lottie/lottie.dart';
 
 class StartupScreen extends ConsumerStatefulWidget {
   const StartupScreen({super.key});
@@ -37,7 +36,7 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
     if (_selectedCurrency != null) {
       await ref.read(appStateProvider.notifier).setCurrency(_selectedCurrency!);
     }
-    
+
     if (mounted) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const OnboardingScreen()),
@@ -48,7 +47,7 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       body: Stack(
         children: [
@@ -68,7 +67,7 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
               ),
             ),
           ),
-          
+
           SafeArea(
             child: CustomScrollView(
               slivers: [
@@ -92,7 +91,8 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
                                   borderRadius: BorderRadius.circular(32),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: theme.colorScheme.primary.withAlpha(80),
+                                      color: theme.colorScheme.primary
+                                          .withAlpha(80),
                                       blurRadius: 20,
                                       offset: const Offset(0, 10),
                                     ),
@@ -122,9 +122,9 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
                             ],
                           ),
                         ),
-                        
+
                         const SizedBox(height: 48),
-                        
+
                         // Setup Section
                         Text(
                           'Let\'s customize your experience',
@@ -133,28 +133,31 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
                           ),
                         ),
                         const SizedBox(height: 24),
-                        
+
                         // Language Selection
                         _SelectionCard(
                           title: 'Language',
-                          subtitle: languages.firstWhere((l) => l['code'] == _selectedLanguage)['native'] as String,
+                          subtitle: languages.firstWhere((l) =>
+                                  l['code'] == _selectedLanguage)['native']
+                              as String,
                           icon: Icons.language_rounded,
                           onTap: () => _showLanguagePicker(),
                         ),
-                        
+
                         const SizedBox(height: 16),
-                        
+
                         // Currency Selection
                         _SelectionCard(
                           title: 'Base Currency',
-                          subtitle: '$_selectedCurrency (${CurrencyInfo.getSymbol(_selectedCurrency!)})',
+                          subtitle:
+                              '$_selectedCurrency (${CurrencyInfo.getSymbol(_selectedCurrency!)})',
                           icon: Icons.payments_rounded,
                           onTap: () => _showCurrencyPicker(),
                         ),
-                        
+
                         const Spacer(),
                         const SizedBox(height: 32),
-                        
+
                         // Get Started Button
                         SizedBox(
                           height: 64,
@@ -165,7 +168,8 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               elevation: 4,
-                              shadowColor: theme.colorScheme.primary.withAlpha(100),
+                              shadowColor:
+                                  theme.colorScheme.primary.withAlpha(100),
                             ),
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -184,12 +188,13 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
                           ),
                         ),
                         const SizedBox(height: 24),
-                        
+
                         Center(
                           child: Text(
                             'Version 1.0.0-alpha.1.13',
                             style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant.withAlpha(150),
+                              color: theme.colorScheme.onSurfaceVariant
+                                  .withAlpha(150),
                             ),
                           ),
                         ),
@@ -232,22 +237,24 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
             Text(
               'Select Language',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
             ...languages.map((lang) => ListTile(
-              leading: Text(lang['flag']!, style: const TextStyle(fontSize: 24)),
-              title: Text(lang['native']!),
-              subtitle: Text(lang['name']!),
-              trailing: _selectedLanguage == lang['code'] 
-                ? Icon(Icons.check_circle_rounded, color: Theme.of(context).colorScheme.primary)
-                : null,
-              onTap: () {
-                setState(() => _selectedLanguage = lang['code']);
-                Navigator.pop(context);
-              },
-            )),
+                  leading:
+                      Text(lang['flag']!, style: const TextStyle(fontSize: 24)),
+                  title: Text(lang['native']!),
+                  subtitle: Text(lang['name']!),
+                  trailing: _selectedLanguage == lang['code']
+                      ? Icon(Icons.check_circle_rounded,
+                          color: Theme.of(context).colorScheme.primary)
+                      : null,
+                  onTap: () {
+                    setState(() => _selectedLanguage = lang['code']);
+                    Navigator.pop(context);
+                  },
+                )),
           ],
         ),
       ),
@@ -280,8 +287,8 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
             Text(
               'Select Currency',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 16),
             Expanded(
@@ -291,20 +298,23 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
                   final currency = popularCurrencies[index];
                   return ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                      backgroundColor:
+                          Theme.of(context).colorScheme.primaryContainer,
                       child: Text(
                         currency.symbol,
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                          color:
+                              Theme.of(context).colorScheme.onPrimaryContainer,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     title: Text(currency.name),
                     subtitle: Text(currency.code),
-                    trailing: _selectedCurrency == currency.code 
-                      ? Icon(Icons.check_circle_rounded, color: Theme.of(context).colorScheme.primary)
-                      : null,
+                    trailing: _selectedCurrency == currency.code
+                        ? Icon(Icons.check_circle_rounded,
+                            color: Theme.of(context).colorScheme.primary)
+                        : null,
                     onTap: () {
                       setState(() => _selectedCurrency = currency.code);
                       Navigator.pop(context);
@@ -336,7 +346,7 @@ class _SelectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Card(
       elevation: 0,
       color: theme.colorScheme.surfaceContainerLow,

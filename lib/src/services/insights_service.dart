@@ -1,6 +1,5 @@
 import 'package:isar/isar.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
-import 'package:pennypilot/src/data/models/category_model.dart';
 
 class InsightsService {
   final Isar _isar;
@@ -26,13 +25,16 @@ class InsightsService {
         .kindEqualTo(TransactionKind.expense)
         .findAll();
 
-    final currentTotal = currentTransactions.fold<double>(0, (sum, t) => sum + t.amount);
-    final prevTotal = prevTransactions.fold<double>(0, (sum, t) => sum + t.amount);
+    final currentTotal =
+        currentTransactions.fold<double>(0, (sum, t) => sum + t.amount);
+    final prevTotal =
+        prevTransactions.fold<double>(0, (sum, t) => sum + t.amount);
 
     return SpendingComparison(
       currentTotal: currentTotal,
       previousTotal: prevTotal,
-      percentChange: prevTotal > 0 ? ((currentTotal - prevTotal) / prevTotal) * 100 : 0,
+      percentChange:
+          prevTotal > 0 ? ((currentTotal - prevTotal) / prevTotal) * 100 : 0,
     );
   }
 
@@ -50,7 +52,8 @@ class InsightsService {
     final categoryMap = <int, double>{};
     for (var t in transactions) {
       if (t.categoryId != null) {
-        categoryMap[t.categoryId!] = (categoryMap[t.categoryId!] ?? 0) + t.amount;
+        categoryMap[t.categoryId!] =
+            (categoryMap[t.categoryId!] ?? 0) + t.amount;
       }
     }
 
@@ -76,7 +79,7 @@ class InsightsService {
   Future<List<SpendingAnomaly>> detectAnomalies() async {
     final now = DateTime.now();
     final startOfMonth = DateTime(now.year, now.month, 1);
-    
+
     // Get current month transactions
     final currentTransactions = await _isar.transactionModels
         .filter()
@@ -87,7 +90,8 @@ class InsightsService {
     final currentCategorySpend = <int, double>{};
     for (var t in currentTransactions) {
       if (t.categoryId != null) {
-        currentCategorySpend[t.categoryId!] = (currentCategorySpend[t.categoryId!] ?? 0) + t.amount;
+        currentCategorySpend[t.categoryId!] =
+            (currentCategorySpend[t.categoryId!] ?? 0) + t.amount;
       }
     }
 
@@ -95,7 +99,8 @@ class InsightsService {
     final startOfHistory = DateTime(now.year, now.month - 3, 1);
     final historyTransactions = await _isar.transactionModels
         .filter()
-        .dateBetween(startOfHistory, startOfMonth.subtract(const Duration(seconds: 1)))
+        .dateBetween(
+            startOfHistory, startOfMonth.subtract(const Duration(seconds: 1)))
         .findAll();
 
     final historyMap = <int, List<double>>{};
@@ -109,8 +114,10 @@ class InsightsService {
     for (var entry in currentCategorySpend.entries) {
       final historyAmounts = historyMap[entry.key];
       if (historyAmounts != null && historyAmounts.length >= 3) {
-        final avg = historyAmounts.reduce((a, b) => a + b) / 3; // Simplified avg per month
-        if (entry.value > avg * 1.5) { // 50% higher than average
+        final avg = historyAmounts.reduce((a, b) => a + b) /
+            3; // Simplified avg per month
+        if (entry.value > avg * 1.5) {
+          // 50% higher than average
           final category = await _isar.categoryModels.get(entry.key);
           anomalies.add(SpendingAnomaly(
             categoryName: category?.name ?? 'Unknown',

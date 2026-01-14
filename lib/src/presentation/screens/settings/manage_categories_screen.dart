@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pennypilot/src/data/models/category_model.dart';
 import 'package:pennypilot/src/helpers/icon_helper.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
 import 'package:pennypilot/src/presentation/screens/settings/category_form_screen.dart';
@@ -33,7 +32,8 @@ class ManageCategoriesScreen extends ConsumerWidget {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => CategoryFormScreen(category: category),
+                            builder: (context) =>
+                                CategoryFormScreen(category: category),
                           ),
                         );
                       },
@@ -52,7 +52,8 @@ class ManageCategoriesScreen extends ConsumerWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => CategoryFormScreen(category: category),
+                      builder: (context) =>
+                          CategoryFormScreen(category: category),
                     ),
                   );
                 },

@@ -449,6 +449,12 @@ class AppLocalizationsEl extends AppLocalizations {
   String get required => 'Απαιτείται';
 
   @override
+  String get today => 'Σήμερα';
+
+  @override
+  String get yesterday => 'Χθες';
+
+  @override
   String get invalid => 'Μη έγκυρο';
 
   @override

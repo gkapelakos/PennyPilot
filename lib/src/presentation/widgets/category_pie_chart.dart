@@ -30,7 +30,8 @@ class _CategoryPieChartState extends ConsumerState<CategoryPieChart> {
             final data = _processData(transactions, categories);
             if (data.isEmpty) return const SizedBox.shrink();
 
-            final total = data.values.fold<double>(0, (sum, d) => sum + d.amount);
+            final total =
+                data.values.fold<double>(0, (sum, d) => sum + d.amount);
 
             return Container(
               height: 240,
@@ -49,7 +50,8 @@ class _CategoryPieChartState extends ConsumerState<CategoryPieChart> {
                               touchedIndex = -1;
                               return;
                             }
-                            touchedIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
+                            touchedIndex = pieTouchResponse
+                                .touchedSection!.touchedSectionIndex;
                           });
                         },
                       ),
@@ -84,21 +86,26 @@ class _CategoryPieChartState extends ConsumerState<CategoryPieChart> {
               ),
             );
           },
-          loading: () => const SizedBox(height: 240, child: Center(child: CircularProgressIndicator())),
-          error: (e, s) => const SizedBox(height: 240, child: Center(child: Icon(Icons.error))),
+          loading: () => const SizedBox(
+              height: 240, child: Center(child: CircularProgressIndicator())),
+          error: (e, s) => const SizedBox(
+              height: 240, child: Center(child: Icon(Icons.error))),
         );
       },
-      loading: () => const SizedBox(height: 240, child: Center(child: CircularProgressIndicator())),
-      error: (e, s) => const SizedBox(height: 240, child: Center(child: Icon(Icons.error))),
+      loading: () => const SizedBox(
+          height: 240, child: Center(child: CircularProgressIndicator())),
+      error: (e, s) =>
+          const SizedBox(height: 240, child: Center(child: Icon(Icons.error))),
     );
   }
 
-  Map<String, _CategoryData> _processData(List<dynamic> transactions, List<CategoryModel> categories) {
+  Map<String, _CategoryData> _processData(
+      List<dynamic> transactions, List<CategoryModel> categories) {
     final Map<String, _CategoryData> result = {};
 
     for (var t in transactions) {
       if (t.categoryId == null) continue;
-      
+
       final category = categories.firstWhere(
         (c) => c.id == t.categoryId,
         orElse: () => CategoryModel()
@@ -172,7 +179,6 @@ class _Indicator extends StatelessWidget {
     required this.color,
     required this.text,
     required this.isSquare,
-    this.size = 16,
   });
 
   @override

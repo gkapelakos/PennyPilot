@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
 import 'package:pennypilot/src/presentation/providers/database_provider.dart';
-import 'package:isar/isar.dart';
 import 'package:pennypilot/src/data/models/category_model.dart';
 import 'package:pennypilot/src/presentation/widgets/empty_state.dart';
 
 // Categories provider
 final categoriesProvider = StreamProvider<List<CategoryModel>>((ref) async* {
   final isar = ref.watch(isarProvider);
-  
+
   yield* isar.categoryModels
       .where()
       .filter()
@@ -19,9 +18,10 @@ final categoriesProvider = StreamProvider<List<CategoryModel>>((ref) async* {
 });
 
 // Merchant category mappings provider
-final merchantMappingsProvider = StreamProvider<List<MerchantCategoryMappingModel>>((ref) async* {
+final merchantMappingsProvider =
+    StreamProvider<List<MerchantCategoryMappingModel>>((ref) async* {
   final isar = ref.watch(isarProvider);
-  
+
   yield* isar.merchantCategoryMappingModels
       .where()
       .sortByCreatedAtDesc()
@@ -32,10 +32,12 @@ class CategoryManagementScreen extends ConsumerStatefulWidget {
   const CategoryManagementScreen({super.key});
 
   @override
-  ConsumerState<CategoryManagementScreen> createState() => _CategoryManagementScreenState();
+  ConsumerState<CategoryManagementScreen> createState() =>
+      _CategoryManagementScreenState();
 }
 
-class _CategoryManagementScreenState extends ConsumerState<CategoryManagementScreen>
+class _CategoryManagementScreenState
+    extends ConsumerState<CategoryManagementScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -108,7 +110,7 @@ class _CategoryManagementScreenState extends ConsumerState<CategoryManagementScr
                   textCapitalization: TextCapitalization.words,
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Icon Picker
                 const Text('Select Icon'),
                 const SizedBox(height: 8),
@@ -116,7 +118,8 @@ class _CategoryManagementScreenState extends ConsumerState<CategoryManagementScr
                   spacing: 8,
                   children: ['📁', '🛒', '🍔', '⛽', '🎬', '💊', '✈️', '🏋️']
                       .map((icon) => ChoiceChip(
-                            label: Text(icon, style: const TextStyle(fontSize: 24)),
+                            label: Text(icon,
+                                style: const TextStyle(fontSize: 24)),
                             selected: selectedIcon == icon,
                             onSelected: (selected) {
                               setState(() {
@@ -126,9 +129,9 @@ class _CategoryManagementScreenState extends ConsumerState<CategoryManagementScr
                           ))
                       .toList(),
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Color Picker
                 const Text('Select Color'),
                 const SizedBox(height: 8),
@@ -141,27 +144,30 @@ class _CategoryManagementScreenState extends ConsumerState<CategoryManagementScr
                     '#F57C00', // Orange
                     '#C2185B', // Pink
                     '#7B1FA2', // Deep Purple
-                  ].map((color) => GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedColor = color;
-                          });
-                        },
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: Color(int.parse(color.substring(1), radix: 16) + 0xFF000000),
-                            shape: BoxShape.circle,
-                            border: selectedColor == color
-                                ? Border.all(color: Colors.white, width: 3)
-                                : null,
-                          ),
-                          child: selectedColor == color
-                              ? const Icon(Icons.check, color: Colors.white)
-                              : null,
-                        ),
-                      ))
+                  ]
+                      .map((color) => GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedColor = color;
+                              });
+                            },
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Color(
+                                    int.parse(color.substring(1), radix: 16) +
+                                        0xFF000000),
+                                shape: BoxShape.circle,
+                                border: selectedColor == color
+                                    ? Border.all(color: Colors.white, width: 3)
+                                    : null,
+                              ),
+                              child: selectedColor == color
+                                  ? const Icon(Icons.check, color: Colors.white)
+                                  : null,
+                            ),
+                          ))
                       .toList(),
                 ),
               ],
@@ -175,14 +181,14 @@ class _CategoryManagementScreenState extends ConsumerState<CategoryManagementScr
             FilledButton(
               onPressed: () async {
                 if (nameController.text.isEmpty) return;
-                
+
                 final isar = ref.read(isarProvider);
                 final maxOrder = await isar.categoryModels
                     .where()
                     .sortByOrderDesc()
                     .limit(1)
                     .findFirst();
-                
+
                 final category = CategoryModel()
                   ..name = nameController.text
                   ..icon = selectedIcon
@@ -192,15 +198,17 @@ class _CategoryManagementScreenState extends ConsumerState<CategoryManagementScr
                   ..isActive = true
                   ..transactionCount = 0
                   ..createdAt = DateTime.now();
-                
+
                 await isar.writeTxn(() async {
                   await isar.categoryModels.put(category);
                 });
-                
+
                 if (context.mounted) {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Category "${nameController.text}" created')),
+                    SnackBar(
+                        content:
+                            Text('Category "${nameController.text}" created')),
                   );
                 }
               },
@@ -221,7 +229,7 @@ class _CategoryManagementScreenState extends ConsumerState<CategoryManagementScr
       builder: (context) => StatefulBuilder(
         builder: (context, setState) {
           final categoriesAsync = ref.watch(categoriesProvider);
-          
+
           return AlertDialog(
             title: const Text('Add Merchant Mapping'),
             content: Column(
@@ -236,7 +244,6 @@ class _CategoryManagementScreenState extends ConsumerState<CategoryManagementScr
                   textCapitalization: TextCapitalization.words,
                 ),
                 const SizedBox(height: 16),
-                
                 categoriesAsync.when(
                   data: (categories) => DropdownButtonFormField<int>(
                     decoration: const InputDecoration(
@@ -248,7 +255,8 @@ class _CategoryManagementScreenState extends ConsumerState<CategoryManagementScr
                         value: cat.id,
                         child: Row(
                           children: [
-                            Text(cat.icon, style: const TextStyle(fontSize: 20)),
+                            Text(cat.icon,
+                                style: const TextStyle(fontSize: 20)),
                             const SizedBox(width: 8),
                             Text(cat.name),
                           ],
@@ -273,23 +281,24 @@ class _CategoryManagementScreenState extends ConsumerState<CategoryManagementScr
               ),
               FilledButton(
                 onPressed: () async {
-                  if (merchantController.text.isEmpty || selectedCategoryId == null) {
+                  if (merchantController.text.isEmpty ||
+                      selectedCategoryId == null) {
                     return;
                   }
-                  
+
                   final isar = ref.read(isarProvider);
-                  
+
                   final mapping = MerchantCategoryMappingModel()
                     ..merchantName = merchantController.text
                     ..categoryId = selectedCategoryId!
                     ..isAutomatic = false
                     ..userConfirmed = true
                     ..createdAt = DateTime.now();
-                  
+
                   await isar.writeTxn(() async {
                     await isar.merchantCategoryMappingModels.put(mapping);
                   });
-                  
+
                   if (context.mounted) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -360,7 +369,8 @@ class _CategoryCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final color = Color(int.parse(category.color.substring(1), radix: 16) + 0xFF000000);
+    final color =
+        Color(int.parse(category.color.substring(1), radix: 16) + 0xFF000000);
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -424,7 +434,7 @@ class _CategoryCard extends ConsumerWidget {
                   await isar.writeTxn(() async {
                     await isar.categoryModels.delete(category.id);
                   });
-                  
+
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Category deleted')),
@@ -510,7 +520,7 @@ class _MerchantMappingCard extends ConsumerWidget {
             await isar.writeTxn(() async {
               await isar.merchantCategoryMappingModels.delete(mapping.id);
             });
-            
+
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Mapping deleted')),

@@ -1,6 +1,5 @@
 import 'package:isar/isar.dart';
 import 'package:pennypilot/src/data/models/budget_model.dart';
-import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/data/models/subscription_model.dart';
 
 class BudgetService {
@@ -53,17 +52,18 @@ class BudgetService {
       for (var budget in budgets) {
         // Find spending in the previous period
         final startOfPrevPeriod = _getStartOfPreviousPeriod(budget.period, now);
-        final endOfPrevPeriod = _getStartOfCurrentPeriod(budget.period, now).subtract(const Duration(seconds: 1));
-        
+        final endOfPrevPeriod = _getStartOfCurrentPeriod(budget.period, now)
+            .subtract(const Duration(seconds: 1));
+
         final transactions = await _isar.transactionModels
             .filter()
             .dateBetween(startOfPrevPeriod, endOfPrevPeriod)
             .categoryIdEqualTo(budget.categoryId)
             .findAll();
-            
+
         final spent = transactions.fold<double>(0, (sum, t) => sum + t.amount);
         final remaining = budget.limitAmount + budget.carryOverAmount - spent;
-        
+
         if (remaining > 0) {
           budget.carryOverAmount = remaining;
           budget.updatedAt = now;
@@ -118,20 +118,23 @@ class BudgetService {
         .filter()
         .dateGreaterThan(startOfMonth.subtract(const Duration(seconds: 1)))
         .findAll();
-    
+
     final spentSoFar = transactions.fold<double>(0, (sum, t) => sum + t.amount);
 
     // Get upcoming subscriptions for the remainder of the month
     final subscriptions = await _isar.subscriptionModels
         .filter()
         .lifecycleStateEqualTo(SubscriptionLifecycleState.active)
-        .nextRenewalDateBetween(now, DateTime(now.year, now.month, daysInMonth, 23, 59, 59))
+        .nextRenewalDateBetween(
+            now, DateTime(now.year, now.month, daysInMonth, 23, 59, 59))
         .findAll();
 
-    final upcomingSubTotal = subscriptions.fold<double>(0, (sum, s) => sum + s.amount);
+    final upcomingSubTotal =
+        subscriptions.fold<double>(0, (sum, s) => sum + s.amount);
 
     final totalLimit = totalBudget.limitAmount + totalBudget.carryOverAmount;
-    final remainingMonthly = (totalLimit - spentSoFar - upcomingSubTotal).clamp(0.0, double.infinity);
+    final remainingMonthly = (totalLimit - spentSoFar - upcomingSubTotal)
+        .clamp(0.0, double.infinity);
     final dailySafeAmount = remainingMonthly / remainingDays;
 
     return SafeToSpendResult(
@@ -145,7 +148,8 @@ class BudgetService {
   }
 
   /// Create a split for a transaction
-  Future<void> createSplit(int transactionId, List<SpendingSplitModel> splits) async {
+  Future<void> createSplit(
+      int transactionId, List<SpendingSplitModel> splits) async {
     await _isar.writeTxn(() async {
       final transaction = await _isar.transactionModels.get(transactionId);
       if (transaction != null) {

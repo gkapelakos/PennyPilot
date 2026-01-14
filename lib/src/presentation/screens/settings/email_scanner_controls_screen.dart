@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
 import 'package:pennypilot/src/presentation/providers/database_provider.dart';
 import 'package:pennypilot/src/presentation/providers/email_provider.dart';
-import 'package:isar/isar.dart';
 import 'package:pennypilot/src/data/models/email_sender_preference_model.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/presentation/widgets/empty_state.dart';
 import 'package:intl/intl.dart';
 
 // Email sender preferences provider
-final emailSenderPreferencesProvider = StreamProvider<List<EmailSenderPreferenceModel>>((ref) async* {
+final emailSenderPreferencesProvider =
+    StreamProvider<List<EmailSenderPreferenceModel>>((ref) async* {
   final isar = ref.watch(isarProvider);
-  
+
   yield* isar.emailSenderPreferenceModels
       .where()
       .sortByTotalEmailsProcessedDesc()
@@ -23,10 +23,12 @@ class EmailScannerControlsScreen extends ConsumerStatefulWidget {
   const EmailScannerControlsScreen({super.key});
 
   @override
-  ConsumerState<EmailScannerControlsScreen> createState() => _EmailScannerControlsScreenState();
+  ConsumerState<EmailScannerControlsScreen> createState() =>
+      _EmailScannerControlsScreenState();
 }
 
-class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControlsScreen> {
+class _EmailScannerControlsScreenState
+    extends ConsumerState<EmailScannerControlsScreen> {
   bool _showOnlyEnabled = false;
 
   @override
@@ -51,12 +53,14 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
             return EmptyState(
               icon: Icons.email,
               title: 'No Email Senders Yet',
-              message: 'Connect your email account to start scanning for receipts',
+              message:
+                  'Connect your email account to start scanning for receipts',
               action: FilledButton.icon(
                 onPressed: () {
                   // TODO: Navigate to email connect
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Email connection coming soon')),
+                    const SnackBar(
+                        content: Text('Email connection coming soon')),
                   );
                 },
                 icon: const Icon(Icons.email),
@@ -116,7 +120,10 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
                     _buildSummaryItem(
                       context,
                       'Merchants',
-                      senders.where((s) => s.isRecognizedMerchant).length.toString(),
+                      senders
+                          .where((s) => s.isRecognizedMerchant)
+                          .length
+                          .toString(),
                       Icons.store,
                     ),
                   ],
@@ -190,7 +197,7 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
     IconData icon,
   ) {
     final theme = Theme.of(context);
-    
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -217,7 +224,8 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
     );
   }
 
-  Widget _buildSenderCard(BuildContext context, EmailSenderPreferenceModel sender) {
+  Widget _buildSenderCard(
+      BuildContext context, EmailSenderPreferenceModel sender) {
     final theme = Theme.of(context);
     final dateFormat = DateFormat('MMM d, y');
 
@@ -344,7 +352,7 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
     IconData icon,
   ) {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -388,9 +396,10 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
     );
   }
 
-  void _toggleSenderScan(EmailSenderPreferenceModel sender, bool enabled) async {
+  void _toggleSenderScan(
+      EmailSenderPreferenceModel sender, bool enabled) async {
     final isar = ref.read(isarProvider);
-    
+
     await isar.writeTxn(() async {
       sender.scanEnabled = enabled;
       sender.updatedAt = DateTime.now();
@@ -416,11 +425,11 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
         content: Text('Rescanning emails for updates...'),
       ),
     );
-    
+
     try {
       // Currently scans all, optimization for specific sender can be added later
       await ref.read(emailServiceProvider).scanEmails();
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Scan complete')),
@@ -429,15 +438,17 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error scanning: $e'), backgroundColor: Colors.red),
+          SnackBar(
+              content: Text('Error scanning: $e'), backgroundColor: Colors.red),
         );
       }
     }
   }
 
-  void _editSenderNotes(BuildContext context, EmailSenderPreferenceModel sender) {
+  void _editSenderNotes(
+      BuildContext context, EmailSenderPreferenceModel sender) {
     final controller = TextEditingController(text: sender.userNotes);
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -458,13 +469,14 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
           FilledButton(
             onPressed: () async {
               final isar = ref.read(isarProvider);
-              
+
               await isar.writeTxn(() async {
-                sender.userNotes = controller.text.isEmpty ? null : controller.text;
+                sender.userNotes =
+                    controller.text.isEmpty ? null : controller.text;
                 sender.updatedAt = DateTime.now();
                 await isar.emailSenderPreferenceModels.put(sender);
               });
-              
+
               if (context.mounted) {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -503,10 +515,10 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
     try {
       final emailService = ref.read(emailServiceProvider);
       final previewResults = await emailService.previewScan(limit: 5);
-      
+
       if (!context.mounted) return;
       Navigator.pop(context); // Close loading dialog
-      
+
       if (previewResults.isEmpty) {
         if (!context.mounted) return;
         showDialog(
@@ -538,10 +550,11 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
     }
   }
 
-  void _showPreviewResults(BuildContext context, List<TransactionModel> results) {
+  void _showPreviewResults(
+      BuildContext context, List<TransactionModel> results) {
     final theme = Theme.of(context);
     final dateFormat = DateFormat('MMM d, y');
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -583,9 +596,11 @@ class _EmailScannerControlsScreenState extends ConsumerState<EmailScannerControl
                             Text(
                               tx.extractionConfidence.name,
                               style: theme.textTheme.labelSmall?.copyWith(
-                                color: tx.extractionConfidence == ConfidenceLevel.high
+                                color: tx.extractionConfidence ==
+                                        ConfidenceLevel.high
                                     ? Colors.green
-                                    : tx.extractionConfidence == ConfidenceLevel.medium
+                                    : tx.extractionConfidence ==
+                                            ConfidenceLevel.medium
                                         ? Colors.orange
                                         : Colors.grey,
                               ),

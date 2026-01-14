@@ -451,6 +451,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get required => 'Erforderlich';
 
   @override
+  String get today => 'Heute';
+
+  @override
+  String get yesterday => 'Gestern';
+
+  @override
   String get invalid => 'Ungültig';
 
   @override

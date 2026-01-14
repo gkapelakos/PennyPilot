@@ -245,7 +245,7 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                                     ),
                                   ),
                                   Text(
-                                    '${popularCurrencies.firstWhere((c) => c.code == subscription.currency).symbol}${change.oldAmount.toStringAsFixed(2)} → ${popularCurrencies.firstWhere((c) => c.code == subscription.currency).symbol}${change.newAmount.toStringAsFixed(2)}',
+                                    '${CurrencyInfo.getSymbol(subscription.currency)}${change.oldAmount.toStringAsFixed(2)} → ${CurrencyInfo.getSymbol(subscription.currency)}${change.newAmount.toStringAsFixed(2)}',
                                     style: theme.textTheme.bodyMedium?.copyWith(
                                       fontWeight: FontWeight.w600,
                                     ),

@@ -449,6 +449,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get required => 'Requis';
 
   @override
+  String get today => 'Aujourd\'hui';
+
+  @override
+  String get yesterday => 'Hier';
+
+  @override
   String get invalid => 'Invalide';
 
   @override

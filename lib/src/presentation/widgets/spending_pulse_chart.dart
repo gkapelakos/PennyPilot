@@ -17,30 +17,39 @@ class SpendingPulseChart extends ConsumerWidget {
           height: 120,
           child: transactionsAsync.when(
             data: (transactions) {
-              final daily = <int, double>{};
+              final daily = <DateTime, double>{};
               final now = DateTime.now();
+              // Initialize last 7 days
               for (int i = 0; i < 7; i++) {
-                final d = now.subtract(Duration(days: i));
-                daily[d.day] = 0;
+                final d = DateTime(now.year, now.month, now.day)
+                    .subtract(Duration(days: i));
+                daily[d] = 0;
               }
+              // Aggregate transactions by date (ignoring time)
               for (final t in transactions) {
-                if (daily.containsKey(t.date.day)) {
-                  daily[t.date.day] = (daily[t.date.day] ?? 0) + t.amount;
+                final dateKey = DateTime(t.date.year, t.date.month, t.date.day);
+                if (daily.containsKey(dateKey)) {
+                  daily[dateKey] = (daily[dateKey] ?? 0) + t.amount;
                 }
               }
-              final data = daily.entries.toList().reversed.toList();
+              // Sort by date (oldest first) for chart display
+              final sortedDates = daily.keys.toList()..sort();
+              final amounts = sortedDates.map((date) => daily[date]!).toList();
+              final maxAmount = amounts.isEmpty
+                  ? 100.0
+                  : amounts.reduce((a, b) => a > b ? a : b);
 
               return BarChart(
                 BarChartData(
-                  maxY: data.isEmpty ? 100 : (data.map((e) => e.value).reduce((a, b) => a > b ? a : b) * 1.2).clamp(100, double.infinity),
-                  barGroups: data
+                  maxY: (maxAmount * 1.2).clamp(100, double.infinity),
+                  barGroups: sortedDates
                       .asMap()
                       .entries
                       .map((e) => BarChartGroupData(
                             x: e.key,
                             barRods: [
                               BarChartRodData(
-                                toY: e.value.value,
+                                toY: amounts[e.key],
                                 color: Theme.of(context).colorScheme.primary,
                                 width: 12,
                                 borderRadius: BorderRadius.circular(4),
@@ -48,8 +57,8 @@ class SpendingPulseChart extends ConsumerWidget {
                             ],
                           ))
                       .toList(),
-                  titlesData: const FlTitlesData(show: false),
-                  gridData: const FlGridData(show: false),
+                  titlesData: FlTitlesData(show: false),
+                  gridData: FlGridData(show: false),
                   borderData: FlBorderData(show: false),
                 ),
               );

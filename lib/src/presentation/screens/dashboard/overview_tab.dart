@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
-import 'package:pennypilot/src/presentation/providers/email_provider.dart';
 import 'package:pennypilot/src/presentation/providers/navigation_provider.dart';
 import 'package:pennypilot/src/presentation/screens/auth/connect_email_screen.dart';
 import 'package:pennypilot/src/presentation/widgets/categories_scroller.dart';
@@ -9,8 +8,6 @@ import 'package:pennypilot/src/presentation/widgets/safe_to_spend.dart';
 import 'package:pennypilot/src/presentation/widgets/spending_pulse_chart.dart';
 import 'package:pennypilot/src/presentation/widgets/spending_summary_card.dart';
 import 'package:pennypilot/src/presentation/widgets/category_pie_chart.dart';
-import 'package:pennypilot/src/presentation/widgets/status_dialogs.dart';
-import 'package:intl/intl.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 import 'package:pennypilot/src/presentation/widgets/transaction_card.dart';
@@ -42,7 +39,8 @@ class OverviewTab extends ConsumerWidget {
                   color: theme.colorScheme.onSurface,
                 ),
               ),
-              titlePadding: const EdgeInsetsDirectional.only(start: 16, bottom: 16),
+              titlePadding:
+                  const EdgeInsetsDirectional.only(start: 16, bottom: 16),
             ),
             actions: [
               if (isDemoMode)
@@ -52,7 +50,8 @@ class OverviewTab extends ConsumerWidget {
                     label: Text(l10n.demo),
                     visualDensity: VisualDensity.compact,
                     backgroundColor: theme.colorScheme.tertiaryContainer,
-                    labelStyle: TextStyle(color: theme.colorScheme.onTertiaryContainer),
+                    labelStyle:
+                        TextStyle(color: theme.colorScheme.onTertiaryContainer),
                   ),
                 ),
               const SizedBox(width: 8),
@@ -66,7 +65,7 @@ class OverviewTab extends ConsumerWidget {
                 const SpendingSummaryCard(),
                 const SizedBox(height: 16),
                 const SafeToSpend(),
-                
+
                 const SizedBox(height: 40),
                 _sectionHeader(context, l10n.spendingByCategory),
                 const SizedBox(height: 16),
@@ -81,37 +80,48 @@ class OverviewTab extends ConsumerWidget {
 
                 const SizedBox(height: 40),
                 _sectionHeader(
-                  context, 
+                  context,
                   l10n.recentTransactions,
                   trailing: TextButton(
-                    onPressed: () => ref.read(dashboardIndexProvider.notifier).state = 1,
+                    onPressed: () =>
+                        ref.read(dashboardIndexProvider.notifier).state = 1,
                     child: Text(l10n.viewAll),
                   ),
                 ),
                 const SizedBox(height: 12),
                 transactionsAsync.when(
                   data: (transactions) {
-                    if (transactions.isEmpty) return _buildEmptyTransactions(context);
+                    if (transactions.isEmpty)
+                      return _buildEmptyTransactions(context);
                     final displayTransactions = transactions.take(3).toList();
                     return Column(
-                      children: displayTransactions.map<Widget>((t) => TransactionCard(
-                        transaction: t,
-                        expandable: false,
-                        showConfidence: false,
-                        onTap: () => ref.read(dashboardIndexProvider.notifier).state = 1,
-                      )).toList(),
+                      children: displayTransactions
+                          .map<Widget>((t) => TransactionCard(
+                                transaction: t,
+                                expandable: false,
+                                showConfidence: false,
+                                onTap: () => ref
+                                    .read(dashboardIndexProvider.notifier)
+                                    .state = 1,
+                              ))
+                          .toList(),
                     );
                   },
-                  loading: () => const Center(child: Padding(padding: EdgeInsets.all(32), child: CircularProgressIndicator())),
-                  error: (e, s) => Text(l10n.errorLoadingTransactions(e.toString())),
+                  loading: () => const Center(
+                      child: Padding(
+                          padding: EdgeInsets.all(32),
+                          child: CircularProgressIndicator())),
+                  error: (e, s) =>
+                      Text(l10n.errorLoadingTransactions(e.toString())),
                 ),
 
                 const SizedBox(height: 40),
                 _sectionHeader(
-                  context, 
+                  context,
                   l10n.upcomingSubscriptions,
                   trailing: TextButton(
-                    onPressed: () => ref.read(dashboardIndexProvider.notifier).state = 2,
+                    onPressed: () =>
+                        ref.read(dashboardIndexProvider.notifier).state = 2,
                     child: Text(l10n.viewAll),
                   ),
                 ),
@@ -129,22 +139,30 @@ class OverviewTab extends ConsumerWidget {
                     return _buildListCard(
                       context,
                       topSubs.map((s) {
-                        final daysUntil = s.nextRenewalDate.difference(DateTime.now()).inDays + 1;
+                        final daysUntil = s.nextRenewalDate
+                                .difference(DateTime.now())
+                                .inDays +
+                            1;
                         return ListTile(
                           leading: Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: theme.colorScheme.primaryContainer.withAlpha(51),
+                              color: theme.colorScheme.primaryContainer
+                                  .withAlpha(51),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: Icon(Icons.event_repeat, size: 20, color: theme.colorScheme.primary),
+                            child: Icon(Icons.event_repeat,
+                                size: 20, color: theme.colorScheme.primary),
                           ),
-                          title: Text(s.serviceName, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                          subtitle: Text(l10n.renewingInDays(daysUntil > 0 ? daysUntil : 0)),
+                          title: Text(s.serviceName,
+                              style: theme.textTheme.titleSmall
+                                  ?.copyWith(fontWeight: FontWeight.bold)),
+                          subtitle: Text(l10n
+                              .renewingInDays(daysUntil > 0 ? daysUntil : 0)),
                           trailing: AmountDisplay(
                             amount: s.amount,
                             style: theme.textTheme.titleMedium?.copyWith(
-                              color: theme.colorScheme.primary, 
+                              color: theme.colorScheme.primary,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -152,8 +170,12 @@ class OverviewTab extends ConsumerWidget {
                       }).toList(),
                     );
                   },
-                  loading: () => const Center(child: Padding(padding: EdgeInsets.all(32), child: CircularProgressIndicator())),
-                  error: (e, s) => Text(l10n.errorLoadingSubscriptions(e.toString())),
+                  loading: () => const Center(
+                      child: Padding(
+                          padding: EdgeInsets.all(32),
+                          child: CircularProgressIndicator())),
+                  error: (e, s) =>
+                      Text(l10n.errorLoadingSubscriptions(e.toString())),
                 ),
                 const SizedBox(height: 100), // Space for FAB
               ]),
@@ -171,16 +193,17 @@ class OverviewTab extends ConsumerWidget {
     return 'Good Evening';
   }
 
-  Widget _sectionHeader(BuildContext context, String title, {Widget? trailing}) {
+  Widget _sectionHeader(BuildContext context, String title,
+      {Widget? trailing}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           title,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
         ),
         if (trailing != null) trailing,
       ],
@@ -193,7 +216,8 @@ class OverviewTab extends ConsumerWidget {
       color: Theme.of(context).colorScheme.surfaceContainerLow,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
-        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant.withAlpha(51)),
+        side: BorderSide(
+            color: Theme.of(context).colorScheme.outlineVariant.withAlpha(51)),
       ),
       child: Column(
         children: children,
@@ -201,21 +225,30 @@ class OverviewTab extends ConsumerWidget {
     );
   }
 
-  Widget _buildEmptyStateCard(BuildContext context, {required IconData icon, required String message}) {
+  Widget _buildEmptyStateCard(BuildContext context,
+      {required IconData icon, required String message}) {
     return Card(
       elevation: 0,
       color: Theme.of(context).colorScheme.surfaceContainerLow,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
-        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant.withAlpha(51)),
+        side: BorderSide(
+            color: Theme.of(context).colorScheme.outlineVariant.withAlpha(51)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-            Icon(icon, color: Theme.of(context).colorScheme.onSurfaceVariant.withAlpha(128), size: 32),
+            Icon(icon,
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurfaceVariant
+                    .withAlpha(128),
+                size: 32),
             const SizedBox(height: 12),
-            Text(message, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium),
+            Text(message,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
       ),
@@ -229,7 +262,8 @@ class OverviewTab extends ConsumerWidget {
       color: Theme.of(context).colorScheme.surfaceContainerLow,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
-        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant.withAlpha(51)),
+        side: BorderSide(
+            color: Theme.of(context).colorScheme.outlineVariant.withAlpha(51)),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
@@ -238,7 +272,10 @@ class OverviewTab extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer.withAlpha(51),
+                color: Theme.of(context)
+                    .colorScheme
+                    .primaryContainer
+                    .withAlpha(51),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -266,7 +303,8 @@ class OverviewTab extends ConsumerWidget {
             FilledButton.icon(
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const ConnectEmailScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const ConnectEmailScreen()),
                 );
               },
               icon: const Icon(Icons.email),

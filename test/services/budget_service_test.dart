@@ -57,9 +57,14 @@ void main() {
           serviceName: 'Netflix',
           amount: 20,
           nextRenewalDate: now.add(const Duration(days: 1)),
+          frequency: SubscriptionFrequency.monthly,
+          lifecycleState: SubscriptionLifecycleState.active,
           firstSeenDate: now,
+          frequencyConsistency: 100,
+          detectionSource: SubscriptionDetectionSource.manual,
+          chargeCount: 1,
           createdAt: now,
-        )..lifecycleState = SubscriptionLifecycleState.active);
+        ));
       });
 
       final result = await service.calculateSafeToSpend();
