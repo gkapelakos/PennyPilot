@@ -8,7 +8,6 @@ import 'package:pennypilot/src/services/receipt_extraction_service.dart';
 import 'package:intl/intl.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/data/models/receipt_line_item_model.dart';
-import 'package:isar/isar.dart';
 
 class ReceiptScanScreen extends ConsumerStatefulWidget {
   const ReceiptScanScreen({super.key});

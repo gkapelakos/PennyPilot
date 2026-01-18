@@ -13,6 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check for Keystore Secret
+        id: check_keystore
+        run: |
+          if [ -n "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
+            echo "HAS_KEYSTORE=true" >> $GITHUB_ENV
+          else
+            echo "HAS_KEYSTORE=false" >> $GITHUB_ENV
+          fi
+
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
@@ -58,6 +67,22 @@ jobs:
             echo "Detected size: $(wc -c < android/app/google-services.json) bytes"
             exit 1
           fi
+
+      - name: Configure Keystore
+        if: env.HAS_KEYSTORE == 'true'
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          cat <<EOF > android/key.properties
+          storePassword=$STORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=app/upload-keystore.jks
+          EOF
 
       - name: Generate Localization
         run: flutter gen-l10n
