@@ -1,7 +1,5 @@
 ![PennyPilot Banner](assets/pennypilot%20banner.png)
 
-# PennyPilot
-
 **Your Financial Co-Pilot. Local-First. Privacy-Focused. Intelligent.**
 
 PennyPilot is a modern, open-source personal finance tracker built for the privacy-conscious user. It leverages on-device AI to automate expense tracking without ever sending your sensitive financial data to the cloud.
