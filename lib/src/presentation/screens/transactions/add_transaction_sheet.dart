@@ -168,11 +168,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
     final defaultCurrency = ref.watch(appStateProvider).currencyCode;
 
     // Initialize selected currency if null
-    if (_selectedCurrency == null) {
-      // We need to do this carefully to not trigger rebuild loops,
-      // but local state init is fine here if just null check
-      _selectedCurrency = defaultCurrency;
-    }
+    _selectedCurrency ??= defaultCurrency;
 
     final exchangeRatesAsync = ref.watch(exchangeRatesProvider);
 
@@ -293,7 +289,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
                           Expanded(
                             flex: 1,
                             child: DropdownButtonFormField<String>(
-                              value: _selectedCurrency,
+                              initialValue: _selectedCurrency,
                               isExpanded: true,
                               decoration: InputDecoration(
                                 labelText: 'Currency',

@@ -1,83 +1,105 @@
+![PennyPilot Banner](assets/pennypilot%20banner.png)
+
 # PennyPilot
 
-PennyPilot is an advanced, privacy-centric personal finance management system engineered for automated transaction tracking and subscription monitoring. Built on a local-first architecture, it utilizes on-device machine learning to provide comprehensive financial insights while maintaining absolute data sovereignty for the user.
+**Your Financial Co-Pilot. Local-First. Privacy-Focused. Intelligent.**
 
-## Executive Summary
-
-The application addresses the vacuum in the market for automated financial tools that do not require cloud-based data aggregation. PennyPilot interfaces directly with the user's communication channels via secure protocols to extract financial data, processing all information locally through proprietary extraction logic and optimized on-device language models.
-
-## Architectural Design Philosophy
-
-### Local-First Data Sovereignty
-At the core of PennyPilot is the principle that financial data should never leave the owner's control. The application functions as a stand-alone intelligent node. There is no central server, no cloud synchronization of sensitive data, and no third-party telemetry.
-
-### Privacy-Preserving Automation
-Automation is typically achieved by relinquishing data to third-party aggregators. PennyPilot reverses this model by bringing the aggregation logic to the user's hardware. By utilizing on-device OCR and Natural Language Processing (NLP), the system extracts transaction details from digital receipts and emails without external API calls.
-
-## Core Capabilities
-
-### Automated Transaction Ingestion
-The system implements a direct interface for email providers via OAuth 2.0. It proactively identifies financial communications and extracts merchant names, line items, tax components, and total values with high-confidence accuracy.
-
-### Subscription Intelligence and Lifecycle Monitoring
-PennyPilot automatically categorizes recurring transactions to build a comprehensive map of the user's subscription ecosystem. It monitors for renewal cycles, price escalations, and dormant services to optimize the user's recurring expenditure.
-
-### Predictive Liquidity Analysis
-Through the Safe-to-Spend engine, the application calculates real-time available funds by cross-referencing ledger balances with projected upcoming obligations and historical spending patterns.
-
-### Local Machine Learning Integration
-Utilizing high-performance local inference engines, the application performs entity recognition and categorization. This allows for complex data extraction from unstructured sources (like receipt photos) without compromising user privacy.
-
-## Technical Specifications
-
-| Component | Technology |
-| :--- | :--- |
-| Framework | Flutter / Dart |
-| State Management | Riverpod (Asynchronous Data Handling) |
-| Persistence Layer | Isar Database (Wait-free, High-Performance NoSQL) |
-| Intelligence Engine | MediaPipe / Localized Gemma Inference |
-| Authentication | Google OAuth 2.0 (Scoped Access) |
-| Security | Biometric Local Auth / AES-256 Export Encryption |
-
-## Development and Implementation Guide
-
-### Prerequisites
-* Flutter SDK (Stable Channel)
-* Dart SDK (Compatible with Flutter Stable)
-* Android Studio / Xcode (Platform-specific build tools)
-* Google Cloud Platform Project (Configured for OAuth 2.0)
-
-### Configuration Environment
-Before execution, the following environment-specific configurations must be established:
-
-1. **Authentication Secrets**: Configure `lib/src/config/secrets.dart` with valid client credentials.
-2. **Android Signature Registration**: Register the development and production SHA-1 fingerprints within the Google Cloud Console for the application identifier `com.example.pennypilot`.
-
-### Build and Deployment
-To prepare the environment and initiate a build:
-
-```bash
-# Fetch dependencies
-flutter pub get
-
-# Generate supporting code (Isar schemas, Riverpod providers)
-dart run build_runner build --delete-conflicting-outputs
-
-# Execute debug build
-flutter run
-```
-
-## Security Infrastructure
-
-PennyPilot implements a zero-trust model regarding external infrastructure:
-
-* **Scoped Permission Model**: The application requests only the minimum necessary permissions required to identify and read financial communications.
-* **Sandbox Verification**: All data is stored within the application's protected sandbox, leveraging OS-level encryption where available.
-* **Audit-Ready Codebase**: The transparent nature of the implementation allows for third-party verification of data handling practices.
-
-## License
-
-This project is released under the MIT License. Detailed terms can be found in the accompanying LICENSE file.
+PennyPilot is a modern, open-source personal finance tracker built for the privacy-conscious user. It leverages on-device AI to automate expense tracking without ever sending your sensitive financial data to the cloud.
 
 ---
-PennyPilot Project and Contributors
+
+## 🌟 Key Features
+
+*   **🔒 Local-First & Privacy-Centric**
+    *   All data is stored locally on your device using [Isar Database](https://isar.dev).
+    *   No third-party cloud sync means your financial data stays yours.
+    *   **Privacy Audit** logs ensure you know exactly what the app is doing.
+    *   **Local-Only Mode** option to completely disable external network traffic.
+    *   **Biometric Lock** support for an extra layer of security.
+
+*   **🤖 On-Device Intelligence**
+    *   **Receipt Scanning:** Instantly extract merchant, date, and amount from physical receipts using on-device OCR and local LLM processing.
+    *   **Smart Categorization:** Transactions are automatically categorized based on your history and merchant patterns.
+    *   **Subscription Intelligence:** Automatically detects recurring payments, identifies "zombie" subscriptions, and alerts you to price hikes.
+
+*   **📧 Email Receipt Scanner**
+    *   Connect your email to scan for digital receipts via IMAP.
+    *   Processing happens locally on your device—your emails are never uploaded to our servers.
+
+*   **💸 Comprehensive Tracking**
+    *   **Multi-Currency Support:** Add transactions in any currency; PennyPilot automatically converts them to your primary currency using real-time exchange rates.
+    *   **Budgeting:** Set monthly budgets and track your "Safe to Spend" daily allowance.
+    *   **Insights:** Visualize spending patterns with clear, vibrant charts and breakdowns.
+
+*   **🎨 Premium User Experience**
+    *   **Dynamic Design:** Merchant icons automatically generate unique, consistent pastel backgrounds.
+    *   **Modern UI:** Built with Flutter, featuring deep dark mode support, glassmorphism elements, and smooth animations.
+
+---
+
+## 🛠 Technology Stack
+
+*   **Framework:** [Flutter](https://flutter.dev)
+*   **State Management:** [Riverpod](https://riverpod.dev)
+*   **Local Database:** [Isar](https://isar.dev)
+*   **AI & ML:**
+    *   [Google ML Kit](https://developers.google.com/ml-kit) for on-device Text Recognition (OCR).
+    *   [MediaPipe GenAI](https://developers.google.com/mediapipe/solutions/genai/llm_inference) for local LLM inference.
+*   **Authentication:** Local Authentication & OAuth for optional email integration.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+*   Flutter SDK (3.2.0 or higher)
+*   Android / iOS / Linux / Windows development environment
+
+### Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/Its-Juice/PennyPilot.git
+    cd PennyPilot
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    flutter pub get
+    ```
+
+3.  **Generate code (Isar, Riverpod, etc.):**
+    ```bash
+    dart run build_runner build --delete-conflicting-outputs
+    ```
+
+4.  **Run the app:**
+    ```bash
+    flutter run
+    ```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Whether it's fixing bugs, improving documentation, or proposing new features, your help is appreciated.
+
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
+
+---
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+<center>
+  <img src="assets/pennypilot logo.png" width="100" />
+  <p><i>Fly your finances safely.</i></p>
+</center>
