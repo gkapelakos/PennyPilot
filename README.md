@@ -1,8 +1,8 @@
-![PennyPilot Banner](assets/pennypilot%20banner.png)
+<img src="assets/pennypilot%20banner.svg" width="100%" alt="PennyPilot Banner" />
 
 <div align="center">
 
-**Sovereign Personal Finance. powered by Local AI.**
+**Sovereign Personal Finance. Powered by Local AI.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Flutter](https://img.shields.io/badge/Built%20with-Flutter-02569B.svg)](https://flutter.dev)
