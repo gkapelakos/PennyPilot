@@ -19,7 +19,8 @@ class SpendingSummaryCard extends ConsumerWidget {
 
     return transactionsAsync.when(
       data: (transactions) {
-        final totalSpent = transactions.fold<double>(0, (sum, t) => sum + t.amount);
+        final totalSpent =
+            transactions.fold<double>(0, (sum, t) => sum + t.amount);
         final monthName = DateFormat.MMMM().format(DateTime.now());
         final theme = Theme.of(context);
 
@@ -30,7 +31,7 @@ class SpendingSummaryCard extends ConsumerWidget {
             gradient: LinearGradient(
               colors: [
                 theme.colorScheme.primary,
-                theme.colorScheme.primary.withAlpha(200),
+                theme.colorScheme.tertiary,
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -38,9 +39,9 @@ class SpendingSummaryCard extends ConsumerWidget {
             borderRadius: BorderRadius.circular(28),
             boxShadow: [
               BoxShadow(
-                color: theme.colorScheme.primary.withAlpha(60),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
+                color: theme.colorScheme.primary.withAlpha(80),
+                blurRadius: 24,
+                offset: const Offset(0, 12),
               ),
             ],
           ),
@@ -75,7 +76,8 @@ class SpendingSummaryCard extends ConsumerWidget {
               ),
               const SizedBox(height: 20),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: theme.colorScheme.onPrimary.withAlpha(40),
                   borderRadius: BorderRadius.circular(12),
@@ -103,8 +105,10 @@ class SpendingSummaryCard extends ConsumerWidget {
           ),
         );
       },
-      loading: () => const SizedBox(height: 150, child: Center(child: CircularProgressIndicator())),
-      error: (e, s) => const SizedBox(height: 150, child: Center(child: Icon(Icons.error))),
+      loading: () => const SizedBox(
+          height: 150, child: Center(child: CircularProgressIndicator())),
+      error: (e, s) =>
+          const SizedBox(height: 150, child: Center(child: Icon(Icons.error))),
     );
   }
 }

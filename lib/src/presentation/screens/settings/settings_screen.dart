@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/theme_provider.dart';
 import 'package:pennypilot/src/presentation/providers/email_provider.dart';
 import 'package:pennypilot/src/presentation/providers/auth_provider.dart';
-import 'package:pennypilot/src/presentation/screens/settings/privacy_audit_screen.dart';
+
 import 'package:pennypilot/src/presentation/screens/settings/manage_accounts_screen.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -38,7 +38,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               children: [
                 _settingsSectionHeader(context, l10n.appearance),
                 _appearanceSection(context, l10n),
-                
                 const SizedBox(height: 24),
                 _settingsSectionHeader(context, l10n.accounts),
                 _groupWrapper(
@@ -46,16 +45,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   child: ListTile(
                     leading: const Icon(Icons.manage_accounts),
                     title: Text(l10n.manageConnectedAccounts),
-                    subtitle: Text(
-                      connectedEmails.isEmpty 
-                        ? l10n.noAccountsConnected 
-                        : l10n.accountsConnected(connectedEmails.length)
-                    ),
+                    subtitle: Text(connectedEmails.isEmpty
+                        ? l10n.noAccountsConnected
+                        : l10n.accountsConnected(connectedEmails.length)),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageAccountsScreen())),
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const ManageAccountsScreen())),
                   ),
                 ),
-
                 const SizedBox(height: 24),
                 _settingsSectionHeader(context, l10n.general),
                 _groupWrapper(
@@ -65,21 +65,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ListTile(
                         leading: const Icon(Icons.currency_exchange),
                         title: Text(l10n.primaryCurrency),
-                        subtitle: Text(
-                          popularCurrencies
-                              .firstWhere((c) => c.code == ref.watch(appStateProvider).currencyCode, 
-                                  orElse: () => popularCurrencies.first)
-                              .name
-                        ),
+                        subtitle: Text(popularCurrencies
+                            .firstWhere(
+                                (c) =>
+                                    c.code ==
+                                    ref.watch(appStateProvider).currencyCode,
+                                orElse: () => popularCurrencies.first)
+                            .name),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => _showCurrencyPicker(context, ref),
                       ),
                       ListTile(
                         leading: const Icon(Icons.language),
                         title: Text(l10n.language),
-                        subtitle: Text(
-                          _getLanguageName(ref.watch(appStateProvider).languageCode)
-                        ),
+                        subtitle: Text(_getLanguageName(
+                            ref.watch(appStateProvider).languageCode)),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => _showLanguagePicker(context, ref),
                       ),
@@ -87,17 +87,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         leading: const Icon(Icons.category),
                         title: Text(l10n.manageCategories),
                         trailing: const Icon(Icons.chevron_right),
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ManageCategoriesScreen())),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const ManageCategoriesScreen())),
                       ),
                       ListTile(
                         leading: const Icon(Icons.security),
                         title: Text(l10n.privacySecurity),
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PrivacySecurityScreen())),
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.verified_user_outlined),
-                        title: Text(l10n.privacyAudit),
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PrivacyAuditScreen())),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const PrivacySecurityScreen())),
                       ),
                       ListTile(
                         leading: const Icon(Icons.refresh),
@@ -107,12 +110,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ListTile(
                         leading: const Icon(Icons.backup),
                         title: Text(l10n.backups),
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const BackupScreen())),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const BackupScreen())),
                       ),
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 24),
                 _settingsSectionHeader(context, 'About'),
                 _groupWrapper(
@@ -120,7 +125,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   child: ListTile(
                     leading: const Icon(Icons.info_outline),
                     title: Text(l10n.aboutPennyPilot),
-                    subtitle: const Text('Version 1.0.0-alpha.1.10'),
+                    subtitle: const Text('Version 1.0.0-alpha.1.16'),
                     onTap: () => launchUrl(
                       Uri.parse('https://github.com/Its-Juice/PennyPilot'),
                       mode: LaunchMode.externalApplication,
@@ -142,10 +147,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       child: Text(
         title.toUpperCase(),
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-          color: Theme.of(context).colorScheme.primary,
-          letterSpacing: 1.2,
-          fontWeight: FontWeight.bold,
-        ),
+              color: Theme.of(context).colorScheme.primary,
+              letterSpacing: 1.2,
+              fontWeight: FontWeight.bold,
+            ),
       ),
     );
   }
@@ -156,7 +161,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant.withAlpha(51)),
+        border: Border.all(
+            color: Theme.of(context).colorScheme.outlineVariant.withAlpha(51)),
       ),
       clipBehavior: Clip.antiAlias,
       child: child,
@@ -172,13 +178,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           child: SegmentedButton<ThemeMode>(
             showSelectedIcon: false,
             segments: [
-              ButtonSegment(value: ThemeMode.light, label: Text(l10n.light), icon: const Icon(Icons.light_mode_outlined)),
-              ButtonSegment(value: ThemeMode.dark, label: Text(l10n.dark), icon: const Icon(Icons.dark_mode_outlined)),
-              ButtonSegment(value: ThemeMode.system, label: Text(l10n.system), icon: const Icon(Icons.brightness_auto)),
+              ButtonSegment(
+                  value: ThemeMode.light,
+                  label: Text(l10n.light),
+                  icon: const Icon(Icons.light_mode_outlined)),
+              ButtonSegment(
+                  value: ThemeMode.dark,
+                  label: Text(l10n.dark),
+                  icon: const Icon(Icons.dark_mode_outlined)),
+              ButtonSegment(
+                  value: ThemeMode.system,
+                  label: Text(l10n.system),
+                  icon: const Icon(Icons.brightness_auto)),
             ],
             selected: {themeMode.mode},
             onSelectionChanged: (Set<ThemeMode> newSelection) {
-              ref.read(themeModeProvider.notifier).setThemeMode(newSelection.first);
+              ref
+                  .read(themeModeProvider.notifier)
+                  .setThemeMode(newSelection.first);
             },
           ),
         ),
@@ -189,7 +206,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title: Text(l10n.pitchBlackOled),
             subtitle: Text(l10n.oledDescription),
             value: themeMode.isOledMode,
-            onChanged: (bool value) => ref.read(themeModeProvider.notifier).setOledMode(value),
+            onChanged: (bool value) =>
+                ref.read(themeModeProvider.notifier).setOledMode(value),
             secondary: const Icon(Icons.auto_awesome),
           ),
         ),
@@ -197,16 +215,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Future<void> _rescanEmails(BuildContext context, AppLocalizations l10n) async {
+  Future<void> _rescanEmails(
+      BuildContext context, AppLocalizations l10n) async {
     try {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.scanningEmails)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(l10n.scanningEmails)));
       await ref.read(emailServiceProvider).scanEmails();
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.scanComplete)));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(l10n.scanComplete)));
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.scanFailed(e.toString()))));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.scanFailed(e.toString()))));
       }
     }
   }
@@ -236,27 +258,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 itemCount: popularCurrencies.length,
                 itemBuilder: (context, index) {
                   final currency = popularCurrencies[index];
-                  final isSelected = ref.watch(appStateProvider).currencyCode == currency.code;
-                  
+                  final isSelected =
+                      ref.watch(appStateProvider).currencyCode == currency.code;
+
                   return ListTile(
                     leading: CircleAvatar(
-                      backgroundColor: isSelected 
-                        ? Theme.of(context).colorScheme.primaryContainer
-                        : Theme.of(context).colorScheme.surfaceContainerHigh,
+                      backgroundColor: isSelected
+                          ? Theme.of(context).colorScheme.primaryContainer
+                          : Theme.of(context).colorScheme.surfaceContainerHigh,
                       child: Text(
                         currency.symbol,
                         style: TextStyle(
                           color: isSelected
-                            ? Theme.of(context).colorScheme.onPrimaryContainer
-                            : Theme.of(context).colorScheme.onSurface,
+                              ? Theme.of(context).colorScheme.onPrimaryContainer
+                              : Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ),
                     title: Text(currency.name),
                     subtitle: Text(currency.code),
-                    trailing: isSelected ? const Icon(Icons.check, color: Colors.green) : null,
+                    trailing: isSelected
+                        ? const Icon(Icons.check, color: Colors.green)
+                        : null,
                     onTap: () {
-                      ref.read(appStateProvider.notifier).setCurrency(currency.code);
+                      ref
+                          .read(appStateProvider.notifier)
+                          .setCurrency(currency.code);
                       Navigator.pop(context);
                     },
                   );
@@ -292,7 +319,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
             ),
             ...languages.map((lang) {
-              final isSelected = ref.watch(appStateProvider).languageCode == lang['code'];
+              final isSelected =
+                  ref.watch(appStateProvider).languageCode == lang['code'];
               return ListTile(
                 leading: CircleAvatar(
                   backgroundColor: isSelected
@@ -309,7 +337,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
                 title: Text(lang['native']!),
                 subtitle: Text(lang['name']!),
-                trailing: isSelected ? const Icon(Icons.check, color: Colors.green) : null,
+                trailing: isSelected
+                    ? const Icon(Icons.check, color: Colors.green)
+                    : null,
                 onTap: () {
                   ref.read(appStateProvider.notifier).setLanguage(lang['code']);
                   Navigator.pop(context);

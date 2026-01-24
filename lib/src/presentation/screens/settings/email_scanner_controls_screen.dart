@@ -7,6 +7,7 @@ import 'package:pennypilot/src/presentation/providers/email_provider.dart';
 import 'package:pennypilot/src/data/models/email_sender_preference_model.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/presentation/widgets/empty_state.dart';
+import 'package:pennypilot/src/presentation/screens/auth/connect_email_screen.dart';
 import 'package:intl/intl.dart';
 
 // Email sender preferences provider
@@ -58,10 +59,10 @@ class _EmailScannerControlsScreenState
                   'Connect your email account to start scanning for receipts',
               action: FilledButton.icon(
                 onPressed: () {
-                  // TODO: Navigate to email connect
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Email connection coming soon')),
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ConnectEmailScreen(),
+                    ),
                   );
                 },
                 icon: const Icon(Icons.email),

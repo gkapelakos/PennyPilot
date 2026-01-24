@@ -13,7 +13,7 @@ class SafeToSpend extends ConsumerWidget {
     final safeToSpendAsync = ref.watch(safeToSpendProvider);
     final appCurrency = ref.watch(appStateProvider).currencyCode;
     final currencySymbol = CurrencyInfo.getSymbol(appCurrency);
-    
+
     final currencyFormat = NumberFormat.currency(
       symbol: currencySymbol,
       decimalDigits: 2,
@@ -26,19 +26,22 @@ class SafeToSpend extends ConsumerWidget {
         }
         final theme = Theme.of(context);
         final colorScheme = theme.colorScheme;
-        final progress = result.monthlyBudget > 0 ? (result.remainingMonthly / result.monthlyBudget).clamp(0.0, 1.0) : 0.0;
+        final progress = result.monthlyBudget > 0
+            ? (result.remainingMonthly / result.monthlyBudget).clamp(0.0, 1.0)
+            : 0.0;
 
         return Container(
           decoration: BoxDecoration(
             color: colorScheme.surface,
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(32),
             boxShadow: [
               BoxShadow(
-                color: theme.shadowColor.withAlpha(12),
-                blurRadius: 15,
-                offset: const Offset(0, 8),
+                color: theme.shadowColor.withAlpha(20),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
               ),
             ],
+            border: Border.all(color: colorScheme.outlineVariant.withAlpha(20)),
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(28),
@@ -69,11 +72,13 @@ class SafeToSpend extends ConsumerWidget {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: colorScheme.tertiaryContainer.withAlpha(51),
+                                  color: colorScheme.tertiaryContainer
+                                      .withAlpha(51),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: Icon(Icons.auto_awesome, 
-                                  size: 16, 
+                                child: Icon(
+                                  Icons.auto_awesome,
+                                  size: 16,
                                   color: colorScheme.tertiary,
                                 ),
                               ),
@@ -91,7 +96,8 @@ class SafeToSpend extends ConsumerWidget {
                           Text(
                             'TODAY',
                             style: theme.textTheme.labelSmall?.copyWith(
-                              color: colorScheme.onSurfaceVariant.withAlpha(128),
+                              color:
+                                  colorScheme.onSurfaceVariant.withAlpha(128),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -159,8 +165,10 @@ class SafeToSpend extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          _buildMiniStat(context, 'BUDGET', currencyFormat.format(result.monthlyBudget)),
-                          _buildMiniStat(context, 'REMAINING', currencyFormat.format(result.remainingMonthly)),
+                          _buildMiniStat(context, 'BUDGET',
+                              currencyFormat.format(result.monthlyBudget)),
+                          _buildMiniStat(context, 'REMAINING',
+                              currencyFormat.format(result.remainingMonthly)),
                         ],
                       ),
                     ],

@@ -188,9 +188,11 @@ class OverviewTab extends ConsumerWidget {
 
   String _getGreeting(BuildContext context) {
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good Morning';
-    if (hour < 17) return 'Good Afternoon';
-    return 'Good Evening';
+    if (hour < 5) return 'Late Night Pilot 🌙';
+    if (hour < 12) return 'Good Morning ☀️';
+    if (hour < 17) return 'Good Afternoon 🌤️';
+    if (hour < 21) return 'Good Evening 🌙';
+    return 'Night Owl 🦉';
   }
 
   Widget _sectionHeader(BuildContext context, String title,
@@ -198,12 +200,25 @@ class OverviewTab extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSurface,
+        Row(
+          children: [
+            Container(
+              width: 4,
+              height: 24,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(2),
               ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+            ),
+          ],
         ),
         if (trailing != null) trailing,
       ],

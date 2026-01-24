@@ -35,7 +35,9 @@ class ConnectEmailScreen extends ConsumerWidget {
                   final account = await authService.signInWithGoogle();
                   if (account != null && context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(AppLocalizations.of(context)!.connectedTo(account))),
+                      SnackBar(
+                          content: Text(AppLocalizations.of(context)!
+                              .connectedTo(account))),
                     );
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
@@ -67,7 +69,13 @@ class ConnectEmailScreen extends ConsumerWidget {
               label: AppLocalizations.of(context)!.connectOutlook,
               color: Colors.blue.shade700,
               onPressed: () {
-                // TODO: Implement Outlook OAuth
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(
+                            '${AppLocalizations.of(context)!.connectOutlook} coming soon!')),
+                  );
+                }
               },
             ),
             const SizedBox(height: 16),
@@ -76,7 +84,13 @@ class ConnectEmailScreen extends ConsumerWidget {
               label: AppLocalizations.of(context)!.connectICloud,
               color: Colors.blueGrey,
               onPressed: () {
-                // TODO: Implement iCloud OAuth
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(
+                            '${AppLocalizations.of(context)!.connectICloud} coming soon!')),
+                  );
+                }
               },
             ),
             const Spacer(),
@@ -85,7 +99,8 @@ class ConnectEmailScreen extends ConsumerWidget {
                 // Enable Mock Data Mode
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (context) => const DashboardScreen(isDemoMode: true),
+                    builder: (context) =>
+                        const DashboardScreen(isDemoMode: true),
                   ),
                 );
               },

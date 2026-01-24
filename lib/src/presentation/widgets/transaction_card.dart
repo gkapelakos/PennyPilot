@@ -72,16 +72,21 @@ class _TransactionCardState extends State<TransactionCard>
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: theme.shadowColor.withAlpha(12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: theme.shadowColor.withAlpha(15),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
           ),
         ],
+        border:
+            Border.all(color: theme.colorScheme.outlineVariant.withAlpha(30)),
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: widget.onTap ?? (widget.expandable && widget.transaction.hasLineItems ? _toggleExpanded : null),
+          onTap: widget.onTap ??
+              (widget.expandable && widget.transaction.hasLineItems
+                  ? _toggleExpanded
+                  : null),
           borderRadius: BorderRadius.circular(24),
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -111,7 +116,8 @@ class _TransactionCardState extends State<TransactionCard>
                               Text(
                                 dateFormat.format(widget.transaction.date),
                                 style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.colorScheme.onSurfaceVariant.withAlpha(180),
+                                  color: theme.colorScheme.onSurfaceVariant
+                                      .withAlpha(180),
                                 ),
                               ),
                               if (widget.transaction.category != null) ...[
@@ -146,24 +152,33 @@ class _TransactionCardState extends State<TransactionCard>
   }
 
   Widget _buildMerchantIcon(ThemeData theme) {
+    // Generate a consistent color based on merchant name
+    final colorSeed = widget.transaction.merchantName.hashCode;
+    final baseColor = HSLColor.fromAHSL(
+      1.0,
+      colorSeed % 360.0,
+      0.45, // Saturation
+      0.80, // Lightness (Pastel)
+    ).toColor();
+
+    final iconColor = HSLColor.fromAHSL(
+      1.0,
+      colorSeed % 360.0,
+      0.8, // Higher saturation
+      0.30, // Darker for icon
+    ).toColor();
+
     return Container(
       width: 48,
       height: 48,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            theme.colorScheme.surfaceContainerHighest,
-            theme.colorScheme.surfaceContainerLow,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: baseColor.withAlpha(50), // Semi-transparent pastel
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.colorScheme.outlineVariant.withAlpha(51)),
+        border: Border.all(color: baseColor.withAlpha(100)),
       ),
       child: Icon(
         _getMerchantIcon(),
-        color: theme.colorScheme.primary.withAlpha(200),
+        color: iconColor,
         size: 22,
       ),
     );
@@ -172,7 +187,8 @@ class _TransactionCardState extends State<TransactionCard>
   Widget _buildCategoryPoint(ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6),
-      child: Icon(Icons.circle, size: 4, color: theme.colorScheme.outlineVariant),
+      child:
+          Icon(Icons.circle, size: 4, color: theme.colorScheme.outlineVariant),
     );
   }
 
@@ -186,7 +202,8 @@ class _TransactionCardState extends State<TransactionCard>
           showSign: true,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            color: isIncome ? Colors.green.shade600 : theme.colorScheme.onSurface,
+            color:
+                isIncome ? Colors.green.shade600 : theme.colorScheme.onSurface,
           ),
         ),
         if (widget.showConfidence)
@@ -212,18 +229,24 @@ class _TransactionCardState extends State<TransactionCard>
             decoration: BoxDecoration(
               color: theme.colorScheme.surfaceContainerLow.withAlpha(128),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: theme.colorScheme.outlineVariant.withAlpha(26)),
+              border: Border.all(
+                  color: theme.colorScheme.outlineVariant.withAlpha(26)),
             ),
             child: Column(
               children: [
                 if (widget.transaction.subtotalAmount != null)
-                  _buildBreakdownRow(context, 'Subtotal', widget.transaction.subtotalAmount!),
+                  _buildBreakdownRow(
+                      context, 'Subtotal', widget.transaction.subtotalAmount!),
                 if (widget.transaction.taxAmount != null)
-                  _buildBreakdownRow(context, 'Tax', widget.transaction.taxAmount!),
+                  _buildBreakdownRow(
+                      context, 'Tax', widget.transaction.taxAmount!),
                 if (widget.transaction.discountAmount != null)
-                  _buildBreakdownRow(context, 'Discount', -widget.transaction.discountAmount!, isDiscount: true),
+                  _buildBreakdownRow(
+                      context, 'Discount', -widget.transaction.discountAmount!,
+                      isDiscount: true),
                 if (widget.transaction.tipAmount != null)
-                  _buildBreakdownRow(context, 'Tip', widget.transaction.tipAmount!),
+                  _buildBreakdownRow(
+                      context, 'Tip', widget.transaction.tipAmount!),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0),
                   child: Divider(height: 1),
@@ -235,7 +258,8 @@ class _TransactionCardState extends State<TransactionCard>
                     AmountDisplay(
                       amount: widget.transaction.amount,
                       currency: widget.transaction.currency,
-                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                      style: theme.textTheme.titleSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -268,7 +292,7 @@ class _TransactionCardState extends State<TransactionCard>
     bool isDiscount = false,
   }) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -297,7 +321,7 @@ class _TransactionCardState extends State<TransactionCard>
 
   IconData _getMerchantIcon() {
     final merchant = widget.transaction.merchantName.toLowerCase();
-    
+
     if (merchant.contains('amazon')) return Icons.shopping_bag;
     if (merchant.contains('netflix')) return Icons.movie;
     if (merchant.contains('spotify')) return Icons.music_note;
@@ -314,7 +338,7 @@ class _TransactionCardState extends State<TransactionCard>
     if (merchant.contains('grocery') || merchant.contains('market')) {
       return Icons.shopping_cart;
     }
-    
+
     return Icons.receipt_long;
   }
 }

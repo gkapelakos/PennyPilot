@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) {
-    // TODO: Implement background task handling
+    // Background task handling placeholder
     debugPrint("Native called background task: $task");
     return Future.value(true);
   });
@@ -18,7 +18,7 @@ void callbackDispatcher() {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize Workmanager
   // Workmanager().initialize(
   //   callbackDispatcher,

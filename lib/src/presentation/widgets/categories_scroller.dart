@@ -24,7 +24,9 @@ class CategoriesScroller extends ConsumerWidget {
             }
           }
 
-          final activeCats = categories.where((c) => catMap.containsKey(c.id)).toList()
+          final activeCats = categories
+              .where((c) => catMap.containsKey(c.id))
+              .toList()
             ..sort((a, b) => (catMap[b.id] ?? 0).compareTo(catMap[a.id] ?? 0));
 
           if (activeCats.isEmpty) return const SizedBox.shrink();
@@ -42,20 +44,38 @@ class CategoriesScroller extends ConsumerWidget {
                   margin: const EdgeInsets.only(right: 12),
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                    borderRadius: BorderRadius.circular(16),
+                    gradient: LinearGradient(
+                      colors: [
+                        Theme.of(context).colorScheme.surfaceContainerHigh,
+                        Theme.of(context).colorScheme.surfaceContainer,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).shadowColor.withAlpha(8),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(cat.name, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold), maxLines: 1),
+                      Text(cat.name,
+                          style: const TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.bold),
+                          maxLines: 1),
                       const SizedBox(height: 4),
                       Text(
                         NumberFormat.compactCurrency(
                           symbol: currencySymbol,
                         ).format(amount),
-                        style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary),
                       ),
                     ],
                   ),

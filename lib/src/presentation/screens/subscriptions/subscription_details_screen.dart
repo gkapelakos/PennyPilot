@@ -27,12 +27,7 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
-            onPressed: () {
-              // TODO: Implement edit
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Edit coming soon')),
-              );
-            },
+            onPressed: () => _showEditDialog(context, ref),
             tooltip: 'Edit',
           ),
         ],
@@ -128,21 +123,18 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                     style: theme.textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),
-                  
                   _buildDetailRow(
                     context,
                     icon: Icons.calendar_today,
                     label: 'Next Renewal',
                     value: dateFormat.format(subscription.nextRenewalDate),
                   ),
-                  
                   _buildDetailRow(
                     context,
                     icon: Icons.history,
                     label: 'First Seen',
                     value: dateFormat.format(subscription.firstSeenDate),
                   ),
-                  
                   if (subscription.lastChargedDate != null)
                     _buildDetailRow(
                       context,
@@ -150,29 +142,26 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                       label: 'Last Charged',
                       value: dateFormat.format(subscription.lastChargedDate!),
                     ),
-                  
                   _buildDetailRow(
                     context,
                     icon: Icons.repeat,
                     label: 'Consistency',
                     value: '${subscription.frequencyConsistency}%',
                   ),
-                  
                   _buildDetailRow(
                     context,
                     icon: Icons.receipt,
                     label: 'Total Charges',
                     value: subscription.chargeCount.toString(),
                   ),
-                  
                   if (subscription.averageDaysBetweenCharges != null)
                     _buildDetailRow(
                       context,
                       icon: Icons.schedule,
                       label: 'Avg Days Between',
-                      value: subscription.averageDaysBetweenCharges!.toStringAsFixed(1),
+                      value: subscription.averageDaysBetweenCharges!
+                          .toStringAsFixed(1),
                     ),
-                  
                   _buildDetailRow(
                     context,
                     icon: Icons.source,
@@ -209,7 +198,6 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    
                     FutureBuilder<List<PriceChange>>(
                       future: _getPriceChanges(ref),
                       builder: (context, snapshot) {
@@ -265,7 +253,8 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                                     ),
                                     child: Text(
                                       '${change.changePercent > 0 ? '+' : ''}${change.changePercent.toStringAsFixed(1)}%',
-                                      style: theme.textTheme.labelSmall?.copyWith(
+                                      style:
+                                          theme.textTheme.labelSmall?.copyWith(
                                         color: change.changePercent > 0
                                             ? Colors.orange
                                             : Colors.green,
@@ -310,7 +299,6 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    
                     FutureBuilder<List<CycleChange>>(
                       future: _getCycleChanges(ref),
                       builder: (context, snapshot) {
@@ -390,12 +378,7 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () {
-                    // TODO: Mark as cancelled
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Marked as cancelled')),
-                    );
-                  },
+                  onPressed: () => _showCancelDialog(context, ref),
                   icon: const Icon(Icons.cancel),
                   label: const Text('Mark Cancelled'),
                 ),
@@ -403,12 +386,7 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: FilledButton.icon(
-                  onPressed: () {
-                    // TODO: Add note
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Add note coming soon')),
-                    );
-                  },
+                  onPressed: () => _showNoteDialog(context, ref),
                   icon: const Icon(Icons.note_add),
                   label: const Text('Add Note'),
                 ),
@@ -429,7 +407,7 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
     required String value,
   }) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -507,7 +485,7 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
 
   IconData _getServiceIcon() {
     final service = subscription.serviceName.toLowerCase();
-    
+
     if (service.contains('netflix')) return Icons.movie;
     if (service.contains('spotify')) return Icons.music_note;
     if (service.contains('youtube')) return Icons.play_circle;
@@ -520,7 +498,151 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
     if (service.contains('google') || service.contains('drive')) {
       return Icons.cloud;
     }
-    
+
     return Icons.subscriptions;
+  }
+
+  void _showEditDialog(BuildContext context, WidgetRef ref) {
+    final nameController =
+        TextEditingController(text: subscription.serviceName);
+    final amountController =
+        TextEditingController(text: subscription.amount.toString());
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Subscription'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'Service Name'),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: amountController,
+              decoration: const InputDecoration(labelText: 'Amount'),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final newName = nameController.text.trim();
+              final newAmount =
+                  double.tryParse(amountController.text) ?? subscription.amount;
+
+              if (newName.isNotEmpty) {
+                final isar = ref.read(isarProvider);
+                await isar.writeTxn(() async {
+                  subscription.serviceName = newName;
+                  subscription.amount = newAmount;
+                  await isar.subscriptionModels.put(subscription);
+                });
+
+                if (context.mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Subscription updated')),
+                  );
+                }
+              }
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showCancelDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Mark as Cancelled?'),
+        content: const Text(
+          'This will change the subscription status to cancelled. It will no longer appear in your active subscriptions.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('No, Keep Active'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final isar = ref.read(isarProvider);
+              await isar.writeTxn(() async {
+                subscription.lifecycleState =
+                    SubscriptionLifecycleState.cancelled;
+                await isar.subscriptionModels.put(subscription);
+              });
+
+              if (context.mounted) {
+                Navigator.pop(context);
+                Navigator.pop(context); // Go back to list
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Subscription cancelled')),
+                );
+              }
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: const Text('Yes, Cancel It'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showNoteDialog(BuildContext context, WidgetRef ref) {
+    final noteController = TextEditingController(text: subscription.notes);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add Note'),
+        content: TextField(
+          controller: noteController,
+          decoration: const InputDecoration(
+            labelText: 'Notes',
+            hintText: 'Add details like login info or contract end date...',
+          ),
+          maxLines: 3,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final isar = ref.read(isarProvider);
+              await isar.writeTxn(() async {
+                subscription.notes = noteController.text.trim().isEmpty
+                    ? null
+                    : noteController.text.trim();
+                await isar.subscriptionModels.put(subscription);
+              });
+
+              if (context.mounted) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Note saved')),
+                );
+              }
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
   }
 }
