@@ -8,6 +8,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_secure_storage_windows
   isar_flutter_libs
   local_auth_windows
+  rive_common
   share_plus
   sqlite3_flutter_libs
   url_launcher_windows

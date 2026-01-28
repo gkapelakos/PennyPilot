@@ -23,16 +23,15 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
-    final connectedEmails =
-        ref.watch(authServiceProvider.notifier).connectedEmails;
+    final connectedEmails = ref
+        .watch(authServiceProvider.notifier)
+        .connectedEmails;
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar.large(
-            title: Text(l10n.settings),
-          ),
+          SliverAppBar.large(title: Text(l10n.settings)),
           SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,15 +45,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   child: ListTile(
                     leading: const Icon(Icons.manage_accounts),
                     title: Text(l10n.manageConnectedAccounts),
-                    subtitle: Text(connectedEmails.isEmpty
-                        ? l10n.noAccountsConnected
-                        : l10n.accountsConnected(connectedEmails.length)),
+                    subtitle: Text(
+                      connectedEmails.isEmpty
+                          ? l10n.noAccountsConnected
+                          : l10n.accountsConnected(connectedEmails.length),
+                    ),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                const ManageAccountsScreen())),
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ManageAccountsScreen(),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -66,21 +68,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ListTile(
                         leading: const Icon(Icons.currency_exchange),
                         title: Text(l10n.primaryCurrency),
-                        subtitle: Text(popularCurrencies
-                            .firstWhere(
+                        subtitle: Text(
+                          popularCurrencies
+                              .firstWhere(
                                 (c) =>
                                     c.code ==
                                     ref.watch(appStateProvider).currencyCode,
-                                orElse: () => popularCurrencies.first)
-                            .name),
+                                orElse: () => popularCurrencies.first,
+                              )
+                              .name,
+                        ),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => _showCurrencyPicker(context, ref),
                       ),
                       ListTile(
                         leading: const Icon(Icons.language),
                         title: Text(l10n.language),
-                        subtitle: Text(_getLanguageName(
-                            ref.watch(appStateProvider).languageCode)),
+                        subtitle: Text(
+                          _getLanguageName(
+                            ref.watch(appStateProvider).languageCode,
+                          ),
+                        ),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => _showLanguagePicker(context, ref),
                       ),
@@ -89,19 +97,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         title: Text(l10n.manageCategories),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const ManageCategoriesScreen())),
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const ManageCategoriesScreen(),
+                          ),
+                        ),
                       ),
                       ListTile(
                         leading: const Icon(Icons.security),
                         title: Text(l10n.privacySecurity),
                         onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const PrivacySecurityScreen())),
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PrivacySecurityScreen(),
+                          ),
+                        ),
                       ),
                       ListTile(
                         leading: const Icon(Icons.refresh),
@@ -112,9 +123,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         leading: const Icon(Icons.backup),
                         title: Text(l10n.backups),
                         onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const BackupScreen())),
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const BackupScreen(),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -126,7 +139,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   child: ListTile(
                     leading: const Icon(Icons.info_outline),
                     title: Text(l10n.aboutPennyPilot),
-                    subtitle: const Text('Version 1.0.0-alpha.1.16'),
+                    subtitle: const Text('Version 1.0.0-alpha.1.17'),
                     onTap: () => launchUrl(
                       Uri.parse('https://github.com/Its-Juice/PennyPilot'),
                       mode: LaunchMode.externalApplication,
@@ -148,10 +161,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       child: Text(
         title.toUpperCase(),
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              letterSpacing: 1.2,
-              fontWeight: FontWeight.bold,
-            ),
+          color: Theme.of(context).colorScheme.primary,
+          letterSpacing: 1.2,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -163,7 +176,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         color: Theme.of(context).colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-            color: Theme.of(context).colorScheme.outlineVariant.withAlpha(51)),
+          color: Theme.of(context).colorScheme.outlineVariant.withAlpha(51),
+        ),
       ),
       clipBehavior: Clip.antiAlias,
       child: child,
@@ -180,17 +194,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             showSelectedIcon: false,
             segments: [
               ButtonSegment(
-                  value: ThemeMode.light,
-                  label: Text(l10n.light),
-                  icon: const Icon(Icons.light_mode_outlined)),
+                value: ThemeMode.light,
+                label: Text(l10n.light),
+                icon: const Icon(Icons.light_mode_outlined),
+              ),
               ButtonSegment(
-                  value: ThemeMode.dark,
-                  label: Text(l10n.dark),
-                  icon: const Icon(Icons.dark_mode_outlined)),
+                value: ThemeMode.dark,
+                label: Text(l10n.dark),
+                icon: const Icon(Icons.dark_mode_outlined),
+              ),
               ButtonSegment(
-                  value: ThemeMode.system,
-                  label: Text(l10n.system),
-                  icon: const Icon(Icons.brightness_auto)),
+                value: ThemeMode.system,
+                label: Text(l10n.system),
+                icon: const Icon(Icons.brightness_auto),
+              ),
             ],
             selected: {themeMode.mode},
             onSelectionChanged: (Set<ThemeMode> newSelection) {
@@ -217,19 +234,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _rescanEmails(
-      BuildContext context, AppLocalizations l10n) async {
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
     try {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(l10n.scanningEmails)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.scanningEmails)));
       await ref.read(emailServiceProvider).scanEmails();
       if (context.mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(l10n.scanComplete)));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.scanComplete)));
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.scanFailed(e.toString()))));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.scanFailed(e.toString()))));
       }
     }
   }
