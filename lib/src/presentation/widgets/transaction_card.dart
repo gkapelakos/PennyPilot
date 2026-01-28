@@ -72,13 +72,13 @@ class _TransactionCardState extends State<TransactionCard>
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: theme.shadowColor.withOpacity(0.05),
+            color: theme.shadowColor.withValues(alpha: 0.05),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
         ],
         border: Border.all(
-            color: theme.colorScheme.outlineVariant.withOpacity(0.1)),
+            color: theme.colorScheme.outlineVariant.withValues(alpha: 0.1)),
       ),
       child: Material(
         color: Colors.transparent,
@@ -117,7 +117,7 @@ class _TransactionCardState extends State<TransactionCard>
                                 dateFormat.format(widget.transaction.date),
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   color: theme.colorScheme.onSurfaceVariant
-                                      .withOpacity(0.7),
+                                      .withValues(alpha: 0.7),
                                 ),
                               ),
                               // if (widget.transaction.categoryId != null) ...[
@@ -172,9 +172,9 @@ class _TransactionCardState extends State<TransactionCard>
       width: 48,
       height: 48,
       decoration: BoxDecoration(
-        color: baseColor.withOpacity(0.2), // Semi-transparent pastel
+        color: baseColor.withValues(alpha: 0.2), // Semi-transparent pastel
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: baseColor.withOpacity(0.4)),
+        border: Border.all(color: baseColor.withValues(alpha: 0.4)),
       ),
       child: Icon(
         _getMerchantIcon(),
@@ -219,10 +219,12 @@ class _TransactionCardState extends State<TransactionCard>
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerLow.withOpacity(0.5),
+              color:
+                  theme.colorScheme.surfaceContainerLow.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                  color: theme.colorScheme.outlineVariant.withOpacity(0.1)),
+                  color:
+                      theme.colorScheme.outlineVariant.withValues(alpha: 0.1)),
             ),
             child: Column(
               children: [
@@ -271,7 +273,7 @@ class _TransactionCardState extends State<TransactionCard>
         child: Icon(
           Icons.keyboard_arrow_down_rounded,
           size: 20,
-          color: theme.colorScheme.onSurfaceVariant.withOpacity(0.4),
+          color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
         ),
       ),
     );

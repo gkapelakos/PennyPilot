@@ -66,8 +66,10 @@ class SpendingPulseChart extends ConsumerWidget {
                     yValueMapper: (_ChartData data, _) => data.amount,
                     borderRadius:
                         const BorderRadius.vertical(top: Radius.circular(6)),
-                    color:
-                        Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.8),
                     animationDuration: 1000,
                   )
                 ],

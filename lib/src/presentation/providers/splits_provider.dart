@@ -1,7 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:pennypilot/src/data/database/app_database.dart';
 import 'package:pennypilot/src/presentation/providers/database_provider.dart';
-import 'package:drift/drift.dart';
 
 part 'splits_provider.g.dart';
 

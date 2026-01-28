@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:pennypilot/src/data/database/app_database.dart';
-import 'package:pennypilot/src/services/auth_service.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:csv/csv.dart';

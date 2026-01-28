@@ -40,7 +40,7 @@ class SpendingSummaryCard extends ConsumerWidget {
             borderRadius: BorderRadius.circular(28),
             boxShadow: [
               BoxShadow(
-                color: theme.colorScheme.primary.withOpacity(0.3),
+                color: theme.colorScheme.primary.withValues(alpha: 0.3),
                 blurRadius: 24,
                 offset: const Offset(0, 12),
               ),
@@ -55,13 +55,13 @@ class SpendingSummaryCard extends ConsumerWidget {
                   Text(
                     'Total Spent in $monthName',
                     style: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.colorScheme.onPrimary.withOpacity(0.8),
+                      color: theme.colorScheme.onPrimary.withValues(alpha: 0.8),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   Icon(
                     Icons.trending_up,
-                    color: theme.colorScheme.onPrimary.withOpacity(0.8),
+                    color: theme.colorScheme.onPrimary.withValues(alpha: 0.8),
                     size: 20,
                   ),
                 ],
@@ -80,7 +80,7 @@ class SpendingSummaryCard extends ConsumerWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.onPrimary.withOpacity(0.2),
+                  color: theme.colorScheme.onPrimary.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(

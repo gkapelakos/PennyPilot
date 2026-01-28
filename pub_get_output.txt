@@ -1,0 +1,8 @@
+Resolving dependencies...
+Because receipt_recognition 0.2.8 depends on google_mlkit_text_recognition ^0.15.0 and no versions of receipt_recognition match >0.2.8 <0.3.0, receipt_recognition ^0.2.8 requires google_mlkit_text_recognition ^0.15.0.
+So, because pennypilot depends on both receipt_recognition ^0.2.8 and google_mlkit_text_recognition ^0.14.0, version solving failed.
+
+
+You can try the following suggestion to make the pubspec resolve:
+* Try upgrading your constraint on google_mlkit_text_recognition: flutter pub add google_mlkit_text_recognition:^0.15.0
+Failed to update packages.
