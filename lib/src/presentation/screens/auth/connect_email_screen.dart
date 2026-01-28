@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pennypilot/src/presentation/providers/auth_provider.dart';
-import 'package:pennypilot/src/presentation/screens/dashboard/dashboard_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pennypilot/src/services/auth_service.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 
 class ConnectEmailScreen extends ConsumerWidget {
@@ -31,19 +31,20 @@ class ConnectEmailScreen extends ConsumerWidget {
               color: Colors.red.shade700,
               onPressed: () async {
                 try {
-                  final authService = ref.read(authServiceProvider);
-                  final account = await authService.signInWithGoogle();
-                  if (account != null && context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text(AppLocalizations.of(context)!
-                              .connectedTo(account))),
-                    );
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => const DashboardScreen(),
-                      ),
-                    );
+                  final authService = ref.read(authServiceProvider.notifier);
+                  await authService.signInWithGoogle();
+
+                  if (context.mounted) {
+                    final emails =
+                        ref.read(authServiceProvider.notifier).connectedEmails;
+                    if (emails.isNotEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(AppLocalizations.of(context)!
+                                .connectedTo(emails.first))),
+                      );
+                      context.go('/dashboard');
+                    }
                   }
                 } catch (e) {
                   if (context.mounted) {
@@ -96,13 +97,7 @@ class ConnectEmailScreen extends ConsumerWidget {
             const Spacer(),
             TextButton(
               onPressed: () {
-                // Enable Mock Data Mode
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        const DashboardScreen(isDemoMode: true),
-                  ),
-                );
+                context.go('/dashboard');
               },
               child: Text(AppLocalizations.of(context)!.tryDemoMode),
             ),

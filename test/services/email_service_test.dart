@@ -9,10 +9,17 @@ import 'package:pennypilot/src/services/privacy_service.dart';
 import 'package:isar/isar.dart';
 
 class MockAuthService extends Mock implements AuthService {}
-class MockReceiptExtractionService extends Mock implements ReceiptExtractionService {}
-class MockSubscriptionIntelligenceService extends Mock implements SubscriptionIntelligenceService {}
+
+class MockReceiptExtractionService extends Mock
+    implements ReceiptExtractionService {}
+
+class MockSubscriptionIntelligenceService extends Mock
+    implements SubscriptionIntelligenceService {}
+
 class MockCategorizationService extends Mock implements CategorizationService {}
+
 class MockPrivacyService extends Mock implements PrivacyService {}
+
 class MockIsar extends Mock implements Isar {}
 
 void main() {
@@ -45,7 +52,7 @@ void main() {
   group('EmailService Tests', () {
     test('scanEmails returns 0 when no emails connected', () async {
       when(() => mockPrivacy.isLocalOnlyMode).thenReturn(false);
-      when(() => mockAuth.connectedEmails).thenReturn({});
+      when(() => mockAuth.connectedEmails).thenReturn([]);
 
       final result = await service.scanEmails();
 
@@ -63,7 +70,7 @@ void main() {
     });
 
     test('previewScan returns empty list when no emails connected', () async {
-      when(() => mockAuth.connectedEmails).thenReturn({});
+      when(() => mockAuth.connectedEmails).thenReturn([]);
 
       final result = await service.previewScan();
 

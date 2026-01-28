@@ -16,15 +16,16 @@ class BackupScreen extends ConsumerWidget {
         children: [
           Card(
             child: ListTile(
-              leading: const Icon(Icons.upload_file),
-              title: const Text('Export Backup'),
-              subtitle: const Text('Save your data to a file.'),
+              leading: const Icon(Icons.table_chart),
+              title: const Text('Export to CSV'),
+              subtitle: const Text('Save your transactions to a CSV file.'),
               onTap: () async {
                 try {
-                  await ref.read(backupServiceProvider).exportBackup();
+                  await ref.read(backupServiceProvider).exportToCsv();
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Backup exported successfully')),
+                      const SnackBar(
+                          content: Text('CSV exported successfully')),
                     );
                   }
                 } catch (e) {
@@ -36,52 +37,6 @@ class BackupScreen extends ConsumerWidget {
                 }
               },
             ),
-          ),
-          const SizedBox(height: 16),
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.download),
-              title: const Text('Restore Backup'),
-              subtitle: const Text('Restore data from a file. This will overwrite current data.'),
-              onTap: () => _showRestoreConfirmation(context, ref),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showRestoreConfirmation(BuildContext context, WidgetRef ref) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Restore Backup?'),
-        content: const Text('This will overwrite all current data with the backup. This action cannot be undone.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: () async {
-              Navigator.pop(context);
-              try {
-                await ref.read(backupServiceProvider).importBackup();
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Backup restored. Please restart the app.')),
-                  );
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Restore failed: $e')),
-                  );
-                }
-              }
-            },
-            child: const Text('Restore'),
           ),
         ],
       ),

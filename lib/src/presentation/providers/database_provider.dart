@@ -1,12 +1,18 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pennypilot/src/data/local/database_service.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:pennypilot/src/data/database/app_database.dart';
 import 'package:isar/isar.dart';
 
-final databaseServiceProvider = Provider<DatabaseService>((ref) {
-  return DatabaseService();
-});
+part 'database_provider.g.dart';
 
-/// Should be overridden in main.dart with initialized Isar instance
-final isarProvider = Provider<Isar>((ref) {
-  throw UnimplementedError('isarProvider must be overridden with an initialized Isar instance');
-});
+@Riverpod(keepAlive: true)
+AppDatabase appDatabase(AppDatabaseRef ref) {
+  final db = AppDatabase();
+  ref.onDispose(() => db.close());
+  return db;
+}
+
+@Riverpod(keepAlive: true)
+Isar isar(IsarRef ref) {
+  throw UnimplementedError(
+      'isarProvider must be overridden with an initialized Isar instance');
+}

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:pennypilot/src/presentation/providers/data_providers.dart';
+import 'package:pennypilot/src/presentation/providers/transactions_provider.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 
 class SpendingSummaryCard extends ConsumerWidget {
@@ -10,10 +10,11 @@ class SpendingSummaryCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionsAsync = ref.watch(recentTransactionsProvider);
-    final appCurrency = ref.watch(appStateProvider).currencyCode;
-    final currencySymbol = CurrencyInfo.getSymbol(appCurrency);
-    final currencyFormat = NumberFormat.currency(
-      symbol: currencySymbol,
+    final appState = ref.watch(appStateProvider);
+    final currencyCode = appState.currencyCode;
+
+    final currencyFormat = NumberFormat.simpleCurrency(
+      name: currencyCode,
       decimalDigits: 2,
     );
 
@@ -39,7 +40,7 @@ class SpendingSummaryCard extends ConsumerWidget {
             borderRadius: BorderRadius.circular(28),
             boxShadow: [
               BoxShadow(
-                color: theme.colorScheme.primary.withAlpha(80),
+                color: theme.colorScheme.primary.withOpacity(0.3),
                 blurRadius: 24,
                 offset: const Offset(0, 12),
               ),
@@ -54,13 +55,13 @@ class SpendingSummaryCard extends ConsumerWidget {
                   Text(
                     'Total Spent in $monthName',
                     style: theme.textTheme.labelLarge?.copyWith(
-                      color: theme.colorScheme.onPrimary.withAlpha(200),
+                      color: theme.colorScheme.onPrimary.withOpacity(0.8),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                   Icon(
                     Icons.trending_up,
-                    color: theme.colorScheme.onPrimary.withAlpha(200),
+                    color: theme.colorScheme.onPrimary.withOpacity(0.8),
                     size: 20,
                   ),
                 ],
@@ -79,7 +80,7 @@ class SpendingSummaryCard extends ConsumerWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.onPrimary.withAlpha(40),
+                  color: theme.colorScheme.onPrimary.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -105,8 +106,14 @@ class SpendingSummaryCard extends ConsumerWidget {
           ),
         );
       },
-      loading: () => const SizedBox(
-          height: 150, child: Center(child: CircularProgressIndicator())),
+      loading: () => Container(
+        height: 180,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(28),
+        ),
+      ),
       error: (e, s) =>
           const SizedBox(height: 150, child: Center(child: Icon(Icons.error))),
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/email_provider.dart';
-import 'package:pennypilot/src/presentation/providers/auth_provider.dart';
+import 'package:pennypilot/src/services/auth_service.dart';
 
 class EmailAccountsSection extends ConsumerWidget {
   const EmailAccountsSection({super.key});
@@ -9,8 +9,8 @@ class EmailAccountsSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // In a real implementation this would come from a provider listing all accounts
-    // For now, we mock the logic or use the single auth user if logged in
-    final authService = ref.watch(authServiceProvider);
+    // For now, we use the auth service which is now a provider itself
+    final authService = ref.watch(authServiceProvider.notifier);
     final connectedEmails = authService.connectedEmails;
 
     if (connectedEmails.isEmpty) {
@@ -27,16 +27,16 @@ class EmailAccountsSection extends ConsumerWidget {
     return Column(
       children: [
         ...connectedEmails.map((email) => ListTile(
-          leading: const CircleAvatar(
-            child: Icon(Icons.email),
-          ),
-          title: Text(email),
-          trailing: IconButton(
-            icon: const Icon(Icons.remove_circle_outline),
-            onPressed: () => authService.signOut(email: email),
-          ),
-        )),
-        
+              leading: const CircleAvatar(
+                child: Icon(Icons.email),
+              ),
+              title: Text(email),
+              trailing: IconButton(
+                icon: const Icon(Icons.remove_circle_outline),
+                onPressed: () =>
+                    ref.read(authServiceProvider.notifier).signOut(),
+              ),
+            )),
         ListTile(
           leading: const Icon(Icons.add_circle_outline),
           title: const Text('Add another account'),

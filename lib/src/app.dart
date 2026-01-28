@@ -2,51 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/core/theme/app_theme.dart';
 import 'package:pennypilot/src/presentation/providers/theme_provider.dart';
-import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
-import 'package:pennypilot/src/presentation/screens/onboarding/onboarding_screen.dart';
-import 'package:pennypilot/src/presentation/screens/onboarding/startup_screen.dart';
-import 'package:pennypilot/src/presentation/screens/dashboard/dashboard_screen.dart';
-
-import 'package:pennypilot/src/presentation/widgets/biometric_gate.dart';
+import 'package:pennypilot/src/presentation/providers/navigation_provider.dart';
 
 class PennyPilotApp extends ConsumerWidget {
   const PennyPilotApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Check onboarding status from persistent state
-    final appState = ref.watch(appStateProvider);
-    final hasCompletedOnboarding = appState.hasCompletedOnboarding;
-    final hasSelectedLanguage = appState.hasSelectedLanguage;
-    
+    final router = ref.watch(routerProvider);
     final themeState = ref.watch(themeModeProvider);
 
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-        return MaterialApp(
+        return MaterialApp.router(
           title: 'PennyPilot',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme(lightDynamic),
-          darkTheme: AppTheme.darkTheme(darkDynamic, isOled: themeState.isOledMode),
+          darkTheme:
+              AppTheme.darkTheme(darkDynamic, isOled: themeState.isOledMode),
           themeMode: themeState.mode,
-          locale: appState.languageCode != null ? Locale(appState.languageCode!) : null,
-          localizationsDelegates: [
+          routerConfig: router,
+          localizationsDelegates: const [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: AppLocalizations.supportedLocales,
-          home: BiometricGate(
-            child: !hasSelectedLanguage
-                ? const StartupScreen()
-                : hasCompletedOnboarding
-                    ? const DashboardScreen()
-                    : const OnboardingScreen(),
-          ),
         );
       },
     );

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:pennypilot/src/data/models/transaction_model.dart';
+import 'package:pennypilot/src/data/database/app_database.dart';
 import 'package:pennypilot/src/presentation/widgets/amount_display.dart';
 import 'package:pennypilot/src/presentation/widgets/confidence_badge.dart';
 import 'package:intl/intl.dart';
 
 /// Enhanced transaction card with confidence indicators and line items
 class TransactionCard extends StatefulWidget {
-  final TransactionModel transaction;
+  final Transaction transaction;
   final VoidCallback? onTap;
   final bool showConfidence;
   final bool expandable;
@@ -63,7 +63,7 @@ class _TransactionCardState extends State<TransactionCard>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final dateFormat = DateFormat('MMM d, y');
-    final isIncome = widget.transaction.kind == TransactionKind.income;
+    final isIncome = widget.transaction.kind == 0; // 0: income, 1: expense
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -72,13 +72,13 @@ class _TransactionCardState extends State<TransactionCard>
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: theme.shadowColor.withAlpha(15),
+            color: theme.shadowColor.withOpacity(0.05),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
         ],
-        border:
-            Border.all(color: theme.colorScheme.outlineVariant.withAlpha(30)),
+        border: Border.all(
+            color: theme.colorScheme.outlineVariant.withOpacity(0.1)),
       ),
       child: Material(
         color: Colors.transparent,
@@ -117,19 +117,19 @@ class _TransactionCardState extends State<TransactionCard>
                                 dateFormat.format(widget.transaction.date),
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   color: theme.colorScheme.onSurfaceVariant
-                                      .withAlpha(180),
+                                      .withOpacity(0.7),
                                 ),
                               ),
-                              if (widget.transaction.category != null) ...[
-                                _buildCategoryPoint(theme),
-                                Text(
-                                  widget.transaction.category!,
-                                  style: theme.textTheme.labelSmall?.copyWith(
-                                    color: theme.colorScheme.secondary,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
+                              // if (widget.transaction.categoryId != null) ...[
+                              //   _buildCategoryPoint(theme),
+                              //   Text(
+                              //     'Category', // Placeholder
+                              //     style: theme.textTheme.labelSmall?.copyWith(
+                              //       color: theme.colorScheme.secondary,
+                              //       fontWeight: FontWeight.w600,
+                              //     ),
+                              //   ),
+                              // ],
                             ],
                           ),
                         ],
@@ -172,23 +172,15 @@ class _TransactionCardState extends State<TransactionCard>
       width: 48,
       height: 48,
       decoration: BoxDecoration(
-        color: baseColor.withAlpha(50), // Semi-transparent pastel
+        color: baseColor.withOpacity(0.2), // Semi-transparent pastel
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: baseColor.withAlpha(100)),
+        border: Border.all(color: baseColor.withOpacity(0.4)),
       ),
       child: Icon(
         _getMerchantIcon(),
         color: iconColor,
         size: 22,
       ),
-    );
-  }
-
-  Widget _buildCategoryPoint(ThemeData theme) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6),
-      child:
-          Icon(Icons.circle, size: 4, color: theme.colorScheme.outlineVariant),
     );
   }
 
@@ -210,7 +202,7 @@ class _TransactionCardState extends State<TransactionCard>
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: ConfidenceBadge(
-              level: widget.transaction.extractionConfidence.name,
+              level: widget.transaction.extractionConfidence.toString(),
               compact: true,
             ),
           ),
@@ -227,10 +219,10 @@ class _TransactionCardState extends State<TransactionCard>
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerLow.withAlpha(128),
+              color: theme.colorScheme.surfaceContainerLow.withOpacity(0.5),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                  color: theme.colorScheme.outlineVariant.withAlpha(26)),
+                  color: theme.colorScheme.outlineVariant.withOpacity(0.1)),
             ),
             child: Column(
               children: [
@@ -279,7 +271,7 @@ class _TransactionCardState extends State<TransactionCard>
         child: Icon(
           Icons.keyboard_arrow_down_rounded,
           size: 20,
-          color: theme.colorScheme.onSurfaceVariant.withAlpha(100),
+          color: theme.colorScheme.onSurfaceVariant.withOpacity(0.4),
         ),
       ),
     );

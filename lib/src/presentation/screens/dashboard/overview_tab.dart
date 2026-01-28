@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pennypilot/src/presentation/providers/data_providers.dart';
-import 'package:pennypilot/src/presentation/providers/navigation_provider.dart';
-import 'package:pennypilot/src/presentation/screens/auth/connect_email_screen.dart';
+import 'package:go_router/go_router.dart';
+import 'package:pennypilot/src/presentation/providers/transactions_provider.dart';
+import 'package:pennypilot/src/presentation/providers/subscriptions_provider.dart';
+import 'package:pennypilot/src/presentation/widgets/transaction_shimmer.dart';
 import 'package:pennypilot/src/presentation/widgets/categories_scroller.dart';
 import 'package:pennypilot/src/presentation/widgets/safe_to_spend.dart';
 import 'package:pennypilot/src/presentation/widgets/spending_pulse_chart.dart';
@@ -15,13 +16,13 @@ import 'package:pennypilot/src/presentation/widgets/amount_display.dart';
 class OverviewTab extends ConsumerWidget {
   final bool isDemoMode;
 
-  const OverviewTab({super.key, required this.isDemoMode});
+  const OverviewTab({super.key, this.isDemoMode = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final transactionsAsync = ref.watch(recentTransactionsProvider);
-    final subscriptionsAsync = ref.watch(activeSubscriptionsProvider);
-    // final appCurrency = ref.watch(appStateProvider).currencyCode;
+    final recentTransactionsAsync = ref.watch(recentTransactionsProvider);
+    final activeSubscriptionsAsync =
+        ref.watch(subscriptionsProvider); // Simplified for now
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
@@ -82,13 +83,12 @@ class OverviewTab extends ConsumerWidget {
                   context,
                   l10n.recentTransactions,
                   trailing: TextButton(
-                    onPressed: () =>
-                        ref.read(dashboardIndexProvider.notifier).state = 1,
+                    onPressed: () => context.go('/transactions'),
                     child: Text(l10n.viewAll),
                   ),
                 ),
                 const SizedBox(height: 12),
-                transactionsAsync.when(
+                recentTransactionsAsync.when(
                   data: (transactions) {
                     if (transactions.isEmpty) {
                       return _buildEmptyTransactions(context);
@@ -100,17 +100,12 @@ class OverviewTab extends ConsumerWidget {
                                 transaction: t,
                                 expandable: false,
                                 showConfidence: false,
-                                onTap: () => ref
-                                    .read(dashboardIndexProvider.notifier)
-                                    .state = 1,
+                                onTap: () => context.go('/transactions'),
                               ))
                           .toList(),
                     );
                   },
-                  loading: () => const Center(
-                      child: Padding(
-                          padding: EdgeInsets.all(32),
-                          child: CircularProgressIndicator())),
+                  loading: () => const TransactionShimmer(),
                   error: (e, s) =>
                       Text(l10n.errorLoadingTransactions(e.toString())),
                 ),
@@ -120,13 +115,12 @@ class OverviewTab extends ConsumerWidget {
                   context,
                   l10n.upcomingSubscriptions,
                   trailing: TextButton(
-                    onPressed: () =>
-                        ref.read(dashboardIndexProvider.notifier).state = 2,
+                    onPressed: () => context.go('/subscriptions'),
                     child: Text(l10n.viewAll),
                   ),
                 ),
                 const SizedBox(height: 12),
-                subscriptionsAsync.when(
+                activeSubscriptionsAsync.when(
                   data: (subscriptions) {
                     if (subscriptions.isEmpty) {
                       return _buildEmptyStateCard(
@@ -170,10 +164,7 @@ class OverviewTab extends ConsumerWidget {
                       }).toList(),
                     );
                   },
-                  loading: () => const Center(
-                      child: Padding(
-                          padding: EdgeInsets.all(32),
-                          child: CircularProgressIndicator())),
+                  loading: () => const TransactionShimmer(),
                   error: (e, s) =>
                       Text(l10n.errorLoadingSubscriptions(e.toString())),
                 ),
@@ -317,10 +308,7 @@ class OverviewTab extends ConsumerWidget {
             const SizedBox(height: 24),
             FilledButton.icon(
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) => const ConnectEmailScreen()),
-                );
+                context.push('/connect-email');
               },
               icon: const Icon(Icons.email),
               label: Text(l10n.connectEmail),

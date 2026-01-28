@@ -6,7 +6,7 @@ import 'package:pennypilot/src/presentation/screens/settings/backup_screen.dart'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/theme_provider.dart';
 import 'package:pennypilot/src/presentation/providers/email_provider.dart';
-import 'package:pennypilot/src/presentation/providers/auth_provider.dart';
+import 'package:pennypilot/src/services/auth_service.dart';
 
 import 'package:pennypilot/src/presentation/screens/settings/manage_accounts_screen.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
@@ -23,7 +23,8 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
-    final connectedEmails = ref.watch(authServiceProvider).connectedEmails;
+    final connectedEmails =
+        ref.watch(authServiceProvider.notifier).connectedEmails;
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(

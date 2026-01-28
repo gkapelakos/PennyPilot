@@ -11,8 +11,11 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_riverpod: ^2.4.9
+  flutter_riverpod: ^2.5.1
+  flutter_hooks: ^0.20.5
   riverpod_annotation: any
+  drift: ^2.20.0
+  sqlite3_flutter_libs: ^0.5.24
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
   path_provider: ^2.1.1
@@ -25,7 +28,7 @@ dependencies:
   logging: any
   json_annotation: any
   dynamic_color: any
-  flutter_secure_storage: any
+  flutter_secure_storage: ^9.2.2
   file_picker: ^8.0.0
   share_plus: ^7.2.0
   path: any
@@ -34,13 +37,18 @@ dependencies:
   googleapis_auth: any
   http: ^1.1.0
   cryptography: any
-  google_mlkit_text_recognition: any
+  receipt_recognition: ^0.2.8
+  tflite_flutter: ^0.11.0
   image_picker: any
   flutter_colorpicker: any
-  lottie: ^2.7.0
+  shimmer: ^3.0.0
+  lottie: ^3.1.2
   fl_chart: ^1.1.1
-  local_auth: any
+  local_auth: ^2.3.0
   csv: ^5.0.3
+  go_router: ^14.0.0
+  syncfusion_flutter_charts: ^26.1.35
+  nearby_connections: ^4.1.0
 
 dev_dependencies:
   flutter_test:
@@ -51,9 +59,10 @@ dev_dependencies:
   mocktail: any
   riverpod_generator: any
   isar_generator: ^3.1.0+1
+  drift_dev: any
   json_serializable: any
   flutter_launcher_icons: any
-  analyzer: ^5.13.0
+  analyzer: any
 
 flutter:
   generate: true
@@ -79,3 +88,8 @@ flutter_launcher_icons:
     generate: true
     image_path: "assets/pennypilot logo.png"
     icon_size: 48
+
+dependency_overrides:
+  intl: ^0.20.2
+  analyzer: ^6.4.1
+  analyzer_plugin: ^0.11.3

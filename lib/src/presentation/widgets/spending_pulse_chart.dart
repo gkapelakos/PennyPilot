@@ -1,7 +1,8 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pennypilot/src/presentation/providers/data_providers.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:pennypilot/src/presentation/providers/transactions_provider.dart';
+import 'package:intl/intl.dart';
 
 class SpendingPulseChart extends ConsumerWidget {
   const SpendingPulseChart({super.key});
@@ -11,56 +12,66 @@ class SpendingPulseChart extends ConsumerWidget {
     final transactionsAsync = ref.watch(recentTransactionsProvider);
 
     return Card(
+      elevation: 0,
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: BorderSide(
+            color: Theme.of(context).colorScheme.outlineVariant.withAlpha(51)),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SizedBox(
-          height: 120,
+          height: 150,
           child: transactionsAsync.when(
             data: (transactions) {
               final daily = <DateTime, double>{};
               final now = DateTime.now();
               // Initialize last 7 days
-              for (int i = 0; i < 7; i++) {
+              for (int i = 6; i >= 0; i--) {
                 final d = DateTime(now.year, now.month, now.day)
                     .subtract(Duration(days: i));
                 daily[d] = 0;
               }
-              // Aggregate transactions by date (ignoring time)
+              // Aggregate transactions by date
               for (final t in transactions) {
                 final dateKey = DateTime(t.date.year, t.date.month, t.date.day);
                 if (daily.containsKey(dateKey)) {
                   daily[dateKey] = (daily[dateKey] ?? 0) + t.amount;
                 }
               }
-              // Sort by date (oldest first) for chart display
-              final sortedDates = daily.keys.toList()..sort();
-              final amounts = sortedDates.map((date) => daily[date]!).toList();
-              final maxAmount = amounts.isEmpty
-                  ? 100.0
-                  : amounts.reduce((a, b) => a > b ? a : b);
 
-              return BarChart(
-                BarChartData(
-                  maxY: (maxAmount * 1.2).clamp(100, double.infinity),
-                  barGroups: sortedDates
-                      .asMap()
-                      .entries
-                      .map((e) => BarChartGroupData(
-                            x: e.key,
-                            barRods: [
-                              BarChartRodData(
-                                toY: amounts[e.key],
-                                color: Theme.of(context).colorScheme.primary,
-                                width: 12,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ],
-                          ))
-                      .toList(),
-                  titlesData: FlTitlesData(show: false),
-                  gridData: FlGridData(show: false),
-                  borderData: FlBorderData(show: false),
+              final chartData = daily.entries
+                  .map((e) => _ChartData(e.key, e.value))
+                  .toList()
+                ..sort((a, b) => a.date.compareTo(b.date));
+
+              return SfCartesianChart(
+                plotAreaBorderWidth: 0,
+                primaryXAxis: DateTimeAxis(
+                  dateFormat: DateFormat.E(),
+                  intervalType: DateTimeIntervalType.days,
+                  majorGridLines: const MajorGridLines(width: 0),
+                  axisLine: const AxisLine(width: 0),
+                  labelStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
+                primaryYAxis: NumericAxis(
+                  isVisible: false,
+                ),
+                series: <CartesianSeries<_ChartData, DateTime>>[
+                  ColumnSeries<_ChartData, DateTime>(
+                    dataSource: chartData,
+                    xValueMapper: (_ChartData data, _) => data.date,
+                    yValueMapper: (_ChartData data, _) => data.amount,
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(6)),
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                    animationDuration: 1000,
+                  )
+                ],
+                tooltipBehavior: TooltipBehavior(enable: true, header: ''),
               );
             },
             loading: () => const Center(child: CircularProgressIndicator()),
@@ -70,4 +81,10 @@ class SpendingPulseChart extends ConsumerWidget {
       ),
     );
   }
+}
+
+class _ChartData {
+  _ChartData(this.date, this.amount);
+  final DateTime date;
+  final double amount;
 }

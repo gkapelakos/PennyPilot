@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pennypilot/src/presentation/providers/auth_provider.dart';
 import 'package:pennypilot/src/presentation/providers/email_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:pennypilot/src/services/auth_service.dart';
 
 class ManageAccountsScreen extends ConsumerStatefulWidget {
   const ManageAccountsScreen({super.key});
 
   @override
-  ConsumerState<ManageAccountsScreen> createState() => _ManageAccountsScreenState();
+  ConsumerState<ManageAccountsScreen> createState() =>
+      _ManageAccountsScreenState();
 }
 
 class _ManageAccountsScreenState extends ConsumerState<ManageAccountsScreen> {
@@ -22,14 +23,14 @@ class _ManageAccountsScreenState extends ConsumerState<ManageAccountsScreen> {
   }
 
   Future<void> _loadSyncTimes() async {
-    final authService = ref.read(authServiceProvider);
+    final authService = ref.read(authServiceProvider.notifier);
     final emails = authService.connectedEmails;
-    
+
     for (final email in emails) {
       final time = await authService.getLastSyncTime(email);
       _syncTimes[email] = time;
     }
-    
+
     if (mounted) {
       setState(() {
         _isLoading = false;
@@ -42,12 +43,12 @@ class _ManageAccountsScreenState extends ConsumerState<ManageAccountsScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Syncing $email...')),
       );
-      
+
       await ref.read(emailServiceProvider).scanAccount(email);
-      
+
       final now = DateTime.now();
-      await ref.read(authServiceProvider).setLastSyncTime(email, now);
-      
+      await ref.read(authServiceProvider.notifier).setLastSyncTime(email, now);
+
       if (mounted) {
         setState(() {
           _syncTimes[email] = now;
@@ -70,7 +71,8 @@ class _ManageAccountsScreenState extends ConsumerState<ManageAccountsScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Disconnect Account?'),
-        content: Text('Are you sure you want to disconnect $email? This will not delete your transactions but will stop new ones from being imported.'),
+        content: Text(
+            'Are you sure you want to disconnect $email? This will not delete your transactions but will stop new ones from being imported.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -78,7 +80,8 @@ class _ManageAccountsScreenState extends ConsumerState<ManageAccountsScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+            style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error),
             child: const Text('Disconnect'),
           ),
         ],
@@ -86,17 +89,15 @@ class _ManageAccountsScreenState extends ConsumerState<ManageAccountsScreen> {
     );
 
     if (confirmed == true) {
-      await ref.read(authServiceProvider).signOut(email: email);
+      await ref.read(authServiceProvider.notifier).signOut();
       await _loadSyncTimes();
     }
   }
 
   Future<void> _addAccount() async {
     try {
-      final email = await ref.read(authServiceProvider).signInWithGoogle();
-      if (email != null) {
-        await _loadSyncTimes();
-      }
+      await ref.read(authServiceProvider.notifier).signInWithGoogle();
+      await _loadSyncTimes();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -108,8 +109,9 @@ class _ManageAccountsScreenState extends ConsumerState<ManageAccountsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authService = ref.watch(authServiceProvider);
-    final emails = authService.connectedEmails.toList();
+    // Watch for state changes
+    ref.watch(authServiceProvider);
+    final emails = ref.watch(authServiceProvider.notifier).connectedEmails;
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -126,7 +128,7 @@ class _ManageAccountsScreenState extends ConsumerState<ManageAccountsScreen> {
                   itemBuilder: (context, index) {
                     final email = emails[index];
                     final syncTime = _syncTimes[email];
-                    
+
                     return Card(
                       margin: const EdgeInsets.only(bottom: 16),
                       child: Padding(
@@ -137,13 +139,17 @@ class _ManageAccountsScreenState extends ConsumerState<ManageAccountsScreen> {
                             Row(
                               children: [
                                 CircleAvatar(
-                                  backgroundColor: theme.colorScheme.primaryContainer,
-                                  child: Icon(Icons.email, color: theme.colorScheme.onPrimaryContainer),
+                                  backgroundColor:
+                                      theme.colorScheme.primaryContainer,
+                                  child: Icon(Icons.email,
+                                      color:
+                                          theme.colorScheme.onPrimaryContainer),
                                 ),
                                 const SizedBox(width: 16),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         email,
