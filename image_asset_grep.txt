@@ -1,1 +1,0 @@
-lib/src/presentation/screens/onboarding/startup_screen.dart:                                  child: Image.asset(
