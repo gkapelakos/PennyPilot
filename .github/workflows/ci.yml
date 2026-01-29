@@ -67,6 +67,11 @@ jobs:
     - name: Create secrets.dart
       run: cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
       shell: bash
+    - name: Create dummy google-services.json for Android
+      if: contains(matrix.target, 'apk')
+      run: |
+        mkdir -p android/app
+        echo '{"project_info":{"project_number":"12345","project_id":"dummy","storage_bucket":"dummy.appspot.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:12345:android:12345","android_client_info":{"package_name":"com.example.pennypilot"}},"oauth_client":[],"api_key":[{"current_key":"dummy"}],"services":{}}],"configuration_version":"1"}' > android/app/google-services.json
     - run: flutter pub get
     - run: flutter build ${{ matrix.target }} --release --no-pub
 

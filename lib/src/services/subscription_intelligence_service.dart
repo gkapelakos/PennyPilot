@@ -250,10 +250,18 @@ class SubscriptionIntelligenceService {
 
   /// Determine subscription frequency from average days
   SubscriptionFrequency _determineFrequency(double avgDays) {
-    if (avgDays >= 6 && avgDays <= 8) return SubscriptionFrequency.weekly;
-    if (avgDays >= 13 && avgDays <= 15) return SubscriptionFrequency.biweekly;
-    if (avgDays >= 28 && avgDays <= 32) return SubscriptionFrequency.monthly;
-    if (avgDays >= 88 && avgDays <= 95) return SubscriptionFrequency.quarterly;
+    if (avgDays >= 6 && avgDays <= 8) {
+      return SubscriptionFrequency.weekly;
+    }
+    if (avgDays >= 13 && avgDays <= 15) {
+      return SubscriptionFrequency.biweekly;
+    }
+    if (avgDays >= 28 && avgDays <= 32) {
+      return SubscriptionFrequency.monthly;
+    }
+    if (avgDays >= 88 && avgDays <= 95) {
+      return SubscriptionFrequency.quarterly;
+    }
     if (avgDays >= 178 && avgDays <= 185) {
       return SubscriptionFrequency.semiannual;
     }
@@ -289,13 +297,17 @@ class SubscriptionIntelligenceService {
   bool _detectTrial(
       List<TransactionModel> transactions, List<int> daysBetween) {
     // Trial detection: first charge is significantly different from others
-    if (transactions.length < 2) return false;
+    if (transactions.length < 2) {
+      return false;
+    }
 
     final firstAmount = transactions.first.amount;
     final secondAmount = transactions[1].amount;
 
     // If first charge is very small or zero, might be trial
-    if (firstAmount < secondAmount * 0.1) return true;
+    if (firstAmount < secondAmount * 0.1) {
+      return true;
+    }
 
     return false;
   }
@@ -369,9 +381,13 @@ class SubscriptionIntelligenceService {
   /// Detect price changes for a subscription
   Future<List<PriceChange>> detectPriceChanges(int subscriptionId) async {
     final subscription = await _isar.subscriptionModels.get(subscriptionId);
-    if (subscription == null) return [];
+    if (subscription == null) {
+      return [];
+    }
 
-    if (subscription.priceHistoryJson == null) return [];
+    if (subscription.priceHistoryJson == null) {
+      return [];
+    }
 
     final history = (jsonDecode(subscription.priceHistoryJson!) as List)
         .cast<Map<String, dynamic>>();
@@ -399,9 +415,13 @@ class SubscriptionIntelligenceService {
   /// Detect billing cycle changes
   Future<List<CycleChange>> detectCycleChanges(int subscriptionId) async {
     final subscription = await _isar.subscriptionModels.get(subscriptionId);
-    if (subscription == null) return [];
+    if (subscription == null) {
+      return [];
+    }
 
-    if (subscription.cycleHistoryJson == null) return [];
+    if (subscription.cycleHistoryJson == null) {
+      return [];
+    }
 
     final history = (jsonDecode(subscription.cycleHistoryJson!) as List)
         .cast<Map<String, dynamic>>();
