@@ -8,7 +8,7 @@ import 'package:pennypilot/src/presentation/screens/subscriptions/subscriptions_
 import 'package:pennypilot/src/presentation/screens/insights/insights_screen.dart';
 import 'package:pennypilot/src/presentation/screens/settings/settings_screen.dart';
 import 'package:pennypilot/src/presentation/screens/onboarding/startup_screen.dart';
-import 'package:pennypilot/src/presentation/screens/onboarding/onboarding_screen.dart';
+import 'package:pennypilot/onboarding/onboarding_screen.dart';
 import 'package:pennypilot/src/presentation/screens/auth/connect_email_screen.dart';
 import 'package:pennypilot/src/presentation/screens/transactions/add_transaction_sheet.dart';
 import 'package:pennypilot/src/presentation/screens/subscriptions/add_subscription_sheet.dart';

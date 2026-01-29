@@ -55,6 +55,7 @@ dependencies:
   go_router: ^14.0.0
   syncfusion_flutter_charts: ^26.1.35
   nearby_connections: ^4.1.0
+  introduction_screen: 3.1.14
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +77,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/pennypilot logo.png
+    - assets/lottie/
+
 
 google_ml_kit:
   text_recognition:

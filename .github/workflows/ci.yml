@@ -1,0 +1,68 @@
+name: CI Turbo
+on: 
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  metrics:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: subosito/flutter-action@v2
+      with:
+        cache: true
+        channel: stable
+    - run: flutter analyze
+    - run: flutter format --set-exit-if-changed .
+
+  test-matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: 
+        - {name: "unit-core", path: "test"}
+        - {name: "widgets", path: "test"} 
+        - {name: "integration", path: "test"}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: subosito/flutter-action@v2
+      with: {cache: true}
+    - name: Cache coverage
+      uses: actions/cache@v4
+      with:
+        path: coverage/
+        key: ${{ runner.os }}-coverage-${{ hashFiles('pubspec.lock') }}
+    - run: flutter test ${{ matrix.shard.path }} --coverage --machine
+
+  build-matrix:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - target: apk
+          os: ubuntu-latest
+        - target: ios
+          os: macos-13
+        - target: linux
+          os: ubuntu-latest  
+        - target: web
+          os: ubuntu-latest
+        - target: windows
+          os: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: subosito/flutter-action@v2
+      with: {cache: true}
+    - run: flutter build ${{ matrix.target }} --release --no-pub
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: subosito/flutter-action@v2
+      with: {cache: true}
+    - run: dart doc-update . || echo "docs not configured"
