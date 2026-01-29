@@ -3,101 +3,97 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
-class $CategoriesTable extends Categories
-    with TableInfo<$CategoriesTable, Category> {
+class Categories extends Table with TableInfo<Categories, Category> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $CategoriesTable(this.attachedDatabase, [this._alias]);
+  Categories(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      $customConstraints: 'PRIMARY KEY AUTOINCREMENT');
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 100),
       type: DriftSqlType.string,
-      requiredDuringInsert: true);
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _parentCategoryIdMeta =
       const VerificationMeta('parentCategoryId');
-  @override
   late final GeneratedColumn<int> parentCategoryId = GeneratedColumn<int>(
       'parent_category_id', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   static const VerificationMeta _iconMeta = const VerificationMeta('icon');
-  @override
   late final GeneratedColumn<String> icon = GeneratedColumn<String>(
       'icon', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _colorMeta = const VerificationMeta('color');
-  @override
   late final GeneratedColumn<String> color = GeneratedColumn<String>(
       'color', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _colorValueMeta =
       const VerificationMeta('colorValue');
-  @override
   late final GeneratedColumn<int> colorValue = GeneratedColumn<int>(
       'color_value', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   static const VerificationMeta _isSystemMeta =
       const VerificationMeta('isSystem');
-  @override
   late final GeneratedColumn<bool> isSystem = GeneratedColumn<bool>(
       'is_system', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("is_system" IN (0, 1))'),
-      defaultValue: const Constant(false));
+      $customConstraints: 'NOT NULL DEFAULT FALSE',
+      defaultValue: const CustomExpression('FALSE'));
   static const VerificationMeta _displayOrderMeta =
       const VerificationMeta('displayOrder');
-  @override
   late final GeneratedColumn<int> displayOrder = GeneratedColumn<int>(
       'display_order', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultValue: const Constant(0));
+      $customConstraints: 'NOT NULL DEFAULT 0',
+      defaultValue: const CustomExpression('0'));
   static const VerificationMeta _isActiveMeta =
       const VerificationMeta('isActive');
-  @override
   late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
       'is_active', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
-      defaultValue: const Constant(true));
+      $customConstraints: 'NOT NULL DEFAULT TRUE',
+      defaultValue: const CustomExpression('TRUE'));
   static const VerificationMeta _transactionCountMeta =
       const VerificationMeta('transactionCount');
-  @override
   late final GeneratedColumn<int> transactionCount = GeneratedColumn<int>(
       'transaction_count', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultValue: const Constant(0));
+      $customConstraints: 'NOT NULL DEFAULT 0',
+      defaultValue: const CustomExpression('0'));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
-  @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
       'created_at', aliasedName, false,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
+      $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+      defaultValue: const CustomExpression('CURRENT_TIMESTAMP'));
   static const VerificationMeta _updatedAtMeta =
       const VerificationMeta('updatedAt');
-  @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
       'updated_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -221,9 +217,12 @@ class $CategoriesTable extends Categories
   }
 
   @override
-  $CategoriesTable createAlias(String alias) {
-    return $CategoriesTable(attachedDatabase, alias);
+  Categories createAlias(String alias) {
+    return Categories(attachedDatabase, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class Category extends DataClass implements Insertable<Category> {
@@ -305,16 +304,16 @@ class Category extends DataClass implements Insertable<Category> {
     return Category(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      parentCategoryId: serializer.fromJson<int?>(json['parentCategoryId']),
+      parentCategoryId: serializer.fromJson<int?>(json['parent_category_id']),
       icon: serializer.fromJson<String>(json['icon']),
       color: serializer.fromJson<String>(json['color']),
-      colorValue: serializer.fromJson<int?>(json['colorValue']),
-      isSystem: serializer.fromJson<bool>(json['isSystem']),
-      displayOrder: serializer.fromJson<int>(json['displayOrder']),
-      isActive: serializer.fromJson<bool>(json['isActive']),
-      transactionCount: serializer.fromJson<int>(json['transactionCount']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+      colorValue: serializer.fromJson<int?>(json['color_value']),
+      isSystem: serializer.fromJson<bool>(json['is_system']),
+      displayOrder: serializer.fromJson<int>(json['display_order']),
+      isActive: serializer.fromJson<bool>(json['is_active']),
+      transactionCount: serializer.fromJson<int>(json['transaction_count']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updated_at']),
     );
   }
   @override
@@ -323,16 +322,16 @@ class Category extends DataClass implements Insertable<Category> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'parentCategoryId': serializer.toJson<int?>(parentCategoryId),
+      'parent_category_id': serializer.toJson<int?>(parentCategoryId),
       'icon': serializer.toJson<String>(icon),
       'color': serializer.toJson<String>(color),
-      'colorValue': serializer.toJson<int?>(colorValue),
-      'isSystem': serializer.toJson<bool>(isSystem),
-      'displayOrder': serializer.toJson<int>(displayOrder),
-      'isActive': serializer.toJson<bool>(isActive),
-      'transactionCount': serializer.toJson<int>(transactionCount),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+      'color_value': serializer.toJson<int?>(colorValue),
+      'is_system': serializer.toJson<bool>(isSystem),
+      'display_order': serializer.toJson<int>(displayOrder),
+      'is_active': serializer.toJson<bool>(isActive),
+      'transaction_count': serializer.toJson<int>(transactionCount),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'updated_at': serializer.toJson<DateTime?>(updatedAt),
     };
   }
 
@@ -580,203 +579,566 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
   }
 }
 
-class $TransactionsTable extends Transactions
-    with TableInfo<$TransactionsTable, Transaction> {
+class Receipts extends Table with TableInfo<Receipts, Receipt> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $TransactionsTable(this.attachedDatabase, [this._alias]);
+  Receipts(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _merchantNameMeta =
-      const VerificationMeta('merchantName');
-  @override
-  late final GeneratedColumn<String> merchantName = GeneratedColumn<String>(
-      'merchant_name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _rawMerchantNameMeta =
-      const VerificationMeta('rawMerchantName');
-  @override
-  late final GeneratedColumn<String> rawMerchantName = GeneratedColumn<String>(
-      'raw_merchant_name', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      $customConstraints: 'PRIMARY KEY AUTOINCREMENT');
+  static const VerificationMeta _vendorMeta = const VerificationMeta('vendor');
+  late final GeneratedColumn<String> vendor = GeneratedColumn<String>(
+      'vendor', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _amountMeta = const VerificationMeta('amount');
-  @override
   late final GeneratedColumn<double> amount = GeneratedColumn<double>(
       'amount', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _subtotalAmountMeta =
-      const VerificationMeta('subtotalAmount');
-  @override
-  late final GeneratedColumn<double> subtotalAmount = GeneratedColumn<double>(
-      'subtotal_amount', aliasedName, true,
-      type: DriftSqlType.double, requiredDuringInsert: false);
-  static const VerificationMeta _taxAmountMeta =
-      const VerificationMeta('taxAmount');
-  @override
-  late final GeneratedColumn<double> taxAmount = GeneratedColumn<double>(
-      'tax_amount', aliasedName, true,
-      type: DriftSqlType.double, requiredDuringInsert: false);
-  static const VerificationMeta _discountAmountMeta =
-      const VerificationMeta('discountAmount');
-  @override
-  late final GeneratedColumn<double> discountAmount = GeneratedColumn<double>(
-      'discount_amount', aliasedName, true,
-      type: DriftSqlType.double, requiredDuringInsert: false);
-  static const VerificationMeta _tipAmountMeta =
-      const VerificationMeta('tipAmount');
-  @override
-  late final GeneratedColumn<double> tipAmount = GeneratedColumn<double>(
-      'tip_amount', aliasedName, true,
-      type: DriftSqlType.double, requiredDuringInsert: false);
+      type: DriftSqlType.double,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
-  @override
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
       'date', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _categoryIdMeta =
       const VerificationMeta('categoryId');
-  @override
   late final GeneratedColumn<int> categoryId = GeneratedColumn<int>(
       'category_id', aliasedName, true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES categories (id)'));
-  static const VerificationMeta _isSubscriptionMeta =
-      const VerificationMeta('isSubscription');
-  @override
-  late final GeneratedColumn<bool> isSubscription = GeneratedColumn<bool>(
-      'is_subscription', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_subscription" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _subscriptionIdMeta =
-      const VerificationMeta('subscriptionId');
-  @override
-  late final GeneratedColumn<int> subscriptionId = GeneratedColumn<int>(
-      'subscription_id', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
-  @override
-  late final GeneratedColumn<int> kind = GeneratedColumn<int>(
-      'kind', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(1));
-  static const VerificationMeta _originMeta = const VerificationMeta('origin');
-  @override
-  late final GeneratedColumn<int> origin = GeneratedColumn<int>(
-      'origin', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
-  static const VerificationMeta _isRecurringMeta =
-      const VerificationMeta('isRecurring');
-  @override
-  late final GeneratedColumn<bool> isRecurring = GeneratedColumn<bool>(
-      'is_recurring', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_recurring" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _extractionConfidenceMeta =
-      const VerificationMeta('extractionConfidence');
-  @override
-  late final GeneratedColumn<int> extractionConfidence = GeneratedColumn<int>(
-      'extraction_confidence', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
-  static const VerificationMeta _hasLineItemsMeta =
-      const VerificationMeta('hasLineItems');
-  @override
-  late final GeneratedColumn<bool> hasLineItems = GeneratedColumn<bool>(
-      'has_line_items', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("has_line_items" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _originalEmailIdMeta =
-      const VerificationMeta('originalEmailId');
-  @override
-  late final GeneratedColumn<String> originalEmailId = GeneratedColumn<String>(
-      'original_email_id', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _currencyMeta =
-      const VerificationMeta('currency');
-  @override
-  late final GeneratedColumn<String> currency = GeneratedColumn<String>(
-      'currency', aliasedName, false,
+      $customConstraints: 'REFERENCES categories(id)');
+  static const VerificationMeta _imagePathMeta =
+      const VerificationMeta('imagePath');
+  late final GeneratedColumn<String> imagePath = GeneratedColumn<String>(
+      'image_path', aliasedName, true,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant('USD'));
-  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
-  @override
-  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
-      'notes', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _userVerifiedMeta =
-      const VerificationMeta('userVerified');
-  @override
-  late final GeneratedColumn<bool> userVerified = GeneratedColumn<bool>(
-      'user_verified', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("user_verified" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _hasSplitsMeta =
-      const VerificationMeta('hasSplits');
-  @override
-  late final GeneratedColumn<bool> hasSplits = GeneratedColumn<bool>(
-      'has_splits', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("has_splits" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _isManuallyEditedMeta =
-      const VerificationMeta('isManuallyEdited');
-  @override
-  late final GeneratedColumn<bool> isManuallyEdited = GeneratedColumn<bool>(
-      'is_manually_edited', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_manually_edited" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _manualEditTimestampMeta =
-      const VerificationMeta('manualEditTimestamp');
-  @override
-  late final GeneratedColumn<DateTime> manualEditTimestamp =
-      GeneratedColumn<DateTime>('manual_edit_timestamp', aliasedName, true,
-          type: DriftSqlType.dateTime, requiredDuringInsert: false);
+      $customConstraints: '');
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
-  @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
       'created_at', aliasedName, false,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
+      $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+      defaultValue: const CustomExpression('CURRENT_TIMESTAMP'));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, vendor, amount, date, categoryId, imagePath, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'receipts';
+  @override
+  VerificationContext validateIntegrity(Insertable<Receipt> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('vendor')) {
+      context.handle(_vendorMeta,
+          vendor.isAcceptableOrUnknown(data['vendor']!, _vendorMeta));
+    } else if (isInserting) {
+      context.missing(_vendorMeta);
+    }
+    if (data.containsKey('amount')) {
+      context.handle(_amountMeta,
+          amount.isAcceptableOrUnknown(data['amount']!, _amountMeta));
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+          _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('category_id')) {
+      context.handle(
+          _categoryIdMeta,
+          categoryId.isAcceptableOrUnknown(
+              data['category_id']!, _categoryIdMeta));
+    }
+    if (data.containsKey('image_path')) {
+      context.handle(_imagePathMeta,
+          imagePath.isAcceptableOrUnknown(data['image_path']!, _imagePathMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Receipt map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Receipt(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      vendor: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}vendor'])!,
+      amount: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}amount'])!,
+      date: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      categoryId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}category_id']),
+      imagePath: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}image_path']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+    );
+  }
+
+  @override
+  Receipts createAlias(String alias) {
+    return Receipts(attachedDatabase, alias);
+  }
+
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class Receipt extends DataClass implements Insertable<Receipt> {
+  final int id;
+  final String vendor;
+  final double amount;
+  final DateTime date;
+  final int? categoryId;
+  final String? imagePath;
+  final DateTime createdAt;
+  const Receipt(
+      {required this.id,
+      required this.vendor,
+      required this.amount,
+      required this.date,
+      this.categoryId,
+      this.imagePath,
+      required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['vendor'] = Variable<String>(vendor);
+    map['amount'] = Variable<double>(amount);
+    map['date'] = Variable<DateTime>(date);
+    if (!nullToAbsent || categoryId != null) {
+      map['category_id'] = Variable<int>(categoryId);
+    }
+    if (!nullToAbsent || imagePath != null) {
+      map['image_path'] = Variable<String>(imagePath);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  ReceiptsCompanion toCompanion(bool nullToAbsent) {
+    return ReceiptsCompanion(
+      id: Value(id),
+      vendor: Value(vendor),
+      amount: Value(amount),
+      date: Value(date),
+      categoryId: categoryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoryId),
+      imagePath: imagePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(imagePath),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory Receipt.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Receipt(
+      id: serializer.fromJson<int>(json['id']),
+      vendor: serializer.fromJson<String>(json['vendor']),
+      amount: serializer.fromJson<double>(json['amount']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      categoryId: serializer.fromJson<int?>(json['category_id']),
+      imagePath: serializer.fromJson<String?>(json['image_path']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'vendor': serializer.toJson<String>(vendor),
+      'amount': serializer.toJson<double>(amount),
+      'date': serializer.toJson<DateTime>(date),
+      'category_id': serializer.toJson<int?>(categoryId),
+      'image_path': serializer.toJson<String?>(imagePath),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  Receipt copyWith(
+          {int? id,
+          String? vendor,
+          double? amount,
+          DateTime? date,
+          Value<int?> categoryId = const Value.absent(),
+          Value<String?> imagePath = const Value.absent(),
+          DateTime? createdAt}) =>
+      Receipt(
+        id: id ?? this.id,
+        vendor: vendor ?? this.vendor,
+        amount: amount ?? this.amount,
+        date: date ?? this.date,
+        categoryId: categoryId.present ? categoryId.value : this.categoryId,
+        imagePath: imagePath.present ? imagePath.value : this.imagePath,
+        createdAt: createdAt ?? this.createdAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Receipt(')
+          ..write('id: $id, ')
+          ..write('vendor: $vendor, ')
+          ..write('amount: $amount, ')
+          ..write('date: $date, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('imagePath: $imagePath, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, vendor, amount, date, categoryId, imagePath, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Receipt &&
+          other.id == this.id &&
+          other.vendor == this.vendor &&
+          other.amount == this.amount &&
+          other.date == this.date &&
+          other.categoryId == this.categoryId &&
+          other.imagePath == this.imagePath &&
+          other.createdAt == this.createdAt);
+}
+
+class ReceiptsCompanion extends UpdateCompanion<Receipt> {
+  final Value<int> id;
+  final Value<String> vendor;
+  final Value<double> amount;
+  final Value<DateTime> date;
+  final Value<int?> categoryId;
+  final Value<String?> imagePath;
+  final Value<DateTime> createdAt;
+  const ReceiptsCompanion({
+    this.id = const Value.absent(),
+    this.vendor = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.date = const Value.absent(),
+    this.categoryId = const Value.absent(),
+    this.imagePath = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  ReceiptsCompanion.insert({
+    this.id = const Value.absent(),
+    required String vendor,
+    required double amount,
+    required DateTime date,
+    this.categoryId = const Value.absent(),
+    this.imagePath = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  })  : vendor = Value(vendor),
+        amount = Value(amount),
+        date = Value(date);
+  static Insertable<Receipt> custom({
+    Expression<int>? id,
+    Expression<String>? vendor,
+    Expression<double>? amount,
+    Expression<DateTime>? date,
+    Expression<int>? categoryId,
+    Expression<String>? imagePath,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (vendor != null) 'vendor': vendor,
+      if (amount != null) 'amount': amount,
+      if (date != null) 'date': date,
+      if (categoryId != null) 'category_id': categoryId,
+      if (imagePath != null) 'image_path': imagePath,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  ReceiptsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? vendor,
+      Value<double>? amount,
+      Value<DateTime>? date,
+      Value<int?>? categoryId,
+      Value<String?>? imagePath,
+      Value<DateTime>? createdAt}) {
+    return ReceiptsCompanion(
+      id: id ?? this.id,
+      vendor: vendor ?? this.vendor,
+      amount: amount ?? this.amount,
+      date: date ?? this.date,
+      categoryId: categoryId ?? this.categoryId,
+      imagePath: imagePath ?? this.imagePath,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (vendor.present) {
+      map['vendor'] = Variable<String>(vendor.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<double>(amount.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (categoryId.present) {
+      map['category_id'] = Variable<int>(categoryId.value);
+    }
+    if (imagePath.present) {
+      map['image_path'] = Variable<String>(imagePath.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReceiptsCompanion(')
+          ..write('id: $id, ')
+          ..write('vendor: $vendor, ')
+          ..write('amount: $amount, ')
+          ..write('date: $date, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('imagePath: $imagePath, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class Transactions extends Table with TableInfo<Transactions, Transaction> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  Transactions(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'PRIMARY KEY AUTOINCREMENT');
+  static const VerificationMeta _merchantNameMeta =
+      const VerificationMeta('merchantName');
+  late final GeneratedColumn<String> merchantName = GeneratedColumn<String>(
+      'merchant_name', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _rawMerchantNameMeta =
+      const VerificationMeta('rawMerchantName');
+  late final GeneratedColumn<String> rawMerchantName = GeneratedColumn<String>(
+      'raw_merchant_name', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
+      'amount', aliasedName, false,
+      type: DriftSqlType.double,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _subtotalAmountMeta =
+      const VerificationMeta('subtotalAmount');
+  late final GeneratedColumn<double> subtotalAmount = GeneratedColumn<double>(
+      'subtotal_amount', aliasedName, true,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _taxAmountMeta =
+      const VerificationMeta('taxAmount');
+  late final GeneratedColumn<double> taxAmount = GeneratedColumn<double>(
+      'tax_amount', aliasedName, true,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _discountAmountMeta =
+      const VerificationMeta('discountAmount');
+  late final GeneratedColumn<double> discountAmount = GeneratedColumn<double>(
+      'discount_amount', aliasedName, true,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _tipAmountMeta =
+      const VerificationMeta('tipAmount');
+  late final GeneratedColumn<double> tipAmount = GeneratedColumn<double>(
+      'tip_amount', aliasedName, true,
+      type: DriftSqlType.double,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+      'date', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
+  static const VerificationMeta _categoryIdMeta =
+      const VerificationMeta('categoryId');
+  late final GeneratedColumn<int> categoryId = GeneratedColumn<int>(
+      'category_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'REFERENCES categories(id)');
+  static const VerificationMeta _isSubscriptionMeta =
+      const VerificationMeta('isSubscription');
+  late final GeneratedColumn<bool> isSubscription = GeneratedColumn<bool>(
+      'is_subscription', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT FALSE',
+      defaultValue: const CustomExpression('FALSE'));
+  static const VerificationMeta _subscriptionIdMeta =
+      const VerificationMeta('subscriptionId');
+  late final GeneratedColumn<int> subscriptionId = GeneratedColumn<int>(
+      'subscription_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  late final GeneratedColumn<int> kind = GeneratedColumn<int>(
+      'kind', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT 1',
+      defaultValue: const CustomExpression('1'));
+  static const VerificationMeta _originMeta = const VerificationMeta('origin');
+  late final GeneratedColumn<int> origin = GeneratedColumn<int>(
+      'origin', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT 0',
+      defaultValue: const CustomExpression('0'));
+  static const VerificationMeta _isRecurringMeta =
+      const VerificationMeta('isRecurring');
+  late final GeneratedColumn<bool> isRecurring = GeneratedColumn<bool>(
+      'is_recurring', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT FALSE',
+      defaultValue: const CustomExpression('FALSE'));
+  static const VerificationMeta _extractionConfidenceMeta =
+      const VerificationMeta('extractionConfidence');
+  late final GeneratedColumn<int> extractionConfidence = GeneratedColumn<int>(
+      'extraction_confidence', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT 0',
+      defaultValue: const CustomExpression('0'));
+  static const VerificationMeta _hasLineItemsMeta =
+      const VerificationMeta('hasLineItems');
+  late final GeneratedColumn<bool> hasLineItems = GeneratedColumn<bool>(
+      'has_line_items', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT FALSE',
+      defaultValue: const CustomExpression('FALSE'));
+  static const VerificationMeta _originalEmailIdMeta =
+      const VerificationMeta('originalEmailId');
+  late final GeneratedColumn<String> originalEmailId = GeneratedColumn<String>(
+      'original_email_id', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _currencyMeta =
+      const VerificationMeta('currency');
+  late final GeneratedColumn<String> currency = GeneratedColumn<String>(
+      'currency', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT \'USD\'',
+      defaultValue: const CustomExpression('\'USD\''));
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+      'notes', aliasedName, true,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
+  static const VerificationMeta _userVerifiedMeta =
+      const VerificationMeta('userVerified');
+  late final GeneratedColumn<bool> userVerified = GeneratedColumn<bool>(
+      'user_verified', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT FALSE',
+      defaultValue: const CustomExpression('FALSE'));
+  static const VerificationMeta _hasSplitsMeta =
+      const VerificationMeta('hasSplits');
+  late final GeneratedColumn<bool> hasSplits = GeneratedColumn<bool>(
+      'has_splits', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT FALSE',
+      defaultValue: const CustomExpression('FALSE'));
+  static const VerificationMeta _isManuallyEditedMeta =
+      const VerificationMeta('isManuallyEdited');
+  late final GeneratedColumn<bool> isManuallyEdited = GeneratedColumn<bool>(
+      'is_manually_edited', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT FALSE',
+      defaultValue: const CustomExpression('FALSE'));
+  static const VerificationMeta _manualEditTimestampMeta =
+      const VerificationMeta('manualEditTimestamp');
+  late final GeneratedColumn<DateTime> manualEditTimestamp =
+      GeneratedColumn<DateTime>('manual_edit_timestamp', aliasedName, true,
+          type: DriftSqlType.dateTime,
+          requiredDuringInsert: false,
+          $customConstraints: '');
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+      defaultValue: const CustomExpression('CURRENT_TIMESTAMP'));
   static const VerificationMeta _updatedAtMeta =
       const VerificationMeta('updatedAt');
-  @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
       'updated_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1019,9 +1381,12 @@ class $TransactionsTable extends Transactions
   }
 
   @override
-  $TransactionsTable createAlias(String alias) {
-    return $TransactionsTable(attachedDatabase, alias);
+  Transactions createAlias(String alias) {
+    return Transactions(attachedDatabase, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class Transaction extends DataClass implements Insertable<Transaction> {
@@ -1038,6 +1403,8 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   final bool isSubscription;
   final int? subscriptionId;
   final int kind;
+
+  /// 0: income, 1: expense
   final int origin;
   final bool isRecurring;
   final int extractionConfidence;
@@ -1189,33 +1556,33 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Transaction(
       id: serializer.fromJson<int>(json['id']),
-      merchantName: serializer.fromJson<String>(json['merchantName']),
-      rawMerchantName: serializer.fromJson<String?>(json['rawMerchantName']),
+      merchantName: serializer.fromJson<String>(json['merchant_name']),
+      rawMerchantName: serializer.fromJson<String?>(json['raw_merchant_name']),
       amount: serializer.fromJson<double>(json['amount']),
-      subtotalAmount: serializer.fromJson<double?>(json['subtotalAmount']),
-      taxAmount: serializer.fromJson<double?>(json['taxAmount']),
-      discountAmount: serializer.fromJson<double?>(json['discountAmount']),
-      tipAmount: serializer.fromJson<double?>(json['tipAmount']),
+      subtotalAmount: serializer.fromJson<double?>(json['subtotal_amount']),
+      taxAmount: serializer.fromJson<double?>(json['tax_amount']),
+      discountAmount: serializer.fromJson<double?>(json['discount_amount']),
+      tipAmount: serializer.fromJson<double?>(json['tip_amount']),
       date: serializer.fromJson<DateTime>(json['date']),
-      categoryId: serializer.fromJson<int?>(json['categoryId']),
-      isSubscription: serializer.fromJson<bool>(json['isSubscription']),
-      subscriptionId: serializer.fromJson<int?>(json['subscriptionId']),
+      categoryId: serializer.fromJson<int?>(json['category_id']),
+      isSubscription: serializer.fromJson<bool>(json['is_subscription']),
+      subscriptionId: serializer.fromJson<int?>(json['subscription_id']),
       kind: serializer.fromJson<int>(json['kind']),
       origin: serializer.fromJson<int>(json['origin']),
-      isRecurring: serializer.fromJson<bool>(json['isRecurring']),
+      isRecurring: serializer.fromJson<bool>(json['is_recurring']),
       extractionConfidence:
-          serializer.fromJson<int>(json['extractionConfidence']),
-      hasLineItems: serializer.fromJson<bool>(json['hasLineItems']),
-      originalEmailId: serializer.fromJson<String?>(json['originalEmailId']),
+          serializer.fromJson<int>(json['extraction_confidence']),
+      hasLineItems: serializer.fromJson<bool>(json['has_line_items']),
+      originalEmailId: serializer.fromJson<String?>(json['original_email_id']),
       currency: serializer.fromJson<String>(json['currency']),
       notes: serializer.fromJson<String?>(json['notes']),
-      userVerified: serializer.fromJson<bool>(json['userVerified']),
-      hasSplits: serializer.fromJson<bool>(json['hasSplits']),
-      isManuallyEdited: serializer.fromJson<bool>(json['isManuallyEdited']),
+      userVerified: serializer.fromJson<bool>(json['user_verified']),
+      hasSplits: serializer.fromJson<bool>(json['has_splits']),
+      isManuallyEdited: serializer.fromJson<bool>(json['is_manually_edited']),
       manualEditTimestamp:
-          serializer.fromJson<DateTime?>(json['manualEditTimestamp']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+          serializer.fromJson<DateTime?>(json['manual_edit_timestamp']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updated_at']),
     );
   }
   @override
@@ -1223,31 +1590,32 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'merchantName': serializer.toJson<String>(merchantName),
-      'rawMerchantName': serializer.toJson<String?>(rawMerchantName),
+      'merchant_name': serializer.toJson<String>(merchantName),
+      'raw_merchant_name': serializer.toJson<String?>(rawMerchantName),
       'amount': serializer.toJson<double>(amount),
-      'subtotalAmount': serializer.toJson<double?>(subtotalAmount),
-      'taxAmount': serializer.toJson<double?>(taxAmount),
-      'discountAmount': serializer.toJson<double?>(discountAmount),
-      'tipAmount': serializer.toJson<double?>(tipAmount),
+      'subtotal_amount': serializer.toJson<double?>(subtotalAmount),
+      'tax_amount': serializer.toJson<double?>(taxAmount),
+      'discount_amount': serializer.toJson<double?>(discountAmount),
+      'tip_amount': serializer.toJson<double?>(tipAmount),
       'date': serializer.toJson<DateTime>(date),
-      'categoryId': serializer.toJson<int?>(categoryId),
-      'isSubscription': serializer.toJson<bool>(isSubscription),
-      'subscriptionId': serializer.toJson<int?>(subscriptionId),
+      'category_id': serializer.toJson<int?>(categoryId),
+      'is_subscription': serializer.toJson<bool>(isSubscription),
+      'subscription_id': serializer.toJson<int?>(subscriptionId),
       'kind': serializer.toJson<int>(kind),
       'origin': serializer.toJson<int>(origin),
-      'isRecurring': serializer.toJson<bool>(isRecurring),
-      'extractionConfidence': serializer.toJson<int>(extractionConfidence),
-      'hasLineItems': serializer.toJson<bool>(hasLineItems),
-      'originalEmailId': serializer.toJson<String?>(originalEmailId),
+      'is_recurring': serializer.toJson<bool>(isRecurring),
+      'extraction_confidence': serializer.toJson<int>(extractionConfidence),
+      'has_line_items': serializer.toJson<bool>(hasLineItems),
+      'original_email_id': serializer.toJson<String?>(originalEmailId),
       'currency': serializer.toJson<String>(currency),
       'notes': serializer.toJson<String?>(notes),
-      'userVerified': serializer.toJson<bool>(userVerified),
-      'hasSplits': serializer.toJson<bool>(hasSplits),
-      'isManuallyEdited': serializer.toJson<bool>(isManuallyEdited),
-      'manualEditTimestamp': serializer.toJson<DateTime?>(manualEditTimestamp),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+      'user_verified': serializer.toJson<bool>(userVerified),
+      'has_splits': serializer.toJson<bool>(hasSplits),
+      'is_manually_edited': serializer.toJson<bool>(isManuallyEdited),
+      'manual_edit_timestamp':
+          serializer.toJson<DateTime?>(manualEditTimestamp),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'updated_at': serializer.toJson<DateTime?>(updatedAt),
     };
   }
 
@@ -1730,192 +2098,198 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   }
 }
 
-class $SubscriptionsTable extends Subscriptions
-    with TableInfo<$SubscriptionsTable, Subscription> {
+class Subscriptions extends Table with TableInfo<Subscriptions, Subscription> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $SubscriptionsTable(this.attachedDatabase, [this._alias]);
+  Subscriptions(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      $customConstraints: 'PRIMARY KEY AUTOINCREMENT');
   static const VerificationMeta _serviceNameMeta =
       const VerificationMeta('serviceName');
-  @override
   late final GeneratedColumn<String> serviceName = GeneratedColumn<String>(
       'service_name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _amountMeta = const VerificationMeta('amount');
-  @override
   late final GeneratedColumn<double> amount = GeneratedColumn<double>(
       'amount', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+      type: DriftSqlType.double,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _nextRenewalDateMeta =
       const VerificationMeta('nextRenewalDate');
-  @override
   late final GeneratedColumn<DateTime> nextRenewalDate =
       GeneratedColumn<DateTime>('next_renewal_date', aliasedName, false,
-          type: DriftSqlType.dateTime, requiredDuringInsert: true);
+          type: DriftSqlType.dateTime,
+          requiredDuringInsert: true,
+          $customConstraints: 'NOT NULL');
   static const VerificationMeta _frequencyMeta =
       const VerificationMeta('frequency');
-  @override
   late final GeneratedColumn<int> frequency = GeneratedColumn<int>(
       'frequency', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _lifecycleStateMeta =
       const VerificationMeta('lifecycleState');
-  @override
   late final GeneratedColumn<int> lifecycleState = GeneratedColumn<int>(
       'lifecycle_state', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _categoryIdMeta =
       const VerificationMeta('categoryId');
-  @override
   late final GeneratedColumn<int> categoryId = GeneratedColumn<int>(
       'category_id', aliasedName, true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES categories (id)'));
+      $customConstraints: 'REFERENCES categories(id)');
   static const VerificationMeta _firstSeenDateMeta =
       const VerificationMeta('firstSeenDate');
-  @override
   late final GeneratedColumn<DateTime> firstSeenDate =
       GeneratedColumn<DateTime>('first_seen_date', aliasedName, false,
-          type: DriftSqlType.dateTime, requiredDuringInsert: true);
+          type: DriftSqlType.dateTime,
+          requiredDuringInsert: true,
+          $customConstraints: 'NOT NULL');
   static const VerificationMeta _lastChargedDateMeta =
       const VerificationMeta('lastChargedDate');
-  @override
   late final GeneratedColumn<DateTime> lastChargedDate =
       GeneratedColumn<DateTime>('last_charged_date', aliasedName, true,
-          type: DriftSqlType.dateTime, requiredDuringInsert: false);
+          type: DriftSqlType.dateTime,
+          requiredDuringInsert: false,
+          $customConstraints: '');
   static const VerificationMeta _priceHistoryJsonMeta =
       const VerificationMeta('priceHistoryJson');
-  @override
   late final GeneratedColumn<String> priceHistoryJson = GeneratedColumn<String>(
       'price_history_json', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   static const VerificationMeta _cycleHistoryJsonMeta =
       const VerificationMeta('cycleHistoryJson');
-  @override
   late final GeneratedColumn<String> cycleHistoryJson = GeneratedColumn<String>(
       'cycle_history_json', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   static const VerificationMeta _frequencyConsistencyMeta =
       const VerificationMeta('frequencyConsistency');
-  @override
   late final GeneratedColumn<int> frequencyConsistency = GeneratedColumn<int>(
       'frequency_consistency', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultValue: const Constant(100));
+      $customConstraints: 'NOT NULL DEFAULT 100',
+      defaultValue: const CustomExpression('100'));
   static const VerificationMeta _detectionSourceMeta =
       const VerificationMeta('detectionSource');
-  @override
   late final GeneratedColumn<int> detectionSource = GeneratedColumn<int>(
       'detection_source', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _anomaliesMeta =
       const VerificationMeta('anomalies');
-  @override
   late final GeneratedColumn<String> anomalies = GeneratedColumn<String>(
       'anomalies', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   static const VerificationMeta _isTrialMeta =
       const VerificationMeta('isTrial');
-  @override
   late final GeneratedColumn<bool> isTrial = GeneratedColumn<bool>(
       'is_trial', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("is_trial" IN (0, 1))'),
-      defaultValue: const Constant(false));
+      $customConstraints: 'NOT NULL DEFAULT FALSE',
+      defaultValue: const CustomExpression('FALSE'));
   static const VerificationMeta _trialEndDateMeta =
       const VerificationMeta('trialEndDate');
-  @override
   late final GeneratedColumn<DateTime> trialEndDate = GeneratedColumn<DateTime>(
       'trial_end_date', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   static const VerificationMeta _chargeCountMeta =
       const VerificationMeta('chargeCount');
-  @override
   late final GeneratedColumn<int> chargeCount = GeneratedColumn<int>(
       'charge_count', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultValue: const Constant(0));
+      $customConstraints: 'NOT NULL DEFAULT 0',
+      defaultValue: const CustomExpression('0'));
   static const VerificationMeta _averageDaysBetweenChargesMeta =
       const VerificationMeta('averageDaysBetweenCharges');
-  @override
   late final GeneratedColumn<double> averageDaysBetweenCharges =
       GeneratedColumn<double>('average_days_between_charges', aliasedName, true,
-          type: DriftSqlType.double, requiredDuringInsert: false);
+          type: DriftSqlType.double,
+          requiredDuringInsert: false,
+          $customConstraints: '');
   static const VerificationMeta _currencyMeta =
       const VerificationMeta('currency');
-  @override
   late final GeneratedColumn<String> currency = GeneratedColumn<String>(
       'currency', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant('USD'));
+      $customConstraints: 'NOT NULL DEFAULT \'USD\'',
+      defaultValue: const CustomExpression('\'USD\''));
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
-  @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
       'notes', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   static const VerificationMeta _userConfirmedMeta =
       const VerificationMeta('userConfirmed');
-  @override
   late final GeneratedColumn<bool> userConfirmed = GeneratedColumn<bool>(
       'user_confirmed', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("user_confirmed" IN (0, 1))'),
-      defaultValue: const Constant(false));
+      $customConstraints: 'NOT NULL DEFAULT FALSE',
+      defaultValue: const CustomExpression('FALSE'));
   static const VerificationMeta _isZombieMeta =
       const VerificationMeta('isZombie');
-  @override
   late final GeneratedColumn<bool> isZombie = GeneratedColumn<bool>(
       'is_zombie', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("is_zombie" IN (0, 1))'),
-      defaultValue: const Constant(false));
+      $customConstraints: 'NOT NULL DEFAULT FALSE',
+      defaultValue: const CustomExpression('FALSE'));
   static const VerificationMeta _zombieReasonMeta =
       const VerificationMeta('zombieReason');
-  @override
   late final GeneratedColumn<String> zombieReason = GeneratedColumn<String>(
       'zombie_reason', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   static const VerificationMeta _lastPriceHikePercentMeta =
       const VerificationMeta('lastPriceHikePercent');
-  @override
   late final GeneratedColumn<double> lastPriceHikePercent =
       GeneratedColumn<double>('last_price_hike_percent', aliasedName, true,
-          type: DriftSqlType.double, requiredDuringInsert: false);
+          type: DriftSqlType.double,
+          requiredDuringInsert: false,
+          $customConstraints: '');
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
-  @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
       'created_at', aliasedName, false,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
+      $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+      defaultValue: const CustomExpression('CURRENT_TIMESTAMP'));
   static const VerificationMeta _updatedAtMeta =
       const VerificationMeta('updatedAt');
-  @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
       'updated_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -2172,9 +2546,12 @@ class $SubscriptionsTable extends Subscriptions
   }
 
   @override
-  $SubscriptionsTable createAlias(String alias) {
-    return $SubscriptionsTable(attachedDatabase, alias);
+  Subscriptions createAlias(String alias) {
+    return Subscriptions(attachedDatabase, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class Subscription extends DataClass implements Insertable<Subscription> {
@@ -2192,6 +2569,8 @@ class Subscription extends DataClass implements Insertable<Subscription> {
   final int frequencyConsistency;
   final int detectionSource;
   final String? anomalies;
+
+  /// JSON encoded list
   final bool isTrial;
   final DateTime? trialEndDate;
   final int chargeCount;
@@ -2344,34 +2723,37 @@ class Subscription extends DataClass implements Insertable<Subscription> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Subscription(
       id: serializer.fromJson<int>(json['id']),
-      serviceName: serializer.fromJson<String>(json['serviceName']),
+      serviceName: serializer.fromJson<String>(json['service_name']),
       amount: serializer.fromJson<double>(json['amount']),
-      nextRenewalDate: serializer.fromJson<DateTime>(json['nextRenewalDate']),
+      nextRenewalDate: serializer.fromJson<DateTime>(json['next_renewal_date']),
       frequency: serializer.fromJson<int>(json['frequency']),
-      lifecycleState: serializer.fromJson<int>(json['lifecycleState']),
-      categoryId: serializer.fromJson<int?>(json['categoryId']),
-      firstSeenDate: serializer.fromJson<DateTime>(json['firstSeenDate']),
-      lastChargedDate: serializer.fromJson<DateTime?>(json['lastChargedDate']),
-      priceHistoryJson: serializer.fromJson<String?>(json['priceHistoryJson']),
-      cycleHistoryJson: serializer.fromJson<String?>(json['cycleHistoryJson']),
+      lifecycleState: serializer.fromJson<int>(json['lifecycle_state']),
+      categoryId: serializer.fromJson<int?>(json['category_id']),
+      firstSeenDate: serializer.fromJson<DateTime>(json['first_seen_date']),
+      lastChargedDate:
+          serializer.fromJson<DateTime?>(json['last_charged_date']),
+      priceHistoryJson:
+          serializer.fromJson<String?>(json['price_history_json']),
+      cycleHistoryJson:
+          serializer.fromJson<String?>(json['cycle_history_json']),
       frequencyConsistency:
-          serializer.fromJson<int>(json['frequencyConsistency']),
-      detectionSource: serializer.fromJson<int>(json['detectionSource']),
+          serializer.fromJson<int>(json['frequency_consistency']),
+      detectionSource: serializer.fromJson<int>(json['detection_source']),
       anomalies: serializer.fromJson<String?>(json['anomalies']),
-      isTrial: serializer.fromJson<bool>(json['isTrial']),
-      trialEndDate: serializer.fromJson<DateTime?>(json['trialEndDate']),
-      chargeCount: serializer.fromJson<int>(json['chargeCount']),
+      isTrial: serializer.fromJson<bool>(json['is_trial']),
+      trialEndDate: serializer.fromJson<DateTime?>(json['trial_end_date']),
+      chargeCount: serializer.fromJson<int>(json['charge_count']),
       averageDaysBetweenCharges:
-          serializer.fromJson<double?>(json['averageDaysBetweenCharges']),
+          serializer.fromJson<double?>(json['average_days_between_charges']),
       currency: serializer.fromJson<String>(json['currency']),
       notes: serializer.fromJson<String?>(json['notes']),
-      userConfirmed: serializer.fromJson<bool>(json['userConfirmed']),
-      isZombie: serializer.fromJson<bool>(json['isZombie']),
-      zombieReason: serializer.fromJson<String?>(json['zombieReason']),
+      userConfirmed: serializer.fromJson<bool>(json['user_confirmed']),
+      isZombie: serializer.fromJson<bool>(json['is_zombie']),
+      zombieReason: serializer.fromJson<String?>(json['zombie_reason']),
       lastPriceHikePercent:
-          serializer.fromJson<double?>(json['lastPriceHikePercent']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+          serializer.fromJson<double?>(json['last_price_hike_percent']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updated_at']),
     );
   }
   @override
@@ -2379,32 +2761,33 @@ class Subscription extends DataClass implements Insertable<Subscription> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'serviceName': serializer.toJson<String>(serviceName),
+      'service_name': serializer.toJson<String>(serviceName),
       'amount': serializer.toJson<double>(amount),
-      'nextRenewalDate': serializer.toJson<DateTime>(nextRenewalDate),
+      'next_renewal_date': serializer.toJson<DateTime>(nextRenewalDate),
       'frequency': serializer.toJson<int>(frequency),
-      'lifecycleState': serializer.toJson<int>(lifecycleState),
-      'categoryId': serializer.toJson<int?>(categoryId),
-      'firstSeenDate': serializer.toJson<DateTime>(firstSeenDate),
-      'lastChargedDate': serializer.toJson<DateTime?>(lastChargedDate),
-      'priceHistoryJson': serializer.toJson<String?>(priceHistoryJson),
-      'cycleHistoryJson': serializer.toJson<String?>(cycleHistoryJson),
-      'frequencyConsistency': serializer.toJson<int>(frequencyConsistency),
-      'detectionSource': serializer.toJson<int>(detectionSource),
+      'lifecycle_state': serializer.toJson<int>(lifecycleState),
+      'category_id': serializer.toJson<int?>(categoryId),
+      'first_seen_date': serializer.toJson<DateTime>(firstSeenDate),
+      'last_charged_date': serializer.toJson<DateTime?>(lastChargedDate),
+      'price_history_json': serializer.toJson<String?>(priceHistoryJson),
+      'cycle_history_json': serializer.toJson<String?>(cycleHistoryJson),
+      'frequency_consistency': serializer.toJson<int>(frequencyConsistency),
+      'detection_source': serializer.toJson<int>(detectionSource),
       'anomalies': serializer.toJson<String?>(anomalies),
-      'isTrial': serializer.toJson<bool>(isTrial),
-      'trialEndDate': serializer.toJson<DateTime?>(trialEndDate),
-      'chargeCount': serializer.toJson<int>(chargeCount),
-      'averageDaysBetweenCharges':
+      'is_trial': serializer.toJson<bool>(isTrial),
+      'trial_end_date': serializer.toJson<DateTime?>(trialEndDate),
+      'charge_count': serializer.toJson<int>(chargeCount),
+      'average_days_between_charges':
           serializer.toJson<double?>(averageDaysBetweenCharges),
       'currency': serializer.toJson<String>(currency),
       'notes': serializer.toJson<String?>(notes),
-      'userConfirmed': serializer.toJson<bool>(userConfirmed),
-      'isZombie': serializer.toJson<bool>(isZombie),
-      'zombieReason': serializer.toJson<String?>(zombieReason),
-      'lastPriceHikePercent': serializer.toJson<double?>(lastPriceHikePercent),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+      'user_confirmed': serializer.toJson<bool>(userConfirmed),
+      'is_zombie': serializer.toJson<bool>(isZombie),
+      'zombie_reason': serializer.toJson<String?>(zombieReason),
+      'last_price_hike_percent':
+          serializer.toJson<double?>(lastPriceHikePercent),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'updated_at': serializer.toJson<DateTime?>(updatedAt),
     };
   }
 
@@ -2897,80 +3280,71 @@ class SubscriptionsCompanion extends UpdateCompanion<Subscription> {
   }
 }
 
-class $MappingsTable extends Mappings with TableInfo<$MappingsTable, Mapping> {
+class Mappings extends Table with TableInfo<Mappings, Mapping> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $MappingsTable(this.attachedDatabase, [this._alias]);
+  Mappings(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      $customConstraints: 'PRIMARY KEY AUTOINCREMENT');
   static const VerificationMeta _merchantNameMeta =
       const VerificationMeta('merchantName');
-  @override
   late final GeneratedColumn<String> merchantName = GeneratedColumn<String>(
       'merchant_name', aliasedName, false,
-      additionalChecks:
-          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 200),
       type: DriftSqlType.string,
-      requiredDuringInsert: true);
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _categoryIdMeta =
       const VerificationMeta('categoryId');
-  @override
   late final GeneratedColumn<int> categoryId = GeneratedColumn<int>(
       'category_id', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES categories (id)'));
+      $customConstraints: 'NOT NULL REFERENCES categories(id)');
   static const VerificationMeta _isAutomaticMeta =
       const VerificationMeta('isAutomatic');
-  @override
   late final GeneratedColumn<bool> isAutomatic = GeneratedColumn<bool>(
       'is_automatic', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_automatic" IN (0, 1))'),
-      defaultValue: const Constant(true));
+      $customConstraints: 'NOT NULL DEFAULT TRUE',
+      defaultValue: const CustomExpression('TRUE'));
   static const VerificationMeta _confidenceMeta =
       const VerificationMeta('confidence');
-  @override
   late final GeneratedColumn<int> confidence = GeneratedColumn<int>(
       'confidence', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultValue: const Constant(100));
+      $customConstraints: 'NOT NULL DEFAULT 100',
+      defaultValue: const CustomExpression('100'));
   static const VerificationMeta _userConfirmedMeta =
       const VerificationMeta('userConfirmed');
-  @override
   late final GeneratedColumn<bool> userConfirmed = GeneratedColumn<bool>(
       'user_confirmed', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("user_confirmed" IN (0, 1))'),
-      defaultValue: const Constant(false));
+      $customConstraints: 'NOT NULL DEFAULT FALSE',
+      defaultValue: const CustomExpression('FALSE'));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
-  @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
       'created_at', aliasedName, false,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
+      $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+      defaultValue: const CustomExpression('CURRENT_TIMESTAMP'));
   static const VerificationMeta _updatedAtMeta =
       const VerificationMeta('updatedAt');
-  @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
       'updated_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -3066,9 +3440,12 @@ class $MappingsTable extends Mappings with TableInfo<$MappingsTable, Mapping> {
   }
 
   @override
-  $MappingsTable createAlias(String alias) {
-    return $MappingsTable(attachedDatabase, alias);
+  Mappings createAlias(String alias) {
+    return Mappings(attachedDatabase, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class Mapping extends DataClass implements Insertable<Mapping> {
@@ -3125,13 +3502,13 @@ class Mapping extends DataClass implements Insertable<Mapping> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Mapping(
       id: serializer.fromJson<int>(json['id']),
-      merchantName: serializer.fromJson<String>(json['merchantName']),
-      categoryId: serializer.fromJson<int>(json['categoryId']),
-      isAutomatic: serializer.fromJson<bool>(json['isAutomatic']),
+      merchantName: serializer.fromJson<String>(json['merchant_name']),
+      categoryId: serializer.fromJson<int>(json['category_id']),
+      isAutomatic: serializer.fromJson<bool>(json['is_automatic']),
       confidence: serializer.fromJson<int>(json['confidence']),
-      userConfirmed: serializer.fromJson<bool>(json['userConfirmed']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+      userConfirmed: serializer.fromJson<bool>(json['user_confirmed']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updated_at']),
     );
   }
   @override
@@ -3139,13 +3516,13 @@ class Mapping extends DataClass implements Insertable<Mapping> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'merchantName': serializer.toJson<String>(merchantName),
-      'categoryId': serializer.toJson<int>(categoryId),
-      'isAutomatic': serializer.toJson<bool>(isAutomatic),
+      'merchant_name': serializer.toJson<String>(merchantName),
+      'category_id': serializer.toJson<int>(categoryId),
+      'is_automatic': serializer.toJson<bool>(isAutomatic),
       'confidence': serializer.toJson<int>(confidence),
-      'userConfirmed': serializer.toJson<bool>(userConfirmed),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+      'user_confirmed': serializer.toJson<bool>(userConfirmed),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'updated_at': serializer.toJson<DateTime?>(updatedAt),
     };
   }
 
@@ -3319,74 +3696,70 @@ class MappingsCompanion extends UpdateCompanion<Mapping> {
   }
 }
 
-class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
+class Budgets extends Table with TableInfo<Budgets, Budget> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $BudgetsTable(this.attachedDatabase, [this._alias]);
+  Budgets(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      $customConstraints: 'PRIMARY KEY AUTOINCREMENT');
   static const VerificationMeta _categoryIdMeta =
       const VerificationMeta('categoryId');
-  @override
   late final GeneratedColumn<int> categoryId = GeneratedColumn<int>(
       'category_id', aliasedName, true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES categories (id)'));
+      $customConstraints: 'REFERENCES categories(id)');
   static const VerificationMeta _limitAmountMeta =
       const VerificationMeta('limitAmount');
-  @override
   late final GeneratedColumn<double> limitAmount = GeneratedColumn<double>(
       'limit_amount', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+      type: DriftSqlType.double,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _periodMeta = const VerificationMeta('period');
-  @override
   late final GeneratedColumn<int> period = GeneratedColumn<int>(
       'period', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultValue: const Constant(1));
+      $customConstraints: 'NOT NULL DEFAULT 1',
+      defaultValue: const CustomExpression('1'));
   static const VerificationMeta _rolloverMeta =
       const VerificationMeta('rollover');
-  @override
   late final GeneratedColumn<bool> rollover = GeneratedColumn<bool>(
       'rollover', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("rollover" IN (0, 1))'),
-      defaultValue: const Constant(false));
+      $customConstraints: 'NOT NULL DEFAULT FALSE',
+      defaultValue: const CustomExpression('FALSE'));
   static const VerificationMeta _carryOverAmountMeta =
       const VerificationMeta('carryOverAmount');
-  @override
   late final GeneratedColumn<double> carryOverAmount = GeneratedColumn<double>(
       'carry_over_amount', aliasedName, false,
       type: DriftSqlType.double,
       requiredDuringInsert: false,
-      defaultValue: const Constant(0.0));
+      $customConstraints: 'NOT NULL DEFAULT 0.0',
+      defaultValue: const CustomExpression('0.0'));
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
-  @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
       'created_at', aliasedName, false,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
+      $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+      defaultValue: const CustomExpression('CURRENT_TIMESTAMP'));
   static const VerificationMeta _updatedAtMeta =
       const VerificationMeta('updatedAt');
-  @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
       'updated_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -3476,9 +3849,12 @@ class $BudgetsTable extends Budgets with TableInfo<$BudgetsTable, Budget> {
   }
 
   @override
-  $BudgetsTable createAlias(String alias) {
-    return $BudgetsTable(attachedDatabase, alias);
+  Budgets createAlias(String alias) {
+    return Budgets(attachedDatabase, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class Budget extends DataClass implements Insertable<Budget> {
@@ -3486,6 +3862,8 @@ class Budget extends DataClass implements Insertable<Budget> {
   final int? categoryId;
   final double limitAmount;
   final int period;
+
+  /// 0: weekly, 1: monthly
   final bool rollover;
   final double carryOverAmount;
   final DateTime createdAt;
@@ -3539,13 +3917,13 @@ class Budget extends DataClass implements Insertable<Budget> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Budget(
       id: serializer.fromJson<int>(json['id']),
-      categoryId: serializer.fromJson<int?>(json['categoryId']),
-      limitAmount: serializer.fromJson<double>(json['limitAmount']),
+      categoryId: serializer.fromJson<int?>(json['category_id']),
+      limitAmount: serializer.fromJson<double>(json['limit_amount']),
       period: serializer.fromJson<int>(json['period']),
       rollover: serializer.fromJson<bool>(json['rollover']),
-      carryOverAmount: serializer.fromJson<double>(json['carryOverAmount']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+      carryOverAmount: serializer.fromJson<double>(json['carry_over_amount']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updated_at']),
     );
   }
   @override
@@ -3553,13 +3931,13 @@ class Budget extends DataClass implements Insertable<Budget> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'categoryId': serializer.toJson<int?>(categoryId),
-      'limitAmount': serializer.toJson<double>(limitAmount),
+      'category_id': serializer.toJson<int?>(categoryId),
+      'limit_amount': serializer.toJson<double>(limitAmount),
       'period': serializer.toJson<int>(period),
       'rollover': serializer.toJson<bool>(rollover),
-      'carryOverAmount': serializer.toJson<double>(carryOverAmount),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+      'carry_over_amount': serializer.toJson<double>(carryOverAmount),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'updated_at': serializer.toJson<DateTime?>(updatedAt),
     };
   }
 
@@ -3732,56 +4110,52 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
   }
 }
 
-class $SplitsTable extends Splits with TableInfo<$SplitsTable, Split> {
+class Splits extends Table with TableInfo<Splits, Split> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $SplitsTable(this.attachedDatabase, [this._alias]);
+  Splits(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
       'id', aliasedName, false,
       hasAutoIncrement: true,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+      $customConstraints: 'PRIMARY KEY AUTOINCREMENT');
   static const VerificationMeta _transactionIdMeta =
       const VerificationMeta('transactionId');
-  @override
   late final GeneratedColumn<int> transactionId = GeneratedColumn<int>(
       'transaction_id', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES transactions (id)'));
+      $customConstraints: 'NOT NULL REFERENCES transactions(id)');
   static const VerificationMeta _categoryIdMeta =
       const VerificationMeta('categoryId');
-  @override
   late final GeneratedColumn<int> categoryId = GeneratedColumn<int>(
       'category_id', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES categories (id)'));
+      $customConstraints: 'NOT NULL REFERENCES categories(id)');
   static const VerificationMeta _amountMeta = const VerificationMeta('amount');
-  @override
   late final GeneratedColumn<double> amount = GeneratedColumn<double>(
       'amount', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+      type: DriftSqlType.double,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL');
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
-  @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
       'notes', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      $customConstraints: '');
   static const VerificationMeta _createdAtMeta =
       const VerificationMeta('createdAt');
-  @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
       'created_at', aliasedName, false,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      defaultValue: currentDateAndTime);
+      $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+      defaultValue: const CustomExpression('CURRENT_TIMESTAMP'));
   @override
   List<GeneratedColumn> get $columns =>
       [id, transactionId, categoryId, amount, notes, createdAt];
@@ -3853,9 +4227,12 @@ class $SplitsTable extends Splits with TableInfo<$SplitsTable, Split> {
   }
 
   @override
-  $SplitsTable createAlias(String alias) {
-    return $SplitsTable(attachedDatabase, alias);
+  Splits createAlias(String alias) {
+    return Splits(attachedDatabase, alias);
   }
+
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class Split extends DataClass implements Insertable<Split> {
@@ -3903,11 +4280,11 @@ class Split extends DataClass implements Insertable<Split> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Split(
       id: serializer.fromJson<int>(json['id']),
-      transactionId: serializer.fromJson<int>(json['transactionId']),
-      categoryId: serializer.fromJson<int>(json['categoryId']),
+      transactionId: serializer.fromJson<int>(json['transaction_id']),
+      categoryId: serializer.fromJson<int>(json['category_id']),
       amount: serializer.fromJson<double>(json['amount']),
       notes: serializer.fromJson<String?>(json['notes']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
     );
   }
   @override
@@ -3915,11 +4292,11 @@ class Split extends DataClass implements Insertable<Split> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'transactionId': serializer.toJson<int>(transactionId),
-      'categoryId': serializer.toJson<int>(categoryId),
+      'transaction_id': serializer.toJson<int>(transactionId),
+      'category_id': serializer.toJson<int>(categoryId),
       'amount': serializer.toJson<double>(amount),
       'notes': serializer.toJson<String?>(notes),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'created_at': serializer.toJson<DateTime>(createdAt),
     };
   }
 
@@ -4067,21 +4444,38 @@ class SplitsCompanion extends UpdateCompanion<Split> {
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   _$AppDatabaseManager get managers => _$AppDatabaseManager(this);
-  late final $CategoriesTable categories = $CategoriesTable(this);
-  late final $TransactionsTable transactions = $TransactionsTable(this);
-  late final $SubscriptionsTable subscriptions = $SubscriptionsTable(this);
-  late final $MappingsTable mappings = $MappingsTable(this);
-  late final $BudgetsTable budgets = $BudgetsTable(this);
-  late final $SplitsTable splits = $SplitsTable(this);
+  late final Categories categories = Categories(this);
+  late final Receipts receipts = Receipts(this);
+  late final Transactions transactions = Transactions(this);
+  late final Subscriptions subscriptions = Subscriptions(this);
+  late final Mappings mappings = Mappings(this);
+  late final Budgets budgets = Budgets(this);
+  late final Splits splits = Splits(this);
+  late final Index transactionsDateIdx = Index('transactions_date_idx',
+      'CREATE INDEX IF NOT EXISTS transactions_date_idx ON transactions (date)');
+  late final Index subscriptionsRenewalIdx = Index('subscriptions_renewal_idx',
+      'CREATE INDEX IF NOT EXISTS subscriptions_renewal_idx ON subscriptions (next_renewal_date)');
+  late final ReceiptDao receiptDao = ReceiptDao(this as AppDatabase);
+  late final TransactionDao transactionDao =
+      TransactionDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [categories, transactions, subscriptions, mappings, budgets, splits];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        categories,
+        receipts,
+        transactions,
+        subscriptions,
+        mappings,
+        budgets,
+        splits,
+        transactionsDateIdx,
+        subscriptionsRenewalIdx
+      ];
 }
 
-typedef $$CategoriesTableInsertCompanionBuilder = CategoriesCompanion Function({
+typedef $CategoriesInsertCompanionBuilder = CategoriesCompanion Function({
   Value<int> id,
   required String name,
   Value<int?> parentCategoryId,
@@ -4095,7 +4489,7 @@ typedef $$CategoriesTableInsertCompanionBuilder = CategoriesCompanion Function({
   Value<DateTime> createdAt,
   Value<DateTime?> updatedAt,
 });
-typedef $$CategoriesTableUpdateCompanionBuilder = CategoriesCompanion Function({
+typedef $CategoriesUpdateCompanionBuilder = CategoriesCompanion Function({
   Value<int> id,
   Value<String> name,
   Value<int?> parentCategoryId,
@@ -4110,25 +4504,24 @@ typedef $$CategoriesTableUpdateCompanionBuilder = CategoriesCompanion Function({
   Value<DateTime?> updatedAt,
 });
 
-class $$CategoriesTableTableManager extends RootTableManager<
+class $CategoriesTableManager extends RootTableManager<
     _$AppDatabase,
-    $CategoriesTable,
+    Categories,
     Category,
-    $$CategoriesTableFilterComposer,
-    $$CategoriesTableOrderingComposer,
-    $$CategoriesTableProcessedTableManager,
-    $$CategoriesTableInsertCompanionBuilder,
-    $$CategoriesTableUpdateCompanionBuilder> {
-  $$CategoriesTableTableManager(_$AppDatabase db, $CategoriesTable table)
+    $CategoriesFilterComposer,
+    $CategoriesOrderingComposer,
+    $CategoriesProcessedTableManager,
+    $CategoriesInsertCompanionBuilder,
+    $CategoriesUpdateCompanionBuilder> {
+  $CategoriesTableManager(_$AppDatabase db, Categories table)
       : super(TableManagerState(
           db: db,
           table: table,
           filteringComposer:
-              $$CategoriesTableFilterComposer(ComposerState(db, table)),
+              $CategoriesFilterComposer(ComposerState(db, table)),
           orderingComposer:
-              $$CategoriesTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$CategoriesTableProcessedTableManager(p),
+              $CategoriesOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) => $CategoriesProcessedTableManager(p),
           getUpdateCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
@@ -4188,21 +4581,21 @@ class $$CategoriesTableTableManager extends RootTableManager<
         ));
 }
 
-class $$CategoriesTableProcessedTableManager extends ProcessedTableManager<
+class $CategoriesProcessedTableManager extends ProcessedTableManager<
     _$AppDatabase,
-    $CategoriesTable,
+    Categories,
     Category,
-    $$CategoriesTableFilterComposer,
-    $$CategoriesTableOrderingComposer,
-    $$CategoriesTableProcessedTableManager,
-    $$CategoriesTableInsertCompanionBuilder,
-    $$CategoriesTableUpdateCompanionBuilder> {
-  $$CategoriesTableProcessedTableManager(super.$state);
+    $CategoriesFilterComposer,
+    $CategoriesOrderingComposer,
+    $CategoriesProcessedTableManager,
+    $CategoriesInsertCompanionBuilder,
+    $CategoriesUpdateCompanionBuilder> {
+  $CategoriesProcessedTableManager(super.$state);
 }
 
-class $$CategoriesTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $CategoriesTable> {
-  $$CategoriesTableFilterComposer(super.$state);
+class $CategoriesFilterComposer
+    extends FilterComposer<_$AppDatabase, Categories> {
+  $CategoriesFilterComposer(super.$state);
   ColumnFilters<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -4263,75 +4656,88 @@ class $$CategoriesTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
+  ComposableFilter receiptsRefs(
+      ComposableFilter Function($ReceiptsFilterComposer f) f) {
+    final $ReceiptsFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $state.db.receipts,
+        getReferencedColumn: (t) => t.categoryId,
+        builder: (joinBuilder, parentComposers) => $ReceiptsFilterComposer(
+            ComposerState(
+                $state.db, $state.db.receipts, joinBuilder, parentComposers)));
+    return f(composer);
+  }
+
   ComposableFilter transactionsRefs(
-      ComposableFilter Function($$TransactionsTableFilterComposer f) f) {
-    final $$TransactionsTableFilterComposer composer = $state.composerBuilder(
+      ComposableFilter Function($TransactionsFilterComposer f) f) {
+    final $TransactionsFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
         referencedTable: $state.db.transactions,
         getReferencedColumn: (t) => t.categoryId,
-        builder: (joinBuilder, parentComposers) =>
-            $$TransactionsTableFilterComposer(ComposerState($state.db,
-                $state.db.transactions, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $TransactionsFilterComposer(
+            ComposerState($state.db, $state.db.transactions, joinBuilder,
+                parentComposers)));
     return f(composer);
   }
 
   ComposableFilter subscriptionsRefs(
-      ComposableFilter Function($$SubscriptionsTableFilterComposer f) f) {
-    final $$SubscriptionsTableFilterComposer composer = $state.composerBuilder(
+      ComposableFilter Function($SubscriptionsFilterComposer f) f) {
+    final $SubscriptionsFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
         referencedTable: $state.db.subscriptions,
         getReferencedColumn: (t) => t.categoryId,
-        builder: (joinBuilder, parentComposers) =>
-            $$SubscriptionsTableFilterComposer(ComposerState($state.db,
-                $state.db.subscriptions, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $SubscriptionsFilterComposer(
+            ComposerState($state.db, $state.db.subscriptions, joinBuilder,
+                parentComposers)));
     return f(composer);
   }
 
   ComposableFilter mappingsRefs(
-      ComposableFilter Function($$MappingsTableFilterComposer f) f) {
-    final $$MappingsTableFilterComposer composer = $state.composerBuilder(
+      ComposableFilter Function($MappingsFilterComposer f) f) {
+    final $MappingsFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
         referencedTable: $state.db.mappings,
         getReferencedColumn: (t) => t.categoryId,
-        builder: (joinBuilder, parentComposers) =>
-            $$MappingsTableFilterComposer(ComposerState(
+        builder: (joinBuilder, parentComposers) => $MappingsFilterComposer(
+            ComposerState(
                 $state.db, $state.db.mappings, joinBuilder, parentComposers)));
     return f(composer);
   }
 
   ComposableFilter budgetsRefs(
-      ComposableFilter Function($$BudgetsTableFilterComposer f) f) {
-    final $$BudgetsTableFilterComposer composer = $state.composerBuilder(
+      ComposableFilter Function($BudgetsFilterComposer f) f) {
+    final $BudgetsFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
         referencedTable: $state.db.budgets,
         getReferencedColumn: (t) => t.categoryId,
-        builder: (joinBuilder, parentComposers) => $$BudgetsTableFilterComposer(
+        builder: (joinBuilder, parentComposers) => $BudgetsFilterComposer(
             ComposerState(
                 $state.db, $state.db.budgets, joinBuilder, parentComposers)));
     return f(composer);
   }
 
   ComposableFilter splitsRefs(
-      ComposableFilter Function($$SplitsTableFilterComposer f) f) {
-    final $$SplitsTableFilterComposer composer = $state.composerBuilder(
+      ComposableFilter Function($SplitsFilterComposer f) f) {
+    final $SplitsFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
         referencedTable: $state.db.splits,
         getReferencedColumn: (t) => t.categoryId,
-        builder: (joinBuilder, parentComposers) => $$SplitsTableFilterComposer(
+        builder: (joinBuilder, parentComposers) => $SplitsFilterComposer(
             ComposerState(
                 $state.db, $state.db.splits, joinBuilder, parentComposers)));
     return f(composer);
   }
 }
 
-class $$CategoriesTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $CategoriesTable> {
-  $$CategoriesTableOrderingComposer(super.$state);
+class $CategoriesOrderingComposer
+    extends OrderingComposer<_$AppDatabase, Categories> {
+  $CategoriesOrderingComposer(super.$state);
   ColumnOrderings<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -4393,8 +4799,184 @@ class $$CategoriesTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-typedef $$TransactionsTableInsertCompanionBuilder = TransactionsCompanion
-    Function({
+typedef $ReceiptsInsertCompanionBuilder = ReceiptsCompanion Function({
+  Value<int> id,
+  required String vendor,
+  required double amount,
+  required DateTime date,
+  Value<int?> categoryId,
+  Value<String?> imagePath,
+  Value<DateTime> createdAt,
+});
+typedef $ReceiptsUpdateCompanionBuilder = ReceiptsCompanion Function({
+  Value<int> id,
+  Value<String> vendor,
+  Value<double> amount,
+  Value<DateTime> date,
+  Value<int?> categoryId,
+  Value<String?> imagePath,
+  Value<DateTime> createdAt,
+});
+
+class $ReceiptsTableManager extends RootTableManager<
+    _$AppDatabase,
+    Receipts,
+    Receipt,
+    $ReceiptsFilterComposer,
+    $ReceiptsOrderingComposer,
+    $ReceiptsProcessedTableManager,
+    $ReceiptsInsertCompanionBuilder,
+    $ReceiptsUpdateCompanionBuilder> {
+  $ReceiptsTableManager(_$AppDatabase db, Receipts table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $ReceiptsFilterComposer(ComposerState(db, table)),
+          orderingComposer: $ReceiptsOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) => $ReceiptsProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<String> vendor = const Value.absent(),
+            Value<double> amount = const Value.absent(),
+            Value<DateTime> date = const Value.absent(),
+            Value<int?> categoryId = const Value.absent(),
+            Value<String?> imagePath = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              ReceiptsCompanion(
+            id: id,
+            vendor: vendor,
+            amount: amount,
+            date: date,
+            categoryId: categoryId,
+            imagePath: imagePath,
+            createdAt: createdAt,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            required String vendor,
+            required double amount,
+            required DateTime date,
+            Value<int?> categoryId = const Value.absent(),
+            Value<String?> imagePath = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              ReceiptsCompanion.insert(
+            id: id,
+            vendor: vendor,
+            amount: amount,
+            date: date,
+            categoryId: categoryId,
+            imagePath: imagePath,
+            createdAt: createdAt,
+          ),
+        ));
+}
+
+class $ReceiptsProcessedTableManager extends ProcessedTableManager<
+    _$AppDatabase,
+    Receipts,
+    Receipt,
+    $ReceiptsFilterComposer,
+    $ReceiptsOrderingComposer,
+    $ReceiptsProcessedTableManager,
+    $ReceiptsInsertCompanionBuilder,
+    $ReceiptsUpdateCompanionBuilder> {
+  $ReceiptsProcessedTableManager(super.$state);
+}
+
+class $ReceiptsFilterComposer extends FilterComposer<_$AppDatabase, Receipts> {
+  $ReceiptsFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get vendor => $state.composableBuilder(
+      column: $state.table.vendor,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<double> get amount => $state.composableBuilder(
+      column: $state.table.amount,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get date => $state.composableBuilder(
+      column: $state.table.date,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get imagePath => $state.composableBuilder(
+      column: $state.table.imagePath,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  $CategoriesFilterComposer get categoryId {
+    final $CategoriesFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.categoryId,
+        referencedTable: $state.db.categories,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) => $CategoriesFilterComposer(
+            ComposerState($state.db, $state.db.categories, joinBuilder,
+                parentComposers)));
+    return composer;
+  }
+}
+
+class $ReceiptsOrderingComposer
+    extends OrderingComposer<_$AppDatabase, Receipts> {
+  $ReceiptsOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get vendor => $state.composableBuilder(
+      column: $state.table.vendor,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<double> get amount => $state.composableBuilder(
+      column: $state.table.amount,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get date => $state.composableBuilder(
+      column: $state.table.date,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get imagePath => $state.composableBuilder(
+      column: $state.table.imagePath,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get createdAt => $state.composableBuilder(
+      column: $state.table.createdAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  $CategoriesOrderingComposer get categoryId {
+    final $CategoriesOrderingComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.categoryId,
+        referencedTable: $state.db.categories,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) => $CategoriesOrderingComposer(
+            ComposerState($state.db, $state.db.categories, joinBuilder,
+                parentComposers)));
+    return composer;
+  }
+}
+
+typedef $TransactionsInsertCompanionBuilder = TransactionsCompanion Function({
   Value<int> id,
   required String merchantName,
   Value<String?> rawMerchantName,
@@ -4422,8 +5004,7 @@ typedef $$TransactionsTableInsertCompanionBuilder = TransactionsCompanion
   Value<DateTime> createdAt,
   Value<DateTime?> updatedAt,
 });
-typedef $$TransactionsTableUpdateCompanionBuilder = TransactionsCompanion
-    Function({
+typedef $TransactionsUpdateCompanionBuilder = TransactionsCompanion Function({
   Value<int> id,
   Value<String> merchantName,
   Value<String?> rawMerchantName,
@@ -4452,25 +5033,24 @@ typedef $$TransactionsTableUpdateCompanionBuilder = TransactionsCompanion
   Value<DateTime?> updatedAt,
 });
 
-class $$TransactionsTableTableManager extends RootTableManager<
+class $TransactionsTableManager extends RootTableManager<
     _$AppDatabase,
-    $TransactionsTable,
+    Transactions,
     Transaction,
-    $$TransactionsTableFilterComposer,
-    $$TransactionsTableOrderingComposer,
-    $$TransactionsTableProcessedTableManager,
-    $$TransactionsTableInsertCompanionBuilder,
-    $$TransactionsTableUpdateCompanionBuilder> {
-  $$TransactionsTableTableManager(_$AppDatabase db, $TransactionsTable table)
+    $TransactionsFilterComposer,
+    $TransactionsOrderingComposer,
+    $TransactionsProcessedTableManager,
+    $TransactionsInsertCompanionBuilder,
+    $TransactionsUpdateCompanionBuilder> {
+  $TransactionsTableManager(_$AppDatabase db, Transactions table)
       : super(TableManagerState(
           db: db,
           table: table,
           filteringComposer:
-              $$TransactionsTableFilterComposer(ComposerState(db, table)),
+              $TransactionsFilterComposer(ComposerState(db, table)),
           orderingComposer:
-              $$TransactionsTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$TransactionsTableProcessedTableManager(p),
+              $TransactionsOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) => $TransactionsProcessedTableManager(p),
           getUpdateCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             Value<String> merchantName = const Value.absent(),
@@ -4586,21 +5166,21 @@ class $$TransactionsTableTableManager extends RootTableManager<
         ));
 }
 
-class $$TransactionsTableProcessedTableManager extends ProcessedTableManager<
+class $TransactionsProcessedTableManager extends ProcessedTableManager<
     _$AppDatabase,
-    $TransactionsTable,
+    Transactions,
     Transaction,
-    $$TransactionsTableFilterComposer,
-    $$TransactionsTableOrderingComposer,
-    $$TransactionsTableProcessedTableManager,
-    $$TransactionsTableInsertCompanionBuilder,
-    $$TransactionsTableUpdateCompanionBuilder> {
-  $$TransactionsTableProcessedTableManager(super.$state);
+    $TransactionsFilterComposer,
+    $TransactionsOrderingComposer,
+    $TransactionsProcessedTableManager,
+    $TransactionsInsertCompanionBuilder,
+    $TransactionsUpdateCompanionBuilder> {
+  $TransactionsProcessedTableManager(super.$state);
 }
 
-class $$TransactionsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $TransactionsTable> {
-  $$TransactionsTableFilterComposer(super.$state);
+class $TransactionsFilterComposer
+    extends FilterComposer<_$AppDatabase, Transactions> {
+  $TransactionsFilterComposer(super.$state);
   ColumnFilters<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -4726,35 +5306,35 @@ class $$TransactionsTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  $$CategoriesTableFilterComposer get categoryId {
-    final $$CategoriesTableFilterComposer composer = $state.composerBuilder(
+  $CategoriesFilterComposer get categoryId {
+    final $CategoriesFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.categoryId,
         referencedTable: $state.db.categories,
         getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$CategoriesTableFilterComposer(ComposerState($state.db,
-                $state.db.categories, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $CategoriesFilterComposer(
+            ComposerState($state.db, $state.db.categories, joinBuilder,
+                parentComposers)));
     return composer;
   }
 
   ComposableFilter splitsRefs(
-      ComposableFilter Function($$SplitsTableFilterComposer f) f) {
-    final $$SplitsTableFilterComposer composer = $state.composerBuilder(
+      ComposableFilter Function($SplitsFilterComposer f) f) {
+    final $SplitsFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.id,
         referencedTable: $state.db.splits,
         getReferencedColumn: (t) => t.transactionId,
-        builder: (joinBuilder, parentComposers) => $$SplitsTableFilterComposer(
+        builder: (joinBuilder, parentComposers) => $SplitsFilterComposer(
             ComposerState(
                 $state.db, $state.db.splits, joinBuilder, parentComposers)));
     return f(composer);
   }
 }
 
-class $$TransactionsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $TransactionsTable> {
-  $$TransactionsTableOrderingComposer(super.$state);
+class $TransactionsOrderingComposer
+    extends OrderingComposer<_$AppDatabase, Transactions> {
+  $TransactionsOrderingComposer(super.$state);
   ColumnOrderings<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -4880,21 +5460,20 @@ class $$TransactionsTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  $$CategoriesTableOrderingComposer get categoryId {
-    final $$CategoriesTableOrderingComposer composer = $state.composerBuilder(
+  $CategoriesOrderingComposer get categoryId {
+    final $CategoriesOrderingComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.categoryId,
         referencedTable: $state.db.categories,
         getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$CategoriesTableOrderingComposer(ComposerState($state.db,
-                $state.db.categories, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $CategoriesOrderingComposer(
+            ComposerState($state.db, $state.db.categories, joinBuilder,
+                parentComposers)));
     return composer;
   }
 }
 
-typedef $$SubscriptionsTableInsertCompanionBuilder = SubscriptionsCompanion
-    Function({
+typedef $SubscriptionsInsertCompanionBuilder = SubscriptionsCompanion Function({
   Value<int> id,
   required String serviceName,
   required double amount,
@@ -4922,8 +5501,7 @@ typedef $$SubscriptionsTableInsertCompanionBuilder = SubscriptionsCompanion
   Value<DateTime> createdAt,
   Value<DateTime?> updatedAt,
 });
-typedef $$SubscriptionsTableUpdateCompanionBuilder = SubscriptionsCompanion
-    Function({
+typedef $SubscriptionsUpdateCompanionBuilder = SubscriptionsCompanion Function({
   Value<int> id,
   Value<String> serviceName,
   Value<double> amount,
@@ -4952,25 +5530,24 @@ typedef $$SubscriptionsTableUpdateCompanionBuilder = SubscriptionsCompanion
   Value<DateTime?> updatedAt,
 });
 
-class $$SubscriptionsTableTableManager extends RootTableManager<
+class $SubscriptionsTableManager extends RootTableManager<
     _$AppDatabase,
-    $SubscriptionsTable,
+    Subscriptions,
     Subscription,
-    $$SubscriptionsTableFilterComposer,
-    $$SubscriptionsTableOrderingComposer,
-    $$SubscriptionsTableProcessedTableManager,
-    $$SubscriptionsTableInsertCompanionBuilder,
-    $$SubscriptionsTableUpdateCompanionBuilder> {
-  $$SubscriptionsTableTableManager(_$AppDatabase db, $SubscriptionsTable table)
+    $SubscriptionsFilterComposer,
+    $SubscriptionsOrderingComposer,
+    $SubscriptionsProcessedTableManager,
+    $SubscriptionsInsertCompanionBuilder,
+    $SubscriptionsUpdateCompanionBuilder> {
+  $SubscriptionsTableManager(_$AppDatabase db, Subscriptions table)
       : super(TableManagerState(
           db: db,
           table: table,
           filteringComposer:
-              $$SubscriptionsTableFilterComposer(ComposerState(db, table)),
+              $SubscriptionsFilterComposer(ComposerState(db, table)),
           orderingComposer:
-              $$SubscriptionsTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$SubscriptionsTableProcessedTableManager(p),
+              $SubscriptionsOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) => $SubscriptionsProcessedTableManager(p),
           getUpdateCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             Value<String> serviceName = const Value.absent(),
@@ -5086,21 +5663,21 @@ class $$SubscriptionsTableTableManager extends RootTableManager<
         ));
 }
 
-class $$SubscriptionsTableProcessedTableManager extends ProcessedTableManager<
+class $SubscriptionsProcessedTableManager extends ProcessedTableManager<
     _$AppDatabase,
-    $SubscriptionsTable,
+    Subscriptions,
     Subscription,
-    $$SubscriptionsTableFilterComposer,
-    $$SubscriptionsTableOrderingComposer,
-    $$SubscriptionsTableProcessedTableManager,
-    $$SubscriptionsTableInsertCompanionBuilder,
-    $$SubscriptionsTableUpdateCompanionBuilder> {
-  $$SubscriptionsTableProcessedTableManager(super.$state);
+    $SubscriptionsFilterComposer,
+    $SubscriptionsOrderingComposer,
+    $SubscriptionsProcessedTableManager,
+    $SubscriptionsInsertCompanionBuilder,
+    $SubscriptionsUpdateCompanionBuilder> {
+  $SubscriptionsProcessedTableManager(super.$state);
 }
 
-class $$SubscriptionsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $SubscriptionsTable> {
-  $$SubscriptionsTableFilterComposer(super.$state);
+class $SubscriptionsFilterComposer
+    extends FilterComposer<_$AppDatabase, Subscriptions> {
+  $SubscriptionsFilterComposer(super.$state);
   ColumnFilters<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -5227,22 +5804,22 @@ class $$SubscriptionsTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  $$CategoriesTableFilterComposer get categoryId {
-    final $$CategoriesTableFilterComposer composer = $state.composerBuilder(
+  $CategoriesFilterComposer get categoryId {
+    final $CategoriesFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.categoryId,
         referencedTable: $state.db.categories,
         getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$CategoriesTableFilterComposer(ComposerState($state.db,
-                $state.db.categories, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $CategoriesFilterComposer(
+            ComposerState($state.db, $state.db.categories, joinBuilder,
+                parentComposers)));
     return composer;
   }
 }
 
-class $$SubscriptionsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $SubscriptionsTable> {
-  $$SubscriptionsTableOrderingComposer(super.$state);
+class $SubscriptionsOrderingComposer
+    extends OrderingComposer<_$AppDatabase, Subscriptions> {
+  $SubscriptionsOrderingComposer(super.$state);
   ColumnOrderings<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -5369,20 +5946,20 @@ class $$SubscriptionsTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  $$CategoriesTableOrderingComposer get categoryId {
-    final $$CategoriesTableOrderingComposer composer = $state.composerBuilder(
+  $CategoriesOrderingComposer get categoryId {
+    final $CategoriesOrderingComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.categoryId,
         referencedTable: $state.db.categories,
         getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$CategoriesTableOrderingComposer(ComposerState($state.db,
-                $state.db.categories, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $CategoriesOrderingComposer(
+            ComposerState($state.db, $state.db.categories, joinBuilder,
+                parentComposers)));
     return composer;
   }
 }
 
-typedef $$MappingsTableInsertCompanionBuilder = MappingsCompanion Function({
+typedef $MappingsInsertCompanionBuilder = MappingsCompanion Function({
   Value<int> id,
   required String merchantName,
   required int categoryId,
@@ -5392,7 +5969,7 @@ typedef $$MappingsTableInsertCompanionBuilder = MappingsCompanion Function({
   Value<DateTime> createdAt,
   Value<DateTime?> updatedAt,
 });
-typedef $$MappingsTableUpdateCompanionBuilder = MappingsCompanion Function({
+typedef $MappingsUpdateCompanionBuilder = MappingsCompanion Function({
   Value<int> id,
   Value<String> merchantName,
   Value<int> categoryId,
@@ -5403,25 +5980,22 @@ typedef $$MappingsTableUpdateCompanionBuilder = MappingsCompanion Function({
   Value<DateTime?> updatedAt,
 });
 
-class $$MappingsTableTableManager extends RootTableManager<
+class $MappingsTableManager extends RootTableManager<
     _$AppDatabase,
-    $MappingsTable,
+    Mappings,
     Mapping,
-    $$MappingsTableFilterComposer,
-    $$MappingsTableOrderingComposer,
-    $$MappingsTableProcessedTableManager,
-    $$MappingsTableInsertCompanionBuilder,
-    $$MappingsTableUpdateCompanionBuilder> {
-  $$MappingsTableTableManager(_$AppDatabase db, $MappingsTable table)
+    $MappingsFilterComposer,
+    $MappingsOrderingComposer,
+    $MappingsProcessedTableManager,
+    $MappingsInsertCompanionBuilder,
+    $MappingsUpdateCompanionBuilder> {
+  $MappingsTableManager(_$AppDatabase db, Mappings table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$MappingsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$MappingsTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$MappingsTableProcessedTableManager(p),
+          filteringComposer: $MappingsFilterComposer(ComposerState(db, table)),
+          orderingComposer: $MappingsOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) => $MappingsProcessedTableManager(p),
           getUpdateCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             Value<String> merchantName = const Value.absent(),
@@ -5465,21 +6039,20 @@ class $$MappingsTableTableManager extends RootTableManager<
         ));
 }
 
-class $$MappingsTableProcessedTableManager extends ProcessedTableManager<
+class $MappingsProcessedTableManager extends ProcessedTableManager<
     _$AppDatabase,
-    $MappingsTable,
+    Mappings,
     Mapping,
-    $$MappingsTableFilterComposer,
-    $$MappingsTableOrderingComposer,
-    $$MappingsTableProcessedTableManager,
-    $$MappingsTableInsertCompanionBuilder,
-    $$MappingsTableUpdateCompanionBuilder> {
-  $$MappingsTableProcessedTableManager(super.$state);
+    $MappingsFilterComposer,
+    $MappingsOrderingComposer,
+    $MappingsProcessedTableManager,
+    $MappingsInsertCompanionBuilder,
+    $MappingsUpdateCompanionBuilder> {
+  $MappingsProcessedTableManager(super.$state);
 }
 
-class $$MappingsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $MappingsTable> {
-  $$MappingsTableFilterComposer(super.$state);
+class $MappingsFilterComposer extends FilterComposer<_$AppDatabase, Mappings> {
+  $MappingsFilterComposer(super.$state);
   ColumnFilters<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -5515,22 +6088,22 @@ class $$MappingsTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  $$CategoriesTableFilterComposer get categoryId {
-    final $$CategoriesTableFilterComposer composer = $state.composerBuilder(
+  $CategoriesFilterComposer get categoryId {
+    final $CategoriesFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.categoryId,
         referencedTable: $state.db.categories,
         getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$CategoriesTableFilterComposer(ComposerState($state.db,
-                $state.db.categories, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $CategoriesFilterComposer(
+            ComposerState($state.db, $state.db.categories, joinBuilder,
+                parentComposers)));
     return composer;
   }
 }
 
-class $$MappingsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $MappingsTable> {
-  $$MappingsTableOrderingComposer(super.$state);
+class $MappingsOrderingComposer
+    extends OrderingComposer<_$AppDatabase, Mappings> {
+  $MappingsOrderingComposer(super.$state);
   ColumnOrderings<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -5566,20 +6139,20 @@ class $$MappingsTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  $$CategoriesTableOrderingComposer get categoryId {
-    final $$CategoriesTableOrderingComposer composer = $state.composerBuilder(
+  $CategoriesOrderingComposer get categoryId {
+    final $CategoriesOrderingComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.categoryId,
         referencedTable: $state.db.categories,
         getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$CategoriesTableOrderingComposer(ComposerState($state.db,
-                $state.db.categories, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $CategoriesOrderingComposer(
+            ComposerState($state.db, $state.db.categories, joinBuilder,
+                parentComposers)));
     return composer;
   }
 }
 
-typedef $$BudgetsTableInsertCompanionBuilder = BudgetsCompanion Function({
+typedef $BudgetsInsertCompanionBuilder = BudgetsCompanion Function({
   Value<int> id,
   Value<int?> categoryId,
   required double limitAmount,
@@ -5589,7 +6162,7 @@ typedef $$BudgetsTableInsertCompanionBuilder = BudgetsCompanion Function({
   Value<DateTime> createdAt,
   Value<DateTime?> updatedAt,
 });
-typedef $$BudgetsTableUpdateCompanionBuilder = BudgetsCompanion Function({
+typedef $BudgetsUpdateCompanionBuilder = BudgetsCompanion Function({
   Value<int> id,
   Value<int?> categoryId,
   Value<double> limitAmount,
@@ -5600,24 +6173,22 @@ typedef $$BudgetsTableUpdateCompanionBuilder = BudgetsCompanion Function({
   Value<DateTime?> updatedAt,
 });
 
-class $$BudgetsTableTableManager extends RootTableManager<
+class $BudgetsTableManager extends RootTableManager<
     _$AppDatabase,
-    $BudgetsTable,
+    Budgets,
     Budget,
-    $$BudgetsTableFilterComposer,
-    $$BudgetsTableOrderingComposer,
-    $$BudgetsTableProcessedTableManager,
-    $$BudgetsTableInsertCompanionBuilder,
-    $$BudgetsTableUpdateCompanionBuilder> {
-  $$BudgetsTableTableManager(_$AppDatabase db, $BudgetsTable table)
+    $BudgetsFilterComposer,
+    $BudgetsOrderingComposer,
+    $BudgetsProcessedTableManager,
+    $BudgetsInsertCompanionBuilder,
+    $BudgetsUpdateCompanionBuilder> {
+  $BudgetsTableManager(_$AppDatabase db, Budgets table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$BudgetsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$BudgetsTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) => $$BudgetsTableProcessedTableManager(p),
+          filteringComposer: $BudgetsFilterComposer(ComposerState(db, table)),
+          orderingComposer: $BudgetsOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) => $BudgetsProcessedTableManager(p),
           getUpdateCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             Value<int?> categoryId = const Value.absent(),
@@ -5661,21 +6232,20 @@ class $$BudgetsTableTableManager extends RootTableManager<
         ));
 }
 
-class $$BudgetsTableProcessedTableManager extends ProcessedTableManager<
+class $BudgetsProcessedTableManager extends ProcessedTableManager<
     _$AppDatabase,
-    $BudgetsTable,
+    Budgets,
     Budget,
-    $$BudgetsTableFilterComposer,
-    $$BudgetsTableOrderingComposer,
-    $$BudgetsTableProcessedTableManager,
-    $$BudgetsTableInsertCompanionBuilder,
-    $$BudgetsTableUpdateCompanionBuilder> {
-  $$BudgetsTableProcessedTableManager(super.$state);
+    $BudgetsFilterComposer,
+    $BudgetsOrderingComposer,
+    $BudgetsProcessedTableManager,
+    $BudgetsInsertCompanionBuilder,
+    $BudgetsUpdateCompanionBuilder> {
+  $BudgetsProcessedTableManager(super.$state);
 }
 
-class $$BudgetsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $BudgetsTable> {
-  $$BudgetsTableFilterComposer(super.$state);
+class $BudgetsFilterComposer extends FilterComposer<_$AppDatabase, Budgets> {
+  $BudgetsFilterComposer(super.$state);
   ColumnFilters<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -5711,22 +6281,22 @@ class $$BudgetsTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  $$CategoriesTableFilterComposer get categoryId {
-    final $$CategoriesTableFilterComposer composer = $state.composerBuilder(
+  $CategoriesFilterComposer get categoryId {
+    final $CategoriesFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.categoryId,
         referencedTable: $state.db.categories,
         getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$CategoriesTableFilterComposer(ComposerState($state.db,
-                $state.db.categories, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $CategoriesFilterComposer(
+            ComposerState($state.db, $state.db.categories, joinBuilder,
+                parentComposers)));
     return composer;
   }
 }
 
-class $$BudgetsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $BudgetsTable> {
-  $$BudgetsTableOrderingComposer(super.$state);
+class $BudgetsOrderingComposer
+    extends OrderingComposer<_$AppDatabase, Budgets> {
+  $BudgetsOrderingComposer(super.$state);
   ColumnOrderings<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -5762,20 +6332,20 @@ class $$BudgetsTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  $$CategoriesTableOrderingComposer get categoryId {
-    final $$CategoriesTableOrderingComposer composer = $state.composerBuilder(
+  $CategoriesOrderingComposer get categoryId {
+    final $CategoriesOrderingComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.categoryId,
         referencedTable: $state.db.categories,
         getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$CategoriesTableOrderingComposer(ComposerState($state.db,
-                $state.db.categories, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $CategoriesOrderingComposer(
+            ComposerState($state.db, $state.db.categories, joinBuilder,
+                parentComposers)));
     return composer;
   }
 }
 
-typedef $$SplitsTableInsertCompanionBuilder = SplitsCompanion Function({
+typedef $SplitsInsertCompanionBuilder = SplitsCompanion Function({
   Value<int> id,
   required int transactionId,
   required int categoryId,
@@ -5783,7 +6353,7 @@ typedef $$SplitsTableInsertCompanionBuilder = SplitsCompanion Function({
   Value<String?> notes,
   Value<DateTime> createdAt,
 });
-typedef $$SplitsTableUpdateCompanionBuilder = SplitsCompanion Function({
+typedef $SplitsUpdateCompanionBuilder = SplitsCompanion Function({
   Value<int> id,
   Value<int> transactionId,
   Value<int> categoryId,
@@ -5792,24 +6362,22 @@ typedef $$SplitsTableUpdateCompanionBuilder = SplitsCompanion Function({
   Value<DateTime> createdAt,
 });
 
-class $$SplitsTableTableManager extends RootTableManager<
+class $SplitsTableManager extends RootTableManager<
     _$AppDatabase,
-    $SplitsTable,
+    Splits,
     Split,
-    $$SplitsTableFilterComposer,
-    $$SplitsTableOrderingComposer,
-    $$SplitsTableProcessedTableManager,
-    $$SplitsTableInsertCompanionBuilder,
-    $$SplitsTableUpdateCompanionBuilder> {
-  $$SplitsTableTableManager(_$AppDatabase db, $SplitsTable table)
+    $SplitsFilterComposer,
+    $SplitsOrderingComposer,
+    $SplitsProcessedTableManager,
+    $SplitsInsertCompanionBuilder,
+    $SplitsUpdateCompanionBuilder> {
+  $SplitsTableManager(_$AppDatabase db, Splits table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$SplitsTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$SplitsTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) => $$SplitsTableProcessedTableManager(p),
+          filteringComposer: $SplitsFilterComposer(ComposerState(db, table)),
+          orderingComposer: $SplitsOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) => $SplitsProcessedTableManager(p),
           getUpdateCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             Value<int> transactionId = const Value.absent(),
@@ -5845,21 +6413,20 @@ class $$SplitsTableTableManager extends RootTableManager<
         ));
 }
 
-class $$SplitsTableProcessedTableManager extends ProcessedTableManager<
+class $SplitsProcessedTableManager extends ProcessedTableManager<
     _$AppDatabase,
-    $SplitsTable,
+    Splits,
     Split,
-    $$SplitsTableFilterComposer,
-    $$SplitsTableOrderingComposer,
-    $$SplitsTableProcessedTableManager,
-    $$SplitsTableInsertCompanionBuilder,
-    $$SplitsTableUpdateCompanionBuilder> {
-  $$SplitsTableProcessedTableManager(super.$state);
+    $SplitsFilterComposer,
+    $SplitsOrderingComposer,
+    $SplitsProcessedTableManager,
+    $SplitsInsertCompanionBuilder,
+    $SplitsUpdateCompanionBuilder> {
+  $SplitsProcessedTableManager(super.$state);
 }
 
-class $$SplitsTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $SplitsTable> {
-  $$SplitsTableFilterComposer(super.$state);
+class $SplitsFilterComposer extends FilterComposer<_$AppDatabase, Splits> {
+  $SplitsFilterComposer(super.$state);
   ColumnFilters<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -5880,34 +6447,33 @@ class $$SplitsTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  $$TransactionsTableFilterComposer get transactionId {
-    final $$TransactionsTableFilterComposer composer = $state.composerBuilder(
+  $TransactionsFilterComposer get transactionId {
+    final $TransactionsFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.transactionId,
         referencedTable: $state.db.transactions,
         getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$TransactionsTableFilterComposer(ComposerState($state.db,
-                $state.db.transactions, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $TransactionsFilterComposer(
+            ComposerState($state.db, $state.db.transactions, joinBuilder,
+                parentComposers)));
     return composer;
   }
 
-  $$CategoriesTableFilterComposer get categoryId {
-    final $$CategoriesTableFilterComposer composer = $state.composerBuilder(
+  $CategoriesFilterComposer get categoryId {
+    final $CategoriesFilterComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.categoryId,
         referencedTable: $state.db.categories,
         getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$CategoriesTableFilterComposer(ComposerState($state.db,
-                $state.db.categories, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $CategoriesFilterComposer(
+            ComposerState($state.db, $state.db.categories, joinBuilder,
+                parentComposers)));
     return composer;
   }
 }
 
-class $$SplitsTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $SplitsTable> {
-  $$SplitsTableOrderingComposer(super.$state);
+class $SplitsOrderingComposer extends OrderingComposer<_$AppDatabase, Splits> {
+  $SplitsOrderingComposer(super.$state);
   ColumnOrderings<int> get id => $state.composableBuilder(
       column: $state.table.id,
       builder: (column, joinBuilders) =>
@@ -5928,27 +6494,27 @@ class $$SplitsTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  $$TransactionsTableOrderingComposer get transactionId {
-    final $$TransactionsTableOrderingComposer composer = $state.composerBuilder(
+  $TransactionsOrderingComposer get transactionId {
+    final $TransactionsOrderingComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.transactionId,
         referencedTable: $state.db.transactions,
         getReferencedColumn: (t) => t.id,
         builder: (joinBuilder, parentComposers) =>
-            $$TransactionsTableOrderingComposer(ComposerState($state.db,
+            $TransactionsOrderingComposer(ComposerState($state.db,
                 $state.db.transactions, joinBuilder, parentComposers)));
     return composer;
   }
 
-  $$CategoriesTableOrderingComposer get categoryId {
-    final $$CategoriesTableOrderingComposer composer = $state.composerBuilder(
+  $CategoriesOrderingComposer get categoryId {
+    final $CategoriesOrderingComposer composer = $state.composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.categoryId,
         referencedTable: $state.db.categories,
         getReferencedColumn: (t) => t.id,
-        builder: (joinBuilder, parentComposers) =>
-            $$CategoriesTableOrderingComposer(ComposerState($state.db,
-                $state.db.categories, joinBuilder, parentComposers)));
+        builder: (joinBuilder, parentComposers) => $CategoriesOrderingComposer(
+            ComposerState($state.db, $state.db.categories, joinBuilder,
+                parentComposers)));
     return composer;
   }
 }
@@ -5956,16 +6522,16 @@ class $$SplitsTableOrderingComposer
 class _$AppDatabaseManager {
   final _$AppDatabase _db;
   _$AppDatabaseManager(this._db);
-  $$CategoriesTableTableManager get categories =>
-      $$CategoriesTableTableManager(_db, _db.categories);
-  $$TransactionsTableTableManager get transactions =>
-      $$TransactionsTableTableManager(_db, _db.transactions);
-  $$SubscriptionsTableTableManager get subscriptions =>
-      $$SubscriptionsTableTableManager(_db, _db.subscriptions);
-  $$MappingsTableTableManager get mappings =>
-      $$MappingsTableTableManager(_db, _db.mappings);
-  $$BudgetsTableTableManager get budgets =>
-      $$BudgetsTableTableManager(_db, _db.budgets);
-  $$SplitsTableTableManager get splits =>
-      $$SplitsTableTableManager(_db, _db.splits);
+  $CategoriesTableManager get categories =>
+      $CategoriesTableManager(_db, _db.categories);
+  $ReceiptsTableManager get receipts =>
+      $ReceiptsTableManager(_db, _db.receipts);
+  $TransactionsTableManager get transactions =>
+      $TransactionsTableManager(_db, _db.transactions);
+  $SubscriptionsTableManager get subscriptions =>
+      $SubscriptionsTableManager(_db, _db.subscriptions);
+  $MappingsTableManager get mappings =>
+      $MappingsTableManager(_db, _db.mappings);
+  $BudgetsTableManager get budgets => $BudgetsTableManager(_db, _db.budgets);
+  $SplitsTableManager get splits => $SplitsTableManager(_db, _db.splits);
 }

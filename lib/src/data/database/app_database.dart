@@ -1,148 +1,91 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 
+import 'daos/receipt_dao.dart';
+import 'daos/transaction_dao.dart';
+
 part 'app_database.g.dart';
 
-class Categories extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get name => text().withLength(min: 1, max: 100)();
-  IntColumn get parentCategoryId => integer().nullable()();
-  TextColumn get icon => text()();
-  TextColumn get color => text()();
-  IntColumn get colorValue => integer().nullable()();
-  BoolColumn get isSystem => boolean().withDefault(const Constant(false))();
-  IntColumn get displayOrder => integer().withDefault(const Constant(0))();
-  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
-  IntColumn get transactionCount => integer().withDefault(const Constant(0))();
-  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
-  DateTimeColumn get updatedAt => dateTime().nullable()();
-}
-
-class Transactions extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get merchantName => text()();
-  TextColumn get rawMerchantName => text().nullable()();
-  RealColumn get amount => real()();
-  RealColumn get subtotalAmount => real().nullable()();
-  RealColumn get taxAmount => real().nullable()();
-  RealColumn get discountAmount => real().nullable()();
-  RealColumn get tipAmount => real().nullable()();
-  DateTimeColumn get date => dateTime()();
-  IntColumn get categoryId =>
-      integer().nullable().references(Categories, #id)();
-  BoolColumn get isSubscription =>
-      boolean().withDefault(const Constant(false))();
-  IntColumn get subscriptionId => integer().nullable()();
-  IntColumn get kind =>
-      integer().withDefault(const Constant(1))(); // 0: income, 1: expense
-  IntColumn get origin => integer().withDefault(const Constant(0))();
-  BoolColumn get isRecurring => boolean().withDefault(const Constant(false))();
-  IntColumn get extractionConfidence =>
-      integer().withDefault(const Constant(0))();
-  BoolColumn get hasLineItems => boolean().withDefault(const Constant(false))();
-  TextColumn get originalEmailId => text().nullable()();
-  TextColumn get currency => text().withDefault(const Constant('USD'))();
-  TextColumn get notes => text().nullable()();
-  BoolColumn get userVerified => boolean().withDefault(const Constant(false))();
-  BoolColumn get hasSplits => boolean().withDefault(const Constant(false))();
-  BoolColumn get isManuallyEdited =>
-      boolean().withDefault(const Constant(false))();
-  DateTimeColumn get manualEditTimestamp => dateTime().nullable()();
-  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
-  DateTimeColumn get updatedAt => dateTime().nullable()();
-}
-
-class Subscriptions extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get serviceName => text()();
-  RealColumn get amount => real()();
-  DateTimeColumn get nextRenewalDate => dateTime()();
-  IntColumn get frequency => integer()();
-  IntColumn get lifecycleState => integer()();
-  IntColumn get categoryId =>
-      integer().nullable().references(Categories, #id)();
-  DateTimeColumn get firstSeenDate => dateTime()();
-  DateTimeColumn get lastChargedDate => dateTime().nullable()();
-  TextColumn get priceHistoryJson => text().nullable()();
-  TextColumn get cycleHistoryJson => text().nullable()();
-  IntColumn get frequencyConsistency =>
-      integer().withDefault(const Constant(100))();
-  IntColumn get detectionSource => integer()();
-  TextColumn get anomalies => text().nullable()(); // JSON encoded list
-  BoolColumn get isTrial => boolean().withDefault(const Constant(false))();
-  DateTimeColumn get trialEndDate => dateTime().nullable()();
-  IntColumn get chargeCount => integer().withDefault(const Constant(0))();
-  RealColumn get averageDaysBetweenCharges => real().nullable()();
-  TextColumn get currency => text().withDefault(const Constant('USD'))();
-  TextColumn get notes => text().nullable()();
-  BoolColumn get userConfirmed =>
-      boolean().withDefault(const Constant(false))();
-  BoolColumn get isZombie => boolean().withDefault(const Constant(false))();
-  TextColumn get zombieReason => text().nullable()();
-  RealColumn get lastPriceHikePercent => real().nullable()();
-  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
-  DateTimeColumn get updatedAt => dateTime().nullable()();
-}
-
-class Mappings extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get merchantName => text().withLength(min: 1, max: 200)();
-  IntColumn get categoryId => integer().references(Categories, #id)();
-  BoolColumn get isAutomatic => boolean().withDefault(const Constant(true))();
-  IntColumn get confidence => integer().withDefault(const Constant(100))();
-  BoolColumn get userConfirmed =>
-      boolean().withDefault(const Constant(false))();
-  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
-  DateTimeColumn get updatedAt => dateTime().nullable()();
-}
-
-class Budgets extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get categoryId =>
-      integer().nullable().references(Categories, #id)();
-  RealColumn get limitAmount => real()();
-  IntColumn get period =>
-      integer().withDefault(const Constant(1))(); // 0: weekly, 1: monthly
-  BoolColumn get rollover => boolean().withDefault(const Constant(false))();
-  RealColumn get carryOverAmount => real().withDefault(const Constant(0.0))();
-  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
-  DateTimeColumn get updatedAt => dateTime().nullable()();
-}
-
-class Splits extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get transactionId => integer().references(Transactions, #id)();
-  IntColumn get categoryId => integer().references(Categories, #id)();
-  RealColumn get amount => real()();
-  TextColumn get notes => text().nullable()();
-  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
-}
-
-@DriftDatabase(tables: [
-  Transactions,
-  Categories,
-  Subscriptions,
-  Mappings,
-  Budgets,
-  Splits
-])
+@DriftDatabase(
+  include: {'tables.drift'},
+  daos: [ReceiptDao, TransactionDao],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onCreate: (m) async {
-          await m.createAll();
+        onUpgrade: (m, from, to) async {
+          if (from == 1) {
+            // V1 to V2: Add new columns or indexes if needed
+            // The tables.drift now includes 'receipts' which is new
+            await m.createTable(receipts);
+
+            // Add any other schema evolution here
+            // e.g., await m.addColumn(transactions, transactions.someNewColumn);
+          }
+        },
+        beforeOpen: (details) async {
+          if (details.wasCreated) {
+            // If the database was just created, check for legacy v1 files (raw SQLite)
+            await _emergencyV1Migration();
+          }
         },
       );
 
-  // --- Subscription Queries ---
+  // --- Legacy Migration Logic ---
+
+  static Future<void> _emergencyV1Migration() async {
+    final docsDir = await getApplicationDocumentsDirectory();
+    final v1Path = p.join(docsDir.path, 'pennypilot.db');
+    final v1SqlitePath = p.join(docsDir.path, 'pennypilot.sqlite');
+
+    if (await File(v1Path).exists()) {
+      await _migrateRawV1toV2(v1Path);
+    } else if (await File(v1SqlitePath).exists()) {
+      // If we are migrating from the old drift v1 file to a new v2 file structure if needed
+      // But typically Drift handles this via onUpgrade if the filename is the same.
+      // The user requested a 'pennypilot_v2.db' specifically.
+    }
+  }
+
+  static Future<void> _migrateRawV1toV2(String v1Path) async {
+    final v1File = File(v1Path);
+    // Use a temporary database to read from the old file
+    final v1Db = AppDatabase._forFile(v1File);
+
+    try {
+      final rows = await v1Db.customSelect('SELECT * FROM receipts').get();
+      final v2Db = AppDatabase();
+
+      for (final row in rows) {
+        await v2Db.receiptDao.insertReceipt(ReceiptsCompanion.insert(
+          vendor: row.read<String>('vendor'),
+          amount: row.read<double>('amount'),
+          date: DateTime.tryParse(row.read<String>('date')) ?? DateTime.now(),
+        ));
+      }
+
+      await v1Db.close();
+      await v1File.delete(); // Cleanup after successful migration
+    } catch (e) {
+      // Log error properly in a real app
+      debugPrint('Migration failed: $e');
+      await v1Db.close();
+    }
+  }
+
+  // Helper for migration
+  AppDatabase._forFile(File file) : super(NativeDatabase(file));
+
+  // --- Existing Queries (Wrapped in DAOs or directly here for backward compatibility) ---
 
   Stream<List<Subscription>> watchAllSubscriptions() {
     return select(subscriptions).watch();
@@ -152,24 +95,23 @@ class AppDatabase extends _$AppDatabase {
     return select(subscriptions).watch().map((subs) {
       double total = 0;
       for (final sub in subs) {
-        // Simple conversion to monthly for statistics
         switch (sub.frequency) {
-          case 0: // weekly
+          case 0:
             total += sub.amount * 4;
             break;
-          case 1: // biweekly
+          case 1:
             total += sub.amount * 2;
             break;
-          case 2: // monthly
+          case 2:
             total += sub.amount;
             break;
-          case 3: // quarterly
+          case 3:
             total += sub.amount / 3;
             break;
-          case 4: // semiannual
+          case 4:
             total += sub.amount / 6;
             break;
-          case 5: // yearly
+          case 5:
             total += sub.amount / 12;
             break;
           default:
@@ -188,7 +130,16 @@ class AppDatabase extends _$AppDatabase {
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'pennypilot.sqlite'));
-    return NativeDatabase(file);
+    final v2File = File(p.join(dbFolder.path, 'pennypilot_v2.db'));
+    final v1File = File(p.join(dbFolder.path, 'pennypilot.sqlite'));
+
+    // Move from v1 drift file to v2 if necessary, or just use the same file renaming logic
+    if (!await v2File.exists() && await v1File.exists()) {
+      await v1File.copy(v2File.path);
+      // We keep the old one as fallback until we are sure?
+      // User said "BACKWARDS COMPATIBLE - New APK reads v1 DB without wipe"
+    }
+
+    return NativeDatabase(v2File);
   });
 }

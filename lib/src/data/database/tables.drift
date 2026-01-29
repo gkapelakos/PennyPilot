@@ -1,0 +1,126 @@
+import 'package:drift/drift.dart';
+
+-- Receipts table
+CREATE TABLE receipts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    vendor TEXT NOT NULL,
+    amount REAL NOT NULL,
+    date DATETIME NOT NULL,
+    category_id INTEGER REFERENCES categories(id),
+    image_path TEXT,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Categories table
+CREATE TABLE categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    parent_category_id INTEGER,
+    icon TEXT NOT NULL,
+    color TEXT NOT NULL,
+    color_value INTEGER,
+    is_system BOOLEAN NOT NULL DEFAULT FALSE,
+    display_order INTEGER NOT NULL DEFAULT 0,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    transaction_count INTEGER NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME
+);
+
+-- Transactions table
+CREATE TABLE transactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    merchant_name TEXT NOT NULL,
+    raw_merchant_name TEXT,
+    amount REAL NOT NULL,
+    subtotal_amount REAL,
+    tax_amount REAL,
+    discount_amount REAL,
+    tip_amount REAL,
+    date DATETIME NOT NULL,
+    category_id INTEGER REFERENCES categories(id),
+    is_subscription BOOLEAN NOT NULL DEFAULT FALSE,
+    subscription_id INTEGER,
+    kind INTEGER NOT NULL DEFAULT 1, -- 0: income, 1: expense
+    origin INTEGER NOT NULL DEFAULT 0,
+    is_recurring BOOLEAN NOT NULL DEFAULT FALSE,
+    extraction_confidence INTEGER NOT NULL DEFAULT 0,
+    has_line_items BOOLEAN NOT NULL DEFAULT FALSE,
+    original_email_id TEXT,
+    currency TEXT NOT NULL DEFAULT 'USD',
+    notes TEXT,
+    user_verified BOOLEAN NOT NULL DEFAULT FALSE,
+    has_splits BOOLEAN NOT NULL DEFAULT FALSE,
+    is_manually_edited BOOLEAN NOT NULL DEFAULT FALSE,
+    manual_edit_timestamp DATETIME,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME
+);
+
+-- Subscriptions table
+CREATE TABLE subscriptions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    service_name TEXT NOT NULL,
+    amount REAL NOT NULL,
+    next_renewal_date DATETIME NOT NULL,
+    frequency INTEGER NOT NULL,
+    lifecycle_state INTEGER NOT NULL,
+    category_id INTEGER REFERENCES categories(id),
+    first_seen_date DATETIME NOT NULL,
+    last_charged_date DATETIME,
+    price_history_json TEXT,
+    cycle_history_json TEXT,
+    frequency_consistency INTEGER NOT NULL DEFAULT 100,
+    detection_source INTEGER NOT NULL,
+    anomalies TEXT, -- JSON encoded list
+    is_trial BOOLEAN NOT NULL DEFAULT FALSE,
+    trial_end_date DATETIME,
+    charge_count INTEGER NOT NULL DEFAULT 0,
+    average_days_between_charges REAL,
+    currency TEXT NOT NULL DEFAULT 'USD',
+    notes TEXT,
+    user_confirmed BOOLEAN NOT NULL DEFAULT FALSE,
+    is_zombie BOOLEAN NOT NULL DEFAULT FALSE,
+    zombie_reason TEXT,
+    last_price_hike_percent REAL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME
+);
+
+-- Mappings table
+CREATE TABLE mappings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    merchant_name TEXT NOT NULL,
+    category_id INTEGER NOT NULL REFERENCES categories(id),
+    is_automatic BOOLEAN NOT NULL DEFAULT TRUE,
+    confidence INTEGER NOT NULL DEFAULT 100,
+    user_confirmed BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME
+);
+
+-- Budgets table
+CREATE TABLE budgets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category_id INTEGER REFERENCES categories(id),
+    limit_amount REAL NOT NULL,
+    period INTEGER NOT NULL DEFAULT 1, -- 0: weekly, 1: monthly
+    rollover BOOLEAN NOT NULL DEFAULT FALSE,
+    carry_over_amount REAL NOT NULL DEFAULT 0.0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME
+);
+
+-- Splits table
+CREATE TABLE splits (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    transaction_id INTEGER NOT NULL REFERENCES transactions(id),
+    category_id INTEGER NOT NULL REFERENCES categories(id),
+    amount REAL NOT NULL,
+    notes TEXT,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Indices
+CREATE INDEX IF NOT EXISTS transactions_date_idx ON transactions (date);
+CREATE INDEX IF NOT EXISTS subscriptions_renewal_idx ON subscriptions (next_renewal_date);
