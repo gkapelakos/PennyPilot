@@ -254,9 +254,12 @@ class SubscriptionIntelligenceService {
     if (avgDays >= 13 && avgDays <= 15) return SubscriptionFrequency.biweekly;
     if (avgDays >= 28 && avgDays <= 32) return SubscriptionFrequency.monthly;
     if (avgDays >= 88 && avgDays <= 95) return SubscriptionFrequency.quarterly;
-    if (avgDays >= 178 && avgDays <= 185)
+    if (avgDays >= 178 && avgDays <= 185) {
       return SubscriptionFrequency.semiannual;
-    if (avgDays >= 360 && avgDays <= 370) return SubscriptionFrequency.yearly;
+    }
+    if (avgDays >= 360 && avgDays <= 370) {
+      return SubscriptionFrequency.yearly;
+    }
 
     return SubscriptionFrequency.unknown;
   }

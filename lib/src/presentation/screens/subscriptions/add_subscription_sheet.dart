@@ -166,10 +166,14 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                         borderRadius: BorderRadius.circular(12)),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) return l10n.required;
+                    if (value == null || value.isEmpty) {
+                      return l10n.required;
+                    }
                     if (double.tryParse(
                             value.replaceAll(RegExp(r'[^0-9.]'), '')) ==
-                        null) return l10n.invalid;
+                        null) {
+                      return l10n.invalid;
+                    }
                     return null;
                   },
                 ),
