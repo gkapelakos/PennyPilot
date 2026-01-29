@@ -1,0 +1,3 @@
+warning • The left operand can't be null, so the right operand is never executed • lib/src/presentation/widgets/scanner/premium_ocr_scanner.dart:40:43 • dead_null_aware_expression
+warning • Unused import: 'package:flutter_riverpod/flutter_riverpod.dart' • lib/src/services/subscription_background_service.dart:2:8 • unused_import
+warning • Unused import: '../../agents/subscription_detector.dart' • lib/src/services/subscription_background_service.dart:4:8 • unused_import

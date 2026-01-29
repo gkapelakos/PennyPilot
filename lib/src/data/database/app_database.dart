@@ -141,6 +141,48 @@ class AppDatabase extends _$AppDatabase {
           await m.createAll();
         },
       );
+
+  // --- Subscription Queries ---
+
+  Stream<List<Subscription>> watchAllSubscriptions() {
+    return select(subscriptions).watch();
+  }
+
+  Stream<double> watchMonthlySubscriptionTotal() {
+    return select(subscriptions).watch().map((subs) {
+      double total = 0;
+      for (final sub in subs) {
+        // Simple conversion to monthly for statistics
+        switch (sub.frequency) {
+          case 0: // weekly
+            total += sub.amount * 4;
+            break;
+          case 1: // biweekly
+            total += sub.amount * 2;
+            break;
+          case 2: // monthly
+            total += sub.amount;
+            break;
+          case 3: // quarterly
+            total += sub.amount / 3;
+            break;
+          case 4: // semiannual
+            total += sub.amount / 6;
+            break;
+          case 5: // yearly
+            total += sub.amount / 12;
+            break;
+          default:
+            total += sub.amount;
+        }
+      }
+      return total;
+    });
+  }
+
+  Future<void> upsertSubscription(SubscriptionsCompanion entry) async {
+    await into(subscriptions).insertOnConflictUpdate(entry);
+  }
 }
 
 LazyDatabase _openConnection() {

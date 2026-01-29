@@ -1,0 +1,49 @@
+[INFO] Generating build script...
+[INFO] Generating build script completed, took 192ms
+
+[INFO] Precompiling build script......
+[INFO] Precompiling build script... completed, took 2.6s
+
+[INFO] Initializing inputs
+[INFO] Building new asset graph...
+[INFO] Building new asset graph completed, took 1.0s
+
+[INFO] Checking for unexpected pre-existing outputs....
+[INFO] Checking for unexpected pre-existing outputs. completed, took 0ms
+
+[INFO] Running build...
+[INFO] Generating SDK summary...
+[INFO] 1.0s elapsed, 0/16 actions completed.
+[WARNING] riverpod_generator on test/services/subscription_intelligence_test.dart:
+Your current `analyzer` version may not fully support your current SDK version.
+
+Analyzer language version: 3.1.0
+SDK language version: 3.10.0
+
+Please update to the latest `analyzer` version (10.0.1) by running
+`flutter packages upgrade`.
+
+If you are not getting the latest version by running the above command, you
+can try adding a constraint like the following to your pubspec to start
+diagnosing why you can't get the latest version:
+
+dev_dependencies:
+  analyzer: ^10.0.1
+
+[INFO] Generating SDK summary completed, took 2.4s
+
+[INFO] 3.5s elapsed, 47/104 actions completed.
+[INFO] 5.7s elapsed, 98/129 actions completed.
+[INFO] 9.3s elapsed, 162/191 actions completed.
+[INFO] 11.3s elapsed, 214/230 actions completed.
+[INFO] 14.7s elapsed, 234/238 actions completed.
+[INFO] 15.7s elapsed, 306/324 actions completed.
+[INFO] 16.7s elapsed, 410/426 actions completed.
+[INFO] 17.9s elapsed, 800/816 actions completed.
+[INFO] Running build completed, took 18.2s
+
+[INFO] Caching finalized dependency graph...
+[INFO] Caching finalized dependency graph completed, took 111ms
+
+[INFO] Succeeded after 18.4s with 317 outputs (1183 actions)
+

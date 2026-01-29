@@ -20,10 +20,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Workmanager
-  // Workmanager().initialize(
-  //   callbackDispatcher,
-  //   isInDebugMode: true,
-  // );
+  Workmanager().initialize(
+    callbackDispatcher,
+  );
+
+  // Schedule background subscription analysis
+  Workmanager().registerPeriodicTask(
+    "subscription-intelligence",
+    "subscription-intelligence-task",
+    frequency: const Duration(hours: 12),
+  );
 
   // Initialize Database
   final dbService = DatabaseService();

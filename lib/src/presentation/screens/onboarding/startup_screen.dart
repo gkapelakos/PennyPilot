@@ -98,10 +98,12 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
                                     ),
                                   ],
                                 ),
-                                child: const Icon(
-                                  Icons.account_balance_wallet_rounded,
-                                  size: 50,
-                                  color: Colors.white,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(32),
+                                  child: Image.asset(
+                                    'assets/pennypilot logo.png',
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                               const SizedBox(height: 32),
@@ -191,7 +193,7 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
 
                         Center(
                           child: Text(
-                            'Version 1.0.0-alpha.1.13',
+                            'Version 1.0.0-alpha.1.17',
                             style: theme.textTheme.labelSmall?.copyWith(
                               color: theme.colorScheme.onSurfaceVariant
                                   .withAlpha(150),

@@ -1,0 +1,38 @@
+[INFO] Generating build script...
+[INFO] Generating build script completed, took 282ms
+
+[INFO] Initializing inputs
+[INFO] Reading cached asset graph...
+[INFO] Reading cached asset graph completed, took 221ms
+
+[INFO] Checking for updates since last build...
+[INFO] Checking for updates since last build completed, took 964ms
+
+[INFO] Running build...
+[WARNING] riverpod_generator on lib/src/presentation/widgets/scanner/premium_ocr_scanner.dart:
+Your current `analyzer` version may not fully support your current SDK version.
+
+Analyzer language version: 3.1.0
+SDK language version: 3.10.0
+
+Please update to the latest `analyzer` version (10.0.1) by running
+`flutter packages upgrade`.
+
+If you are not getting the latest version by running the above command, you
+can try adding a constraint like the following to your pubspec to start
+diagnosing why you can't get the latest version:
+
+dev_dependencies:
+  analyzer: ^10.0.1
+
+[INFO] 1.8s elapsed, 4/7 actions completed.
+[INFO] 2.9s elapsed, 20/79 actions completed.
+[INFO] 6.9s elapsed, 83/102 actions completed.
+[INFO] 13.4s elapsed, 115/117 actions completed.
+[INFO] Running build completed, took 13.7s
+
+[INFO] Caching finalized dependency graph...
+[INFO] Caching finalized dependency graph completed, took 135ms
+
+[INFO] Succeeded after 13.8s with 120 outputs (259 actions)
+

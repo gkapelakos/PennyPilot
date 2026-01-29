@@ -1,5 +1,5 @@
-import '../data/models/transaction_model.dart';
-import '../data/models/subscription_model.dart';
+import '../src/data/models/transaction_model.dart';
+import '../src/data/models/subscription_model.dart';
 
 abstract class Agent {
   Future<dynamic> detect(List<TransactionModel> txns);
@@ -21,9 +21,8 @@ class SubscriptionAgent extends Agent {
   @override
   Future<SubscriptionModel?> detect(List<TransactionModel> txns) async {
     final clusters = MLModel.predictClusters(txns);
-    final recurringCluster = clusters
-        .where((cluster) => cluster.recurrence > 0.9)
-        .toList();
+    final recurringCluster =
+        clusters.where((cluster) => cluster.recurrence > 0.9).toList();
 
     if (recurringCluster.isEmpty) return null;
 

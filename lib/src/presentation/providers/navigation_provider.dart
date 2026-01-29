@@ -15,6 +15,7 @@ import 'package:pennypilot/src/presentation/screens/subscriptions/add_subscripti
 import 'package:pennypilot/src/presentation/screens/transactions/receipt_scan_screen.dart';
 import 'package:pennypilot/src/presentation/widgets/status_dialogs.dart';
 import 'package:pennypilot/src/presentation/providers/email_provider.dart';
+import 'package:pennypilot/src/presentation/screens/subscriptions/subscription_intelligence_dashboard.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 
 part 'navigation_provider.g.dart';
@@ -66,6 +67,11 @@ GoRouter router(RouterRef ref) {
             path: '/settings',
             builder: (context, state) => const SettingsScreen(),
           ),
+          GoRoute(
+            path: '/intelligence',
+            builder: (context, state) =>
+                const SubscriptionIntelligenceDashboard(),
+          ),
         ],
       ),
     ],
@@ -108,6 +114,10 @@ class DashboardShell extends ConsumerWidget {
                     selectedIcon: const Icon(Icons.insights),
                     label: Text(l10n.insights)),
                 NavigationRailDestination(
+                    icon: const Icon(Icons.psychology_outlined),
+                    selectedIcon: const Icon(Icons.psychology),
+                    label: const Text('Intelligence')),
+                NavigationRailDestination(
                     icon: const Icon(Icons.settings_outlined),
                     selectedIcon: const Icon(Icons.settings),
                     label: Text(l10n.settings)),
@@ -139,6 +149,10 @@ class DashboardShell extends ConsumerWidget {
                     selectedIcon: const Icon(Icons.insights),
                     label: l10n.insights),
                 NavigationDestination(
+                    icon: const Icon(Icons.psychology_outlined),
+                    selectedIcon: const Icon(Icons.psychology),
+                    label: 'Intelligence'),
+                NavigationDestination(
                     icon: const Icon(Icons.settings_outlined),
                     selectedIcon: const Icon(Icons.settings),
                     label: l10n.settings),
@@ -159,7 +173,8 @@ class DashboardShell extends ConsumerWidget {
     if (location.startsWith('/transactions')) return 1;
     if (location.startsWith('/subscriptions')) return 2;
     if (location.startsWith('/insights')) return 3;
-    if (location.startsWith('/settings')) return 4;
+    if (location.startsWith('/settings')) return 5;
+    if (location.startsWith('/intelligence')) return 4;
     return 0;
   }
 
@@ -178,6 +193,9 @@ class DashboardShell extends ConsumerWidget {
         context.go('/insights');
         break;
       case 4:
+        context.go('/intelligence');
+        break;
+      case 5:
         context.go('/settings');
         break;
     }

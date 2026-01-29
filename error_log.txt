@@ -1,0 +1,7 @@
+  error • The getter 'merchantName' isn't defined for the type 'RecognizedReceipt' • lib/src/presentation/widgets/scanner/premium_ocr_scanner.dart:40:38 • undefined_getter
+  error • The getter 'totalAmount' isn't defined for the type 'RecognizedReceipt' • lib/src/presentation/widgets/scanner/premium_ocr_scanner.dart:41:32 • undefined_getter
+  error • The getter 'date' isn't defined for the type 'RecognizedReceipt' • lib/src/presentation/widgets/scanner/premium_ocr_scanner.dart:42:30 • undefined_getter
+  error • The getter 'isSubscription' isn't defined for the type 'RecognizedReceipt' • lib/src/presentation/widgets/scanner/premium_ocr_scanner.dart:43:52 • undefined_getter
+  error • The getter 'confidence' isn't defined for the type 'RecognizedReceipt' • lib/src/presentation/widgets/scanner/premium_ocr_scanner.dart:45:26 • undefined_getter
+  error • The getter 'merchantName' isn't defined for the type 'RecognizedReceipt' • lib/src/presentation/widgets/scanner/premium_ocr_scanner.dart:54:36 • undefined_getter
+  error • The getter 'totalAmount' isn't defined for the type 'RecognizedReceipt' • lib/src/presentation/widgets/scanner/premium_ocr_scanner.dart:54:63 • undefined_getter

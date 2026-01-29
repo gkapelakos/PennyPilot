@@ -1,0 +1,57 @@
+[INFO] Generating build script...
+[INFO] Generating build script completed, took 210ms
+
+[INFO] Initializing inputs
+[INFO] Reading cached asset graph...
+[WARNING] Throwing away cached asset graph because the build phases have changed. This most commonly would happen as a result of adding a new dependency or updating your dependencies.
+[WARNING] Throwing away cached asset graph because the language version of some package(s) changed. This would most commonly happen when updating dependencies or changing your min sdk constraint.
+[INFO] Cleaning up outputs from previous builds....
+[INFO] Cleaning up outputs from previous builds. completed, took 32ms
+
+[INFO] Generating build script...
+[INFO] Generating build script completed, took 58ms
+
+[WARNING] Invalidated precompiled build script due to missing asset graph.
+[INFO] Precompiling build script......
+[INFO] Precompiling build script... completed, took 3.1s
+
+[INFO] Initializing inputs
+[INFO] Building new asset graph...
+[INFO] Building new asset graph completed, took 1.1s
+
+[INFO] Checking for unexpected pre-existing outputs....
+[INFO] Checking for unexpected pre-existing outputs. completed, took 0ms
+
+[INFO] Running build...
+[WARNING] riverpod_generator on test/services/subscription_intelligence_test.dart:
+Your current `analyzer` version may not fully support your current SDK version.
+
+Analyzer language version: 3.1.0
+SDK language version: 3.10.0
+
+Please update to the latest `analyzer` version (10.0.1) by running
+`flutter packages upgrade`.
+
+If you are not getting the latest version by running the above command, you
+can try adding a constraint like the following to your pubspec to start
+diagnosing why you can't get the latest version:
+
+dev_dependencies:
+  analyzer: ^10.0.1
+
+[INFO] 1.5s elapsed, 37/63 actions completed.
+[INFO] 3.8s elapsed, 91/126 actions completed.
+[INFO] 4.8s elapsed, 117/150 actions completed.
+[INFO] 8.2s elapsed, 166/194 actions completed.
+[INFO] 10.7s elapsed, 225/236 actions completed.
+[INFO] 13.9s elapsed, 235/239 actions completed.
+[INFO] 15.0s elapsed, 303/320 actions completed.
+[INFO] 16.1s elapsed, 410/426 actions completed.
+[INFO] 17.1s elapsed, 735/743 actions completed.
+[INFO] Running build completed, took 17.7s
+
+[INFO] Caching finalized dependency graph...
+[INFO] Caching finalized dependency graph completed, took 98ms
+
+[INFO] Succeeded after 17.8s with 317 outputs (1183 actions)
+

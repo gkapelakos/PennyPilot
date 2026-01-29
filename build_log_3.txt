@@ -1,0 +1,38 @@
+[INFO] Generating build script...
+[INFO] Generating build script completed, took 203ms
+
+[INFO] Initializing inputs
+[INFO] Reading cached asset graph...
+[INFO] Reading cached asset graph completed, took 207ms
+
+[INFO] Checking for updates since last build...
+[INFO] Checking for updates since last build completed, took 887ms
+
+[INFO] Running build...
+[WARNING] riverpod_generator on lib/src/services/insights_service.dart:
+Your current `analyzer` version may not fully support your current SDK version.
+
+Analyzer language version: 3.1.0
+SDK language version: 3.10.0
+
+Please update to the latest `analyzer` version (10.0.1) by running
+`flutter packages upgrade`.
+
+If you are not getting the latest version by running the above command, you
+can try adding a constraint like the following to your pubspec to start
+diagnosing why you can't get the latest version:
+
+dev_dependencies:
+  analyzer: ^10.0.1
+
+[INFO] 1.7s elapsed, 3/10 actions completed.
+[INFO] 2.8s elapsed, 92/200 actions completed.
+[INFO] 13.1s elapsed, 753/755 actions completed.
+[INFO] 14.1s elapsed, 861/864 actions completed.
+[INFO] Running build completed, took 14.4s
+
+[INFO] Caching finalized dependency graph...
+[INFO] Caching finalized dependency graph completed, took 127ms
+
+[INFO] Succeeded after 14.5s with 861 outputs (1760 actions)
+

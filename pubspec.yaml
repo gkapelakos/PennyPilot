@@ -13,10 +13,11 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.6
   flutter_riverpod: ^2.6.1
+  hooks_riverpod: ^2.6.1
 
   flutter_hooks: ^0.21.1
   riverpod_annotation: any
-  drift: ^2.20.0
+  drift: 2.18.0
   sqlite3_flutter_libs: ^0.5.24
   isar: ^3.1.0+1
   isar_flutter_libs: ^3.1.0+1
@@ -64,7 +65,7 @@ dev_dependencies:
   mocktail: any
   riverpod_generator: any
   isar_generator: ^3.1.0+1
-  drift_dev: any
+  drift_dev: 2.18.0
   json_serializable: any
   flutter_launcher_icons: any
   analyzer: any
@@ -73,8 +74,8 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
-  # assets:
-  #   - assets/pennypilot_logo.png
+  assets:
+    - assets/pennypilot logo.png
 
 google_ml_kit:
   text_recognition:
@@ -97,5 +98,3 @@ flutter_launcher_icons:
 
 dependency_overrides:
   intl: ^0.20.2
-  analyzer: ^6.4.1
-  analyzer_plugin: ^0.11.3

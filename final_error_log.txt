@@ -1,0 +1,2 @@
+  error • The getter 'merchantName' isn't defined for the type 'RecognizedReceipt' • lib/src/presentation/widgets/scanner/premium_ocr_scanner.dart:51:36 • undefined_getter
+  error • The getter 'totalAmount' isn't defined for the type 'RecognizedReceipt' • lib/src/presentation/widgets/scanner/premium_ocr_scanner.dart:51:63 • undefined_getter

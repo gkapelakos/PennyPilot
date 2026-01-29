@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:rive/rive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -34,7 +32,7 @@ class BudgetController extends RiveAnimationController<RuntimeArtboard> {
   BudgetController(this.percent);
 
   @override
-  bool init(RuntimeArtboard artboard) => true;
+  bool init(RuntimeArtboard core) => true;
 
   @override
   void apply(RuntimeArtboard artboard, double elapsedSeconds) {}
