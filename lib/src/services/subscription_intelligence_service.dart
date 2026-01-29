@@ -23,7 +23,8 @@ class SubscriptionIntelligenceService {
 
     // Price change detection
     if (subscription.priceHistoryJson != null) {
-      final priceHistory = jsonDecode(subscription.priceHistoryJson!) as List<dynamic>;
+      final priceHistory =
+          jsonDecode(subscription.priceHistoryJson!) as List<dynamic>;
       if (priceHistory.length >= 2) {
         final lastPrice = priceHistory[priceHistory.length - 1] as double;
         final previousPrice = priceHistory[priceHistory.length - 2] as double;
@@ -58,10 +59,8 @@ class SubscriptionIntelligenceService {
   Future<List<SubscriptionModel>> detectSubscriptions() async {
     _logger.info('Analyzing transactions for subscription patterns...');
 
-    final transactions = await _isar.transactionModels
-        .where()
-        .sortByDate()
-        .findAll();
+    final transactions =
+        await _isar.transactionModels.where().sortByDate().findAll();
 
     // Group transactions by merchant
     final merchantGroups = <String, List<TransactionModel>>{};
@@ -112,7 +111,8 @@ class SubscriptionIntelligenceService {
       }
     });
 
-    _logger.info('Detected ${detectedSubscriptions.length} potential subscriptions');
+    _logger.info(
+        'Detected ${detectedSubscriptions.length} potential subscriptions');
     return detectedSubscriptions;
   }
 
@@ -129,7 +129,8 @@ class SubscriptionIntelligenceService {
     // Calculate days between charges
     final daysBetween = <int>[];
     for (var i = 1; i < transactions.length; i++) {
-      final days = transactions[i].date.difference(transactions[i - 1].date).inDays;
+      final days =
+          transactions[i].date.difference(transactions[i - 1].date).inDays;
       daysBetween.add(days);
     }
 
@@ -174,18 +175,20 @@ class SubscriptionIntelligenceService {
     if (transactions.length >= 2) {
       final lastAmount = transactions.last.amount;
       final prevAmount = transactions[transactions.length - 2].amount;
-      
+
       if (lastAmount > prevAmount && prevAmount > 0) {
         priceHikePercent = ((lastAmount - prevAmount) / prevAmount) * 100;
         if (priceHikePercent > 10) {
           isZombie = true;
-          zombieReason = 'Significant price increase detected (${priceHikePercent.toStringAsFixed(1)}%)';
+          zombieReason =
+              'Significant price increase detected (${priceHikePercent.toStringAsFixed(1)}%)';
         }
       }
-      
+
       // Trial to paid transition
       if (transactions.first.amount < lastAmount * 0.1 && lastAmount > 0) {
-        if (transactions.length >= 2 && transactions.last.amount > transactions.first.amount) {
+        if (transactions.length >= 2 &&
+            transactions.last.amount > transactions.first.amount) {
           isZombie = true;
           zombieReason = 'Free trial ended; now charging full price';
         }
@@ -216,7 +219,8 @@ class SubscriptionIntelligenceService {
     );
 
     if (_categorizationService != null) {
-      subscription.categoryId = await _categorizationService.categorizeMerchant(merchant);
+      subscription.categoryId =
+          await _categorizationService.categorizeMerchant(merchant);
     }
 
     return subscription;
@@ -228,9 +232,10 @@ class SubscriptionIntelligenceService {
 
     // Calculate standard deviation
     final variance = daysBetween.map((days) {
-      final diff = days - average;
-      return diff * diff;
-    }).reduce((a, b) => a + b) / daysBetween.length;
+          final diff = days - average;
+          return diff * diff;
+        }).reduce((a, b) => a + b) /
+        daysBetween.length;
 
     final stdDev = math.sqrt(variance);
 
@@ -249,7 +254,8 @@ class SubscriptionIntelligenceService {
     if (avgDays >= 13 && avgDays <= 15) return SubscriptionFrequency.biweekly;
     if (avgDays >= 28 && avgDays <= 32) return SubscriptionFrequency.monthly;
     if (avgDays >= 88 && avgDays <= 95) return SubscriptionFrequency.quarterly;
-    if (avgDays >= 178 && avgDays <= 185) return SubscriptionFrequency.semiannual;
+    if (avgDays >= 178 && avgDays <= 185)
+      return SubscriptionFrequency.semiannual;
     if (avgDays >= 360 && avgDays <= 370) return SubscriptionFrequency.yearly;
 
     return SubscriptionFrequency.unknown;
@@ -277,7 +283,8 @@ class SubscriptionIntelligenceService {
   }
 
   /// Detect if subscription is in trial period
-  bool _detectTrial(List<TransactionModel> transactions, List<int> daysBetween) {
+  bool _detectTrial(
+      List<TransactionModel> transactions, List<int> daysBetween) {
     // Trial detection: first charge is significantly different from others
     if (transactions.length < 2) return false;
 
@@ -291,7 +298,8 @@ class SubscriptionIntelligenceService {
   }
 
   /// Build price history
-  List<Map<String, dynamic>> _buildPriceHistory(List<TransactionModel> transactions) {
+  List<Map<String, dynamic>> _buildPriceHistory(
+      List<TransactionModel> transactions) {
     final history = <Map<String, dynamic>>[];
     double? lastAmount;
 
@@ -346,7 +354,7 @@ class SubscriptionIntelligenceService {
           subscription.lifecycleState = newState;
           subscription.updatedAt = DateTime.now();
           await _isar.subscriptionModels.put(subscription);
-          
+
           _logger.info(
             'Updated ${subscription.serviceName} lifecycle: ${newState.toString()}',
           );

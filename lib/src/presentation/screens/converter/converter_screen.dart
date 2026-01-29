@@ -10,7 +10,8 @@ class CurrencyConverterScreen extends ConsumerStatefulWidget {
       _CurrencyConverterScreenState();
 }
 
-class _CurrencyConverterScreenState extends ConsumerState<CurrencyConverterScreen> {
+class _CurrencyConverterScreenState
+    extends ConsumerState<CurrencyConverterScreen> {
   final _amountController = TextEditingController();
   String _fromCurrency = 'USD';
   String _toCurrency = 'EUR';
@@ -52,8 +53,11 @@ class _CurrencyConverterScreenState extends ConsumerState<CurrencyConverterScree
             if (!exchangeRates.keys.contains(_fromCurrency)) {
               _fromCurrency = exchangeRates.keys.first;
             }
-            if (!exchangeRates.keys.contains(_toCurrency) || _fromCurrency == _toCurrency) {
-               _toCurrency = exchangeRates.keys.firstWhere((k) => k != _fromCurrency, orElse: () => exchangeRates.keys.first);
+            if (!exchangeRates.keys.contains(_toCurrency) ||
+                _fromCurrency == _toCurrency) {
+              _toCurrency = exchangeRates.keys.firstWhere(
+                  (k) => k != _fromCurrency,
+                  orElse: () => exchangeRates.keys.first);
             }
 
             return Column(
@@ -61,7 +65,8 @@ class _CurrencyConverterScreenState extends ConsumerState<CurrencyConverterScree
               children: [
                 TextFormField(
                   controller: _amountController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
                   decoration: const InputDecoration(
                     labelText: 'Amount',
                     border: OutlineInputBorder(),
@@ -71,16 +76,28 @@ class _CurrencyConverterScreenState extends ConsumerState<CurrencyConverterScree
                 const SizedBox(height: 20),
                 Row(
                   children: [
-                    Expanded(child: _buildCurrencySelector('From', _fromCurrency, (val) => setState(() => _fromCurrency = val!), exchangeRates)),
-                    IconButton(icon: const Icon(Icons.swap_horiz), onPressed: () {
-                      setState(() {
-                        final temp = _fromCurrency;
-                        _fromCurrency = _toCurrency;
-                        _toCurrency = temp;
-                        _convert(exchangeRates);
-                      });
-                    }),
-                    Expanded(child: _buildCurrencySelector('To', _toCurrency, (val) => setState(() => _toCurrency = val!), exchangeRates)),
+                    Expanded(
+                        child: _buildCurrencySelector(
+                            'From',
+                            _fromCurrency,
+                            (val) => setState(() => _fromCurrency = val!),
+                            exchangeRates)),
+                    IconButton(
+                        icon: const Icon(Icons.swap_horiz),
+                        onPressed: () {
+                          setState(() {
+                            final temp = _fromCurrency;
+                            _fromCurrency = _toCurrency;
+                            _toCurrency = temp;
+                            _convert(exchangeRates);
+                          });
+                        }),
+                    Expanded(
+                        child: _buildCurrencySelector(
+                            'To',
+                            _toCurrency,
+                            (val) => setState(() => _toCurrency = val!),
+                            exchangeRates)),
                   ],
                 ),
                 const SizedBox(height: 30),
@@ -92,21 +109,27 @@ class _CurrencyConverterScreenState extends ConsumerState<CurrencyConverterScree
                   ),
                   child: Column(
                     children: [
-                      Text('Converted Amount', style: Theme.of(context).textTheme.labelLarge),
+                      Text('Converted Amount',
+                          style: Theme.of(context).textTheme.labelLarge),
                       const SizedBox(height: 8),
                       Text(
                         '${_convertedAmount.toStringAsFixed(2)} $_toCurrency',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimaryContainer,
                               fontWeight: FontWeight.bold,
                             ),
                       ),
                     ],
                   ),
                 ),
-                 const SizedBox(height: 20),
-                 exchangeRatesState.maybeWhen(
-                   data: (data) => Text(
+                const SizedBox(height: 20),
+                exchangeRatesState.maybeWhen(
+                  data: (data) => Text(
                     'Last updated: ${data['last_updated_utc'] ?? 'N/A'}',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodySmall,
@@ -123,14 +146,17 @@ class _CurrencyConverterScreenState extends ConsumerState<CurrencyConverterScree
     );
   }
 
-  Widget _buildCurrencySelector(String title, String value, ValueChanged<String?> onChanged, Map<String, dynamic> exchangeRates) {
+  Widget _buildCurrencySelector(String title, String value,
+      ValueChanged<String?> onChanged, Map<String, dynamic> exchangeRates) {
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         labelText: title,
         border: const OutlineInputBorder(),
       ),
       initialValue: value,
-      items: exchangeRates.keys.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+      items: exchangeRates.keys
+          .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+          .toList(),
       onChanged: (val) {
         if (val != null) {
           onChanged(val);

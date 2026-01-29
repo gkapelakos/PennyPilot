@@ -36,8 +36,8 @@ class MerchantNormalizationRuleModel {
 }
 
 enum MatchType {
-  exact,      // Exact string match
-  contains,   // Contains substring
+  exact, // Exact string match
+  contains, // Contains substring
   startsWith, // Starts with pattern
-  regex,      // Regular expression
+  regex, // Regular expression
 }

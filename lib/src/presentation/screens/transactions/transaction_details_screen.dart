@@ -38,7 +38,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
                   ),
                 ),
               );
-              
+
               // If edit was successful, pop back to refresh the list
               if (result == true && context.mounted) {
                 Navigator.of(context).pop();
@@ -76,12 +76,13 @@ class TransactionDetailsScreen extends ConsumerWidget {
                     style: theme.textTheme.headlineSmall,
                     textAlign: TextAlign.center,
                   ),
-                  if (transaction.isManuallyEdited) ...[ 
+                  if (transaction.isManuallyEdited) ...[
                     const SizedBox(height: 8),
                     const ManualEditBadge(compact: false),
                   ],
                   if (transaction.rawMerchantName != null &&
-                      transaction.rawMerchantName != transaction.merchantName) ...[
+                      transaction.rawMerchantName !=
+                          transaction.merchantName) ...[
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -138,30 +139,27 @@ class TransactionDetailsScreen extends ConsumerWidget {
                     style: theme.textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),
-                  
                   _buildDetailRow(
                     context,
                     icon: Icons.calendar_today,
                     label: 'Date',
                     value: dateFormat.format(transaction.date),
                   ),
-                  
                   _buildDetailRow(
                     context,
                     icon: Icons.access_time,
                     label: 'Time',
                     value: timeFormat.format(transaction.date),
                   ),
-                  
                   _buildDetailRow(
                     context,
-                    icon: transaction.kind == TransactionKind.income 
-                        ? Icons.arrow_downward 
+                    icon: transaction.kind == TransactionKind.income
+                        ? Icons.arrow_downward
                         : Icons.arrow_upward,
                     label: 'Type',
-                    value: transaction.kind.name[0].toUpperCase() + transaction.kind.name.substring(1),
+                    value: transaction.kind.name[0].toUpperCase() +
+                        transaction.kind.name.substring(1),
                   ),
-
                   if (transaction.isRecurring)
                     _buildDetailRow(
                       context,
@@ -169,7 +167,6 @@ class TransactionDetailsScreen extends ConsumerWidget {
                       label: 'Recurring',
                       value: 'Yes',
                     ),
-
                   if (transaction.category != null)
                     _buildDetailRow(
                       context,
@@ -177,7 +174,6 @@ class TransactionDetailsScreen extends ConsumerWidget {
                       label: 'Category',
                       value: transaction.category!,
                     ),
-                  
                   _buildDetailRow(
                     context,
                     icon: Icons.attach_money,
@@ -204,7 +200,6 @@ class TransactionDetailsScreen extends ConsumerWidget {
                       style: theme.textTheme.titleMedium,
                     ),
                     const SizedBox(height: 16),
-                    
                     if (transaction.subtotalAmount != null)
                       _buildBreakdownRow(
                         context,
@@ -212,7 +207,6 @@ class TransactionDetailsScreen extends ConsumerWidget {
                         transaction.subtotalAmount!,
                         transaction.currency,
                       ),
-                    
                     if (transaction.taxAmount != null)
                       _buildBreakdownRow(
                         context,
@@ -220,7 +214,6 @@ class TransactionDetailsScreen extends ConsumerWidget {
                         transaction.taxAmount!,
                         transaction.currency,
                       ),
-                    
                     if (transaction.discountAmount != null)
                       _buildBreakdownRow(
                         context,
@@ -229,7 +222,6 @@ class TransactionDetailsScreen extends ConsumerWidget {
                         transaction.currency,
                         isDiscount: true,
                       ),
-                    
                     if (transaction.tipAmount != null)
                       _buildBreakdownRow(
                         context,
@@ -237,9 +229,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
                         transaction.tipAmount!,
                         transaction.currency,
                       ),
-                    
                     const Divider(height: 24),
-                    
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -275,7 +265,6 @@ class TransactionDetailsScreen extends ConsumerWidget {
                     style: theme.textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),
-                  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -289,9 +278,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  
                   const SizedBox(height: 12),
-                  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -310,9 +297,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  
                   const SizedBox(height: 12),
-                  
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -331,7 +316,6 @@ class TransactionDetailsScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  
                   const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -343,8 +327,9 @@ class TransactionDetailsScreen extends ConsumerWidget {
                       Row(
                         children: [
                           Icon(
-                            transaction.origin == TransactionOrigin.emailDetected 
-                                ? Icons.email 
+                            transaction.origin ==
+                                    TransactionOrigin.emailDetected
+                                ? Icons.email
                                 : transaction.origin == TransactionOrigin.manual
                                     ? Icons.edit
                                     : Icons.file_upload,
@@ -353,7 +338,8 @@ class TransactionDetailsScreen extends ConsumerWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            transaction.origin == TransactionOrigin.emailDetected
+                            transaction.origin ==
+                                    TransactionOrigin.emailDetected
                                 ? 'Email'
                                 : transaction.origin == TransactionOrigin.manual
                                     ? 'Manual Entry'
@@ -401,15 +387,23 @@ class TransactionDetailsScreen extends ConsumerWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () async {
-                    final updated = transaction..userVerified = !transaction.userVerified;
-                    await ref.read(transactionRepositoryProvider).updateTransaction(updated);
+                    final updated = transaction
+                      ..userVerified = !transaction.userVerified;
+                    await ref
+                        .read(transactionRepositoryProvider)
+                        .updateTransaction(updated);
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(updated.userVerified ? 'Marked as verified' : 'Unverified')),
+                        SnackBar(
+                            content: Text(updated.userVerified
+                                ? 'Marked as verified'
+                                : 'Unverified')),
                       );
                     }
                   },
-                  icon: Icon(transaction.userVerified ? Icons.verified_user : Icons.verified),
+                  icon: Icon(transaction.userVerified
+                      ? Icons.verified_user
+                      : Icons.verified),
                   label: Text(transaction.userVerified ? 'Unverify' : 'Verify'),
                 ),
               ),
@@ -417,7 +411,8 @@ class TransactionDetailsScreen extends ConsumerWidget {
               Expanded(
                 child: FilledButton.icon(
                   onPressed: () async {
-                    final controller = TextEditingController(text: transaction.notes);
+                    final controller =
+                        TextEditingController(text: transaction.notes);
                     final newNote = await showDialog<String>(
                       context: context,
                       builder: (context) => AlertDialog(
@@ -437,7 +432,8 @@ class TransactionDetailsScreen extends ConsumerWidget {
                             child: const Text('Cancel'),
                           ),
                           FilledButton(
-                            onPressed: () => Navigator.pop(context, controller.text),
+                            onPressed: () =>
+                                Navigator.pop(context, controller.text),
                             child: const Text('Save'),
                           ),
                         ],
@@ -445,8 +441,12 @@ class TransactionDetailsScreen extends ConsumerWidget {
                     );
 
                     if (newNote != null && context.mounted) {
-                      final updated = transaction..notes = newNote..isManuallyEdited = true;
-                      await ref.read(transactionRepositoryProvider).updateTransaction(updated);
+                      final updated = transaction
+                        ..notes = newNote
+                        ..isManuallyEdited = true;
+                      await ref
+                          .read(transactionRepositoryProvider)
+                          .updateTransaction(updated);
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Note saved')),
@@ -492,7 +492,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
     required String value,
   }) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -530,7 +530,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
     bool isDiscount = false,
   }) {
     final theme = Theme.of(context);
-    
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(

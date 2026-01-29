@@ -38,13 +38,14 @@ class CategorizationService {
             ..confidence = 90
             ..userConfirmed = false
             ..createdAt = DateTime.now();
-          
+
           await _isar.merchantCategoryMappingModels.put(mapping);
         }
       }
     });
 
-    _logger.info('Initialized ${DefaultCategories.categories.length} default categories.');
+    _logger.info(
+        'Initialized ${DefaultCategories.categories.length} default categories.');
   }
 
   /// Categorize a merchant name
@@ -56,18 +57,20 @@ class CategorizationService {
         .filter()
         .merchantNameEqualTo(merchantName, caseSensitive: false)
         .findFirst();
-    
+
     if (exactMapping != null) return exactMapping.categoryId;
 
     // 2. Check for keyword matches (substring)
     // We get all mappings and check if the merchant name contains any of the mapped names
-    final allMappings = await _isar.merchantCategoryMappingModels.where().findAll();
-    
+    final allMappings =
+        await _isar.merchantCategoryMappingModels.where().findAll();
+
     MerchantCategoryMappingModel? bestMatch;
     for (var mapping in allMappings) {
       if (merchantUpper.contains(mapping.merchantName.toUpperCase())) {
         // If we find a match, we prefer mappings with more specific (longer) names
-        if (bestMatch == null || mapping.merchantName.length > bestMatch.merchantName.length) {
+        if (bestMatch == null ||
+            mapping.merchantName.length > bestMatch.merchantName.length) {
           bestMatch = mapping;
         }
       }

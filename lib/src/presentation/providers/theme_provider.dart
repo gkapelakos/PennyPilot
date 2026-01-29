@@ -31,7 +31,8 @@ class ThemeModeNotifier extends StateNotifier<ThemeState> {
   static ThemeState _initialTheme(SharedPreferences prefs) {
     final themeIndex = prefs.getInt('themeMode');
     final isOled = prefs.getBool('isOledMode') ?? false;
-    final mode = themeIndex == null ? ThemeMode.system : ThemeMode.values[themeIndex];
+    final mode =
+        themeIndex == null ? ThemeMode.system : ThemeMode.values[themeIndex];
     return ThemeState(mode: mode, isOledMode: isOled);
   }
 
@@ -47,7 +48,8 @@ class ThemeModeNotifier extends StateNotifier<ThemeState> {
 }
 
 // Global provider for ThemeState
-final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeState>((ref) {
+final themeModeProvider =
+    StateNotifierProvider<ThemeModeNotifier, ThemeState>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return ThemeModeNotifier(prefs);
 });

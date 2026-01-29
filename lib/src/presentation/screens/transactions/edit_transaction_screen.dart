@@ -15,12 +15,13 @@ class EditTransactionScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<EditTransactionScreen> createState() => _EditTransactionScreenState();
+  ConsumerState<EditTransactionScreen> createState() =>
+      _EditTransactionScreenState();
 }
 
 class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
   final _formKey = GlobalKey<FormState>();
-  
+
   late TextEditingController _merchantController;
   late TextEditingController _amountController;
   late TextEditingController _notesController;
@@ -29,15 +30,18 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
   late bool _isRecurring;
   late bool _isSubscription;
   late TransactionKind _transactionKind;
-  
+
   bool _isSaving = false;
 
   @override
   void initState() {
     super.initState();
-    _merchantController = TextEditingController(text: widget.transaction.merchantName);
-    _amountController = TextEditingController(text: widget.transaction.amount.toStringAsFixed(2));
-    _notesController = TextEditingController(text: widget.transaction.notes ?? '');
+    _merchantController =
+        TextEditingController(text: widget.transaction.merchantName);
+    _amountController = TextEditingController(
+        text: widget.transaction.amount.toStringAsFixed(2));
+    _notesController =
+        TextEditingController(text: widget.transaction.notes ?? '');
     _selectedDate = widget.transaction.date;
     _selectedCategory = widget.transaction.category ?? 'Uncategorized';
     _isRecurring = widget.transaction.isRecurring;
@@ -60,7 +64,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
       firstDate: DateTime(2000),
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
-    
+
     if (picked != null) {
       setState(() {
         _selectedDate = picked;
@@ -84,7 +88,9 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
         ..amount = double.parse(_amountController.text)
         ..date = _selectedDate
         ..category = _selectedCategory
-        ..notes = _notesController.text.trim().isEmpty ? null : _notesController.text.trim()
+        ..notes = _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim()
         ..isRecurring = _isRecurring
         ..isSubscription = _isSubscription
         ..kind = _transactionKind
@@ -93,7 +99,9 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
         ..updatedAt = DateTime.now();
 
       // Save via repository
-      await ref.read(transactionRepositoryProvider).updateTransaction(updatedTransaction);
+      await ref
+          .read(transactionRepositoryProvider)
+          .updateTransaction(updatedTransaction);
 
       if (mounted) {
         Navigator.of(context).pop(true); // Return true to indicate success
@@ -179,7 +187,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 24),
 
             // Merchant Name
@@ -206,11 +214,13 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
               decoration: InputDecoration(
                 labelText: 'Amount',
                 border: const OutlineInputBorder(),
-                prefixText: '${CurrencyInfo.getSymbol(widget.transaction.currency)} ',
+                prefixText:
+                    '${CurrencyInfo.getSymbol(widget.transaction.currency)} ',
                 prefixIcon: const Icon(Icons.payments),
                 suffix: Text(widget.transaction.currency),
               ),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
               ],
@@ -264,12 +274,12 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
                   'Travel',
                   'Other',
                 ];
-                
+
                 // Add the current category if it's not in the list
                 if (!categories.contains(_selectedCategory)) {
                   categories.add(_selectedCategory);
                 }
-                
+
                 return categories.map((category) {
                   return DropdownMenuItem(
                     value: category,
@@ -393,9 +403,7 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
 
             // Cancel Button
             OutlinedButton(
-              onPressed: _isSaving
-                  ? null
-                  : () => Navigator.of(context).pop(),
+              onPressed: _isSaving ? null : () => Navigator.of(context).pop(),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.all(16),
               ),

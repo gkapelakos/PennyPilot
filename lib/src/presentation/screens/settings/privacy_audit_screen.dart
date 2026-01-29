@@ -19,35 +19,40 @@ class PrivacyAuditScreen extends ConsumerWidget {
             context,
             icon: Icons.storage,
             title: 'Local-Only Storage',
-            description: 'All your financial data (transactions, subscriptions, categories) is stored exclusively on this device. No cloud sync is used.',
+            description:
+                'All your financial data (transactions, subscriptions, categories) is stored exclusively on this device. No cloud sync is used.',
             isPassed: true,
           ),
           _buildAuditItem(
             context,
             icon: Icons.psychology,
             title: 'On-Device Intelligence',
-            description: 'Transaction categorization and subscription detection models run locally. Your spending patterns never leave your device.',
+            description:
+                'Transaction categorization and subscription detection models run locally. Your spending patterns never leave your device.',
             isPassed: true,
           ),
           _buildAuditItem(
             context,
             icon: Icons.document_scanner,
             title: 'Local Receipt Processing',
-            description: 'OCR and data extraction from emails and receipt photos are performed on-device. No images are sent to external servers.',
+            description:
+                'OCR and data extraction from emails and receipt photos are performed on-device. No images are sent to external servers.',
             isPassed: true,
           ),
           _buildAuditItem(
             context,
             icon: Icons.vpn_key,
             title: 'Secure Token Management',
-            description: 'Email access tokens are stored in the system secure storage (Keychain/Keystore) and are only used for read-only Gmail API calls.',
+            description:
+                'Email access tokens are stored in the system secure storage (Keychain/Keystore) and are only used for read-only Gmail API calls.',
             isPassed: true,
           ),
           _buildAuditItem(
             context,
             icon: Icons.security,
             title: 'Encryption at Rest',
-            description: 'Data is protected by OS-level sandbox isolation. Manual backups can be encrypted with a custom passphrase.',
+            description:
+                'Data is protected by OS-level sandbox isolation. Manual backups can be encrypted with a custom passphrase.',
             isPassed: true,
           ),
           const SizedBox(height: 32),
@@ -57,11 +62,15 @@ class PrivacyAuditScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  const Icon(Icons.verified_user, size: 48, color: Colors.green),
+                  const Icon(Icons.verified_user,
+                      size: 48, color: Colors.green),
                   const SizedBox(height: 16),
                   Text(
                     'Audit Status: Verified',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   const Text(
@@ -84,12 +93,18 @@ class PrivacyAuditScreen extends ConsumerWidget {
         const SizedBox(height: 16),
         Text(
           'Privacy Compliance',
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context)
+              .textTheme
+              .headlineMedium
+              ?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
         Text(
           'Verified status of your data privacy.',
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).colorScheme.outline),
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge
+              ?.copyWith(color: Theme.of(context).colorScheme.outline),
         ),
       ],
     );
@@ -118,13 +133,17 @@ class PrivacyAuditScreen extends ConsumerWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text(title,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
                       if (isPassed)
-                        const Icon(Icons.check_circle, color: Colors.green, size: 20),
+                        const Icon(Icons.check_circle,
+                            color: Colors.green, size: 20),
                     ],
                   ),
                   const SizedBox(height: 4),
-                  Text(description, style: Theme.of(context).textTheme.bodyMedium),
+                  Text(description,
+                      style: Theme.of(context).textTheme.bodyMedium),
                 ],
               ),
             ),

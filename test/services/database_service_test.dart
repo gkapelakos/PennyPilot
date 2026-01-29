@@ -28,8 +28,20 @@ void main() {
     test('wipeData clears all collections', () async {
       // Add some data
       await isar.writeTxn(() async {
-        await isar.transactionModels.put(TransactionModel()..merchantName = 'Test'..amount = 10..date = DateTime.now()..createdAt = DateTime.now());
-        await isar.categoryModels.put(CategoryModel()..name = 'Test'..icon = 'test'..color = '#FF0000'..isSystem = true..order = 0..isActive = true..transactionCount = 0..createdAt = DateTime.now());
+        await isar.transactionModels.put(TransactionModel()
+          ..merchantName = 'Test'
+          ..amount = 10
+          ..date = DateTime.now()
+          ..createdAt = DateTime.now());
+        await isar.categoryModels.put(CategoryModel()
+          ..name = 'Test'
+          ..icon = 'test'
+          ..color = '#FF0000'
+          ..isSystem = true
+          ..order = 0
+          ..isActive = true
+          ..transactionCount = 0
+          ..createdAt = DateTime.now());
       });
 
       expect(await isar.transactionModels.count(), 1);
@@ -43,8 +55,20 @@ void main() {
 
     test('resetFinancialData preserves categories', () async {
       await isar.writeTxn(() async {
-        await isar.transactionModels.put(TransactionModel()..merchantName = 'Test'..amount = 10..date = DateTime.now()..createdAt = DateTime.now());
-        await isar.categoryModels.put(CategoryModel()..name = 'Test'..icon = 'test'..color = '#FF0000'..isSystem = true..order = 0..isActive = true..transactionCount = 0..createdAt = DateTime.now());
+        await isar.transactionModels.put(TransactionModel()
+          ..merchantName = 'Test'
+          ..amount = 10
+          ..date = DateTime.now()
+          ..createdAt = DateTime.now());
+        await isar.categoryModels.put(CategoryModel()
+          ..name = 'Test'
+          ..icon = 'test'
+          ..color = '#FF0000'
+          ..isSystem = true
+          ..order = 0
+          ..isActive = true
+          ..transactionCount = 0
+          ..createdAt = DateTime.now());
       });
 
       await service.resetFinancialData();
@@ -65,7 +89,8 @@ void main() {
         await isar.transactionModels.put(t);
       });
 
-      expect((await isar.transactionModels.get(t.id))!.extractionConfidence, ConfidenceLevel.high);
+      expect((await isar.transactionModels.get(t.id))!.extractionConfidence,
+          ConfidenceLevel.high);
 
       await service.resetAIUnderstanding();
 

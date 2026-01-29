@@ -22,7 +22,7 @@ class _BiometricGateState extends ConsumerState<BiometricGate> {
 
   Future<void> _checkBiometrics() async {
     final privacyService = ref.read(privacyServiceProvider);
-    
+
     if (!privacyService.isBiometricEnabled) {
       if (mounted) {
         setState(() {
@@ -34,7 +34,7 @@ class _BiometricGateState extends ConsumerState<BiometricGate> {
     }
 
     final success = await privacyService.authenticate();
-    
+
     if (mounted) {
       setState(() {
         _isAuthenticated = success;

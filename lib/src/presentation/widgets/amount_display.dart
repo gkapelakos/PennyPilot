@@ -27,21 +27,22 @@ class AmountDisplay extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final appCurrency = currency ?? ref.watch(appStateProvider).currencyCode;
-    
+
     final formatter = NumberFormat.currency(
       symbol: showCurrency ? _getCurrencySymbol(appCurrency) : '',
       decimalDigits: 2,
     );
 
     String formattedAmount = formatter.format(amount.abs());
-    
+
     if (showSign && amount != 0) {
       formattedAmount = '${amount > 0 ? '+' : '-'}$formattedAmount';
     }
 
-    final textStyle = style ?? (monospace
-        ? AppTheme.monospaceAmount(context)
-        : theme.textTheme.bodyLarge);
+    final textStyle = style ??
+        (monospace
+            ? AppTheme.monospaceAmount(context)
+            : theme.textTheme.bodyLarge);
 
     return Text(
       formattedAmount,
@@ -72,7 +73,7 @@ class AmountChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(

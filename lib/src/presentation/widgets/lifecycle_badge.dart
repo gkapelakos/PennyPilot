@@ -16,7 +16,7 @@ class LifecycleBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final color = AppTheme.getLifecycleColor(context, state);
-    
+
     final icon = _getIcon();
     final label = _getLabel();
 

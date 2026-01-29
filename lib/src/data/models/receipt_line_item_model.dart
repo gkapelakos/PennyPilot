@@ -27,11 +27,11 @@ class ReceiptLineItemModel {
 }
 
 enum LineItemType {
-  item,      // Regular purchase item
-  tax,       // Tax amount
-  discount,  // Discount or coupon
-  fee,       // Service fee, delivery fee, etc.
-  tip,       // Gratuity
-  subtotal,  // Subtotal before tax
-  total,     // Final total
+  item, // Regular purchase item
+  tax, // Tax amount
+  discount, // Discount or coupon
+  fee, // Service fee, delivery fee, etc.
+  tip, // Gratuity
+  subtotal, // Subtotal before tax
+  total, // Final total
 }

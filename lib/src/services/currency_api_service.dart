@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -17,10 +16,12 @@ class CurrencyApiService {
         if (data['result'] == 'success') {
           return data['rates'];
         } else {
-          throw Exception('Failed to load exchange rates: API result was not "success"');
+          throw Exception(
+              'Failed to load exchange rates: API result was not "success"');
         }
       } else {
-        throw Exception('Failed to load exchange rates: Status code ${response.statusCode}');
+        throw Exception(
+            'Failed to load exchange rates: Status code ${response.statusCode}');
       }
     } catch (e) {
       // In a real app, you'd want to log this error and show a user-friendly message

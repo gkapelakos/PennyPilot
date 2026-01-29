@@ -18,11 +18,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Future<void> _completeOnboarding() async {
     await ref.read(appStateProvider.notifier).completeOnboarding();
-    
+
     if (mounted) {
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => const ConnectEmailScreen(),
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const ConnectEmailScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
@@ -35,24 +36,27 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    
+
     final List<Map<String, dynamic>> pages = [
       {
         'title': l10n.onboardingTitle1,
         'description': l10n.onboardingDesc1,
-        'lottie': 'https://lottie.host/8e202511-2b62-4f38-bc0c-8433ecbc6f5b/vU6pYvIq4Z.json',
+        'lottie':
+            'https://lottie.host/8e202511-2b62-4f38-bc0c-8433ecbc6f5b/vU6pYvIq4Z.json',
         'color': theme.colorScheme.primaryContainer,
       },
       {
         'title': l10n.onboardingTitle2,
         'description': l10n.onboardingDesc2,
-        'lottie': 'https://lottie.host/7a85e683-93d4-470a-9d6e-df457d383822/TfTfTfTfTf.json',
+        'lottie':
+            'https://lottie.host/7a85e683-93d4-470a-9d6e-df457d383822/TfTfTfTfTf.json',
         'color': theme.colorScheme.secondaryContainer,
       },
       {
         'title': l10n.onboardingTitle3,
         'description': l10n.onboardingDesc3,
-        'lottie': 'https://lottie.host/8040b2e8-569b-4379-9134-e3ac5e6f3649/v6k6q6p6Vv.json',
+        'lottie':
+            'https://lottie.host/8040b2e8-569b-4379-9134-e3ac5e6f3649/v6k6q6p6Vv.json',
         'color': theme.colorScheme.tertiaryContainer,
       },
     ];
@@ -74,7 +78,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               ),
             ),
           ),
-          
+
           SafeArea(
             child: Column(
               children: [
@@ -96,7 +100,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         )
                       else
                         const SizedBox(width: 48),
-                        
+
                       TextButton(
                         onPressed: _completeOnboarding,
                         child: Text(
@@ -110,7 +114,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     ],
                   ),
                 ),
-                
                 Expanded(
                   child: PageView.builder(
                     controller: _pageController,
@@ -127,20 +130,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             ScaleTransition(
-                              scale: AlwaysStoppedAnimation(_currentPage == index ? 1.0 : 0.8),
+                              scale: AlwaysStoppedAnimation(
+                                  _currentPage == index ? 1.0 : 0.8),
                               child: Container(
                                 height: 320,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(40),
                                   // Subtle glass effect for the image container
-                                  color: theme.colorScheme.surfaceContainerHigh.withAlpha(50),
+                                  color: theme.colorScheme.surfaceContainerHigh
+                                      .withAlpha(50),
                                 ),
                                 padding: const EdgeInsets.all(24),
                                 child: Lottie.network(
                                   pages[index]['lottie']!,
                                   fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) => 
-                                    const Icon(Icons.blur_on_rounded, size: 100),
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.blur_on_rounded,
+                                          size: 100),
                                 ),
                               ),
                             ),
@@ -168,7 +174,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     },
                   ),
                 ),
-                
                 Padding(
                   padding: const EdgeInsets.all(32.0),
                   child: Column(
@@ -193,7 +198,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                         ),
                       ),
                       const SizedBox(height: 40),
-                      
+
                       // Action Button
                       SizedBox(
                         width: double.infinity,
@@ -224,7 +229,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  _currentPage == pages.length - 1 ? l10n.getStarted : l10n.continueText,
+                                  _currentPage == pages.length - 1
+                                      ? l10n.getStarted
+                                      : l10n.continueText,
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,

@@ -9,9 +9,7 @@ class BalanceHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionsAsync = ref.watch(recentTransactionsProvider);
-    final currencyFormat = NumberFormat.currency(
-      symbol: 'S/.'
-    );
+    final currencyFormat = NumberFormat.currency(symbol: 'S/.');
 
     return Card(
       elevation: 0,
@@ -27,17 +25,22 @@ class BalanceHeader extends ConsumerWidget {
                 Text(
                   'MONTHLY SPEND',
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimaryContainer.withAlpha(178),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onPrimaryContainer
+                            .withAlpha(178),
                         letterSpacing: 1.2,
                       ),
                 ),
-                Icon(Icons.trending_up, color: Theme.of(context).colorScheme.primary),
+                Icon(Icons.trending_up,
+                    color: Theme.of(context).colorScheme.primary),
               ],
             ),
             const SizedBox(height: 8),
             transactionsAsync.when(
               data: (transactions) {
-                final total = transactions.fold<double>(0, (sum, t) => sum + t.amount);
+                final total =
+                    transactions.fold<double>(0, (sum, t) => sum + t.amount);
                 return Text(
                   currencyFormat.format(total),
                   style: Theme.of(context).textTheme.displayMedium?.copyWith(
@@ -54,7 +57,8 @@ class BalanceHeader extends ConsumerWidget {
               children: [
                 Icon(Icons.check_circle, size: 16, color: Colors.green),
                 SizedBox(width: 4),
-                Text('All data local & encrypted', style: TextStyle(fontSize: 12)),
+                Text('All data local & encrypted',
+                    style: TextStyle(fontSize: 12)),
               ],
             ),
           ],

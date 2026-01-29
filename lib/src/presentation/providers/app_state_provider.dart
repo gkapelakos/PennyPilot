@@ -46,7 +46,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
   /// Mark onboarding as completed
   Future<void> completeOnboarding() async {
     await prefs.setBool('hasCompletedOnboarding', true);
-    
+
     // Record first launch date if not already set
     if (state.firstLaunchDate == null) {
       final now = DateTime.now().toIso8601String();
@@ -80,7 +80,7 @@ class AppStateNotifier extends StateNotifier<AppState> {
     await prefs.remove('firstLaunchDate');
     await prefs.remove('currencyCode');
     await prefs.remove('languageCode');
-    
+
     state = const AppState(
       hasCompletedOnboarding: false,
       hasSelectedLanguage: false,
@@ -119,7 +119,8 @@ class AppState {
     String? languageCode,
   }) {
     return AppState(
-      hasCompletedOnboarding: hasCompletedOnboarding ?? this.hasCompletedOnboarding,
+      hasCompletedOnboarding:
+          hasCompletedOnboarding ?? this.hasCompletedOnboarding,
       hasSelectedLanguage: hasSelectedLanguage ?? this.hasSelectedLanguage,
       lastAppVersion: lastAppVersion ?? this.lastAppVersion,
       firstLaunchDate: firstLaunchDate ?? this.firstLaunchDate,
@@ -176,7 +177,8 @@ const List<CurrencyInfo> popularCurrencies = [
 ];
 
 /// Global provider for app state
-final appStateProvider = StateNotifierProvider<AppStateNotifier, AppState>((ref) {
+final appStateProvider =
+    StateNotifierProvider<AppStateNotifier, AppState>((ref) {
   final prefs = ref.watch(sharedPreferencesProvider);
   return AppStateNotifier(prefs);
 });

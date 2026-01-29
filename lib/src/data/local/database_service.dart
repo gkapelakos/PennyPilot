@@ -11,7 +11,6 @@ import 'package:pennypilot/src/data/models/email_sender_preference_model.dart';
 import 'package:pennypilot/src/data/models/category_model.dart';
 import 'package:pennypilot/src/data/models/budget_model.dart';
 
-
 class DatabaseService {
   late Future<Isar> db;
   final String? _directory;
@@ -23,11 +22,11 @@ class DatabaseService {
 
   Future<Isar> _initDb() async {
     final path = _directory ?? (await getApplicationDocumentsDirectory()).path;
-    
+
     // Note: Isar v3.1.0 does not support encryption for the default engine.
     // Encryption will be enabled when upgrading to Isar v4 or by switching to SQLite engine.
     // For now, we rely on OS-level sandbox protection.
-    
+
     return await Isar.open(
       [
         TransactionModelSchema,
@@ -63,30 +62,34 @@ class DatabaseService {
       await isar.subscriptionModels.clear();
       await isar.receiptLineItemModels.clear();
       await isar.extractionMetadataModels.clear();
-      
+
       // Clear system-generated merchant rules (keep user-defined ones)
       await isar.merchantNormalizationRuleModels
           .where()
           .filter()
           .isUserDefinedEqualTo(false)
           .deleteAll();
-      
+
       // Clear email sender preferences
       await isar.emailSenderPreferenceModels.clear();
-      
+
       // Categories are preserved
       // Auth tokens in secure storage are NOT touched
     });
     _logger.info('Financial data reset - categories and auth preserved');
   }
-  
+
   Future<void> resetAIUnderstanding() async {
     final isar = await db;
     await isar.writeTxn(() async {
       // Clear derived metadata but keep raw transaction data
       await isar.extractionMetadataModels.clear();
-      await isar.merchantNormalizationRuleModels.where().filter().isUserDefinedEqualTo(false).deleteAll();
-      
+      await isar.merchantNormalizationRuleModels
+          .where()
+          .filter()
+          .isUserDefinedEqualTo(false)
+          .deleteAll();
+
       // Reset confidence scores in transactions
       final transactions = await isar.transactionModels.where().findAll();
       for (var transaction in transactions) {
@@ -97,10 +100,9 @@ class DatabaseService {
     });
     _logger.info('AI understanding reset - raw data preserved');
   }
-  
+
   Future<String> getDatabasePath() async {
     final dir = await getApplicationDocumentsDirectory();
     return '${dir.path}/default.isar';
   }
 }
-

@@ -85,8 +85,7 @@ class SubscriptionCard extends StatelessWidget {
                 if (showDetails) ...[
                   const SizedBox(height: 20),
                   _buildDetailsGrid(context, dateFormat),
-                  if (subscription.isZombie)
-                    _buildZombieAlert(theme),
+                  if (subscription.isZombie) _buildZombieAlert(theme),
                 ],
               ],
             ),
@@ -224,7 +223,8 @@ class SubscriptionCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.report_problem_rounded, color: theme.colorScheme.error, size: 20),
+            Icon(Icons.report_problem_rounded,
+                color: theme.colorScheme.error, size: 20),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -261,13 +261,14 @@ class SubscriptionCard extends StatelessWidget {
     required String value,
   }) {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest.withAlpha(51),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: theme.colorScheme.outlineVariant.withAlpha(26)),
+        border:
+            Border.all(color: theme.colorScheme.outlineVariant.withAlpha(26)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,7 +325,7 @@ class SubscriptionCard extends StatelessWidget {
 
   IconData _getServiceIcon() {
     final service = subscription.serviceName.toLowerCase();
-    
+
     if (service.contains('netflix')) return Icons.movie;
     if (service.contains('spotify')) return Icons.music_note;
     if (service.contains('youtube')) return Icons.play_circle;
@@ -345,7 +346,7 @@ class SubscriptionCard extends StatelessWidget {
     if (service.contains('gym') || service.contains('fitness')) {
       return Icons.fitness_center;
     }
-    
+
     return Icons.subscriptions;
   }
 }

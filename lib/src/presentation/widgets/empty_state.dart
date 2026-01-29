@@ -19,7 +19,7 @@ class EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -47,18 +47,18 @@ class EmptyState extends StatelessWidget {
                 color: theme.colorScheme.onPrimaryContainer,
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Title
             Text(
               title,
               style: theme.textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // Message
             Text(
               message,
@@ -67,7 +67,7 @@ class EmptyState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            
+
             if (action != null) ...[
               const SizedBox(height: 24),
               action!,
@@ -91,7 +91,7 @@ class LoadingState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -131,7 +131,7 @@ class ErrorState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -152,9 +152,9 @@ class ErrorState extends StatelessWidget {
                 color: theme.colorScheme.onErrorContainer,
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Title
             Text(
               title,
@@ -163,9 +163,9 @@ class ErrorState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            
+
             const SizedBox(height: 12),
-            
+
             // Message
             Text(
               message,
@@ -174,7 +174,7 @@ class ErrorState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            
+
             if (onRetry != null) ...[
               const SizedBox(height: 24),
               FilledButton.icon(

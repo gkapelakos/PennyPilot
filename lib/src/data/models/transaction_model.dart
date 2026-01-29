@@ -54,7 +54,7 @@ class TransactionModel {
 
   /// Whether this is a recurring transaction
   bool isRecurring = false;
-  
+
   /// Overall extraction confidence level
   @Enumerated(EnumType.ordinal)
   ConfidenceLevel extractionConfidence = ConfidenceLevel.low;
@@ -90,9 +90,9 @@ class TransactionModel {
 }
 
 enum ConfidenceLevel {
-  high,    // 90-100% confidence
-  medium,  // 60-89% confidence
-  low,     // Below 60% confidence
+  high, // 90-100% confidence
+  medium, // 60-89% confidence
+  low, // Below 60% confidence
 }
 
 enum TransactionKind {
@@ -105,4 +105,3 @@ enum TransactionOrigin {
   manual,
   imported,
 }
-

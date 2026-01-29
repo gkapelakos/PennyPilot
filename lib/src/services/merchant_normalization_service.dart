@@ -42,7 +42,8 @@ class MerchantNormalizationService {
     });
 
     _defaultRulesLoaded = true;
-    _logger.info('Loaded ${DefaultMerchantRules.rules.length} default merchant rules');
+    _logger.info(
+        'Loaded ${DefaultMerchantRules.rules.length} default merchant rules');
   }
 
   /// Normalize a merchant name using available rules
@@ -131,7 +132,7 @@ class MerchantNormalizationService {
   /// Convert to title case
   String _toTitleCase(String text) {
     if (text.isEmpty) return text;
-    
+
     // If already mixed case, keep it
     if (text != text.toUpperCase() && text != text.toLowerCase()) {
       return text;
@@ -168,16 +169,17 @@ class MerchantNormalizationService {
   }
 
   /// Learn from a manual user edit
-  Future<void> learnFromUserEdit(String rawName, String userNormalizedName) async {
+  Future<void> learnFromUserEdit(
+      String rawName, String userNormalizedName) async {
     if (rawName == userNormalizedName) return;
-    
+
     // Check if we already have a user rule for this
     final existing = await _isar.merchantNormalizationRuleModels
         .filter()
         .rawNameEqualTo(rawName)
         .isUserDefinedEqualTo(true)
         .findFirst();
-        
+
     if (existing != null) {
       if (existing.normalizedName != userNormalizedName) {
         await _isar.writeTxn(() async {
@@ -215,12 +217,11 @@ class MerchantNormalizationService {
 
   /// Suggest normalization for a merchant name
   /// Returns a list of possible normalized names with confidence scores
-  Future<List<NormalizationSuggestion>> suggestNormalization(String rawName) async {
+  Future<List<NormalizationSuggestion>> suggestNormalization(
+      String rawName) async {
     final suggestions = <NormalizationSuggestion>[];
-    
-    final rules = await _isar.merchantNormalizationRuleModels
-        .where()
-        .findAll();
+
+    final rules = await _isar.merchantNormalizationRuleModels.where().findAll();
 
     for (var rule in rules) {
       if (_matchesRule(rawName, rule)) {

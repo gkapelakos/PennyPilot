@@ -18,17 +18,17 @@ class StartupService {
   /// Run all initialization tasks
   Future<void> initializeApp() async {
     _logger.info('Initializing application services...');
-    
+
     try {
       // 1. Initialize default merchant normalization rules
       await _merchantService.initializeDefaultRules();
-      
+
       // 2. Initialize default categories and their mappings
       await _categorizationService.initializeDefaultCategories();
-      
+
       // 3. Initialize LLM engine (optional/local)
       await _llmService.initialize();
-      
+
       _logger.info('Application services initialized successfully.');
     } catch (e, stack) {
       _logger.severe('Failed to initialize application services', e, stack);

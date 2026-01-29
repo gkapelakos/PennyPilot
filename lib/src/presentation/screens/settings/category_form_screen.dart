@@ -25,7 +25,11 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
   void initState() {
     super.initState();
     _name = widget.category?.name ?? '';
-    _color = widget.category != null ? Color(int.parse(widget.category!.color.replaceFirst('#', ''), radix: 16) + 0xFF000000) : const Color(0xFF2196F3);
+    _color = widget.category != null
+        ? Color(
+            int.parse(widget.category!.color.replaceFirst('#', ''), radix: 16) +
+                0xFF000000)
+        : const Color(0xFF2196F3);
     _icon = widget.category?.icon ?? 'home';
   }
 
@@ -33,8 +37,9 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       final isar = ref.read(isarProvider);
-      final hexColor = '#${(_color.r * 255).toInt().toRadixString(16).padLeft(2, '0')}${(_color.g * 255).toInt().toRadixString(16).padLeft(2, '0')}${(_color.b * 255).toInt().toRadixString(16).padLeft(2, '0')}'.toUpperCase();
-
+      final hexColor =
+          '#${(_color.r * 255).toInt().toRadixString(16).padLeft(2, '0')}${(_color.g * 255).toInt().toRadixString(16).padLeft(2, '0')}${(_color.b * 255).toInt().toRadixString(16).padLeft(2, '0')}'
+              .toUpperCase();
 
       await isar.writeTxn(() async {
         if (widget.category == null) {
@@ -49,8 +54,9 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
             ..createdAt = DateTime.now();
           await isar.categoryModels.put(newCategory);
         } else {
-          final categoryToUpdate = await isar.categoryModels.get(widget.category!.id);
-          if(categoryToUpdate != null){
+          final categoryToUpdate =
+              await isar.categoryModels.get(widget.category!.id);
+          if (categoryToUpdate != null) {
             categoryToUpdate.name = _name;
             categoryToUpdate.color = hexColor;
             categoryToUpdate.icon = _icon;
@@ -136,7 +142,8 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
                           content: SingleChildScrollView(
                             child: ColorPicker(
                               pickerColor: _color,
-                              onColorChanged: (color) => setState(() => _color = color),
+                              onColorChanged: (color) =>
+                                  setState(() => _color = color),
                             ),
                           ),
                           actions: [

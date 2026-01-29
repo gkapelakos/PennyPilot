@@ -10,7 +10,8 @@ class AddSubscriptionSheet extends ConsumerStatefulWidget {
   const AddSubscriptionSheet({super.key});
 
   @override
-  ConsumerState<AddSubscriptionSheet> createState() => _AddSubscriptionSheetState();
+  ConsumerState<AddSubscriptionSheet> createState() =>
+      _AddSubscriptionSheetState();
 }
 
 class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
@@ -18,7 +19,7 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
   final _nameController = TextEditingController();
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
-  
+
   DateTime _nextRenewalDate = DateTime.now().add(const Duration(days: 30));
   SubscriptionFrequency _frequency = SubscriptionFrequency.monthly;
   final SubscriptionLifecycleState _state = SubscriptionLifecycleState.active;
@@ -52,10 +53,11 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
 
     try {
       final isar = ref.read(isarProvider);
-      
+
       final subscription = SubscriptionModel(
         serviceName: _nameController.text.trim(),
-        amount: double.parse(_amountController.text.replaceAll(RegExp(r'[^0-9.]'), '')),
+        amount: double.parse(
+            _amountController.text.replaceAll(RegExp(r'[^0-9.]'), '')),
         nextRenewalDate: _nextRenewalDate,
         frequency: _frequency,
         lifecycleState: _state,
@@ -76,13 +78,16 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
       if (mounted) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.subscriptionAdded)),
+          SnackBar(
+              content: Text(AppLocalizations.of(context)!.subscriptionAdded)),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.errorAddingSubscription(e.toString()))),
+          SnackBar(
+              content: Text(AppLocalizations.of(context)!
+                  .errorAddingSubscription(e.toString()))),
         );
       }
     } finally {
@@ -97,7 +102,6 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
     final theme = Theme.of(context);
     final categoriesAsync = ref.watch(categoriesProvider);
     final l10n = AppLocalizations.of(context)!;
-
 
     return Container(
       padding: EdgeInsets.only(
@@ -132,7 +136,7 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
-                
+
                 // Service Name
                 TextFormField(
                   controller: _nameController,
@@ -140,25 +144,32 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                     labelText: l10n.serviceName,
                     hintText: l10n.serviceNameHint,
                     prefixIcon: const Icon(Icons.subscriptions),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
-                  validator: (value) => value == null || value.isEmpty ? l10n.required : null,
+                  validator: (value) =>
+                      value == null || value.isEmpty ? l10n.required : null,
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Amount
                 TextFormField(
                   controller: _amountController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
                     labelText: l10n.amount,
-                    prefixText: '${ref.watch(appStateProvider.select((s) => s.currencyCode))} ',
+                    prefixText:
+                        '${ref.watch(appStateProvider.select((s) => s.currencyCode))} ',
                     prefixIcon: const Icon(Icons.payments),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) return l10n.required;
-                    if (double.tryParse(value.replaceAll(RegExp(r'[^0-9.]'), '')) == null) return l10n.invalid;
+                    if (double.tryParse(
+                            value.replaceAll(RegExp(r'[^0-9.]'), '')) ==
+                        null) return l10n.invalid;
                     return null;
                   },
                 ),
@@ -170,14 +181,18 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                     decoration: InputDecoration(
                       labelText: l10n.category,
                       prefixIcon: const Icon(Icons.category),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                     initialValue: _selectedCategoryId,
-                    items: categories.map((c) => DropdownMenuItem(
-                      value: c.id,
-                      child: Text(c.name),
-                    )).toList(),
-                    onChanged: (val) => setState(() => _selectedCategoryId = val),
+                    items: categories
+                        .map((c) => DropdownMenuItem(
+                              value: c.id,
+                              child: Text(c.name),
+                            ))
+                        .toList(),
+                    onChanged: (val) =>
+                        setState(() => _selectedCategoryId = val),
                   ),
                   loading: () => const LinearProgressIndicator(),
                   error: (e, s) => Text(l10n.failedToLoad),
@@ -189,13 +204,17 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                   decoration: InputDecoration(
                     labelText: l10n.billingCycle,
                     prefixIcon: const Icon(Icons.repeat),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                   initialValue: _frequency,
-                  items: SubscriptionFrequency.values.map((f) => DropdownMenuItem(
-                    value: f,
-                    child: Text(f.name[0].toUpperCase() + f.name.substring(1)),
-                  )).toList(),
+                  items: SubscriptionFrequency.values
+                      .map((f) => DropdownMenuItem(
+                            value: f,
+                            child: Text(
+                                f.name[0].toUpperCase() + f.name.substring(1)),
+                          ))
+                      .toList(),
                   onChanged: (val) => setState(() => _frequency = val!),
                 ),
                 const SizedBox(height: 16),
@@ -208,7 +227,8 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                     decoration: InputDecoration(
                       labelText: l10n.nextRenewalDate,
                       prefixIcon: const Icon(Icons.calendar_today),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
                     ),
                     child: Text(DateFormat.yMMMd().format(_nextRenewalDate)),
                   ),
@@ -222,7 +242,8 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                   decoration: InputDecoration(
                     labelText: l10n.notesOptional,
                     prefixIcon: const Icon(Icons.note_alt),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -231,11 +252,15 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
                   onPressed: _isLoading ? null : _saveSubscription,
                   style: FilledButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: _isLoading 
-                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                    : Text(l10n.addSubscription),
+                  child: _isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2))
+                      : Text(l10n.addSubscription),
                 ),
               ],
             ),

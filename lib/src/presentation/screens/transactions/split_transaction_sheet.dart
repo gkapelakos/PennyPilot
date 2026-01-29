@@ -10,13 +10,18 @@ class SplitTransactionSheet extends ConsumerStatefulWidget {
   const SplitTransactionSheet({super.key, required this.transaction});
 
   @override
-  ConsumerState<SplitTransactionSheet> createState() => _SplitTransactionSheetState();
+  ConsumerState<SplitTransactionSheet> createState() =>
+      _SplitTransactionSheetState();
 }
 
 class _SplitTransactionSheetState extends ConsumerState<SplitTransactionSheet> {
-  final List<TextEditingController> _participantControllers = [TextEditingController()];
-  final List<TextEditingController> _amountControllers = [TextEditingController()];
-  
+  final List<TextEditingController> _participantControllers = [
+    TextEditingController()
+  ];
+  final List<TextEditingController> _amountControllers = [
+    TextEditingController()
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -73,13 +78,16 @@ class _SplitTransactionSheetState extends ConsumerState<SplitTransactionSheet> {
 
     if (totalSplit > widget.transaction.amount + 0.01) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Split total cannot exceed transaction amount')),
+        const SnackBar(
+            content: Text('Split total cannot exceed transaction amount')),
       );
       return;
     }
 
-    await ref.read(budgetServiceProvider).createSplit(widget.transaction.id, splits);
-    
+    await ref
+        .read(budgetServiceProvider)
+        .createSplit(widget.transaction.id, splits);
+
     if (mounted) {
       Navigator.pop(context, true);
     }
@@ -114,7 +122,10 @@ class _SplitTransactionSheetState extends ConsumerState<SplitTransactionSheet> {
           const SizedBox(height: 16),
           Text(
             'Total: \$${widget.transaction.amount.toStringAsFixed(2)}',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context)
+                .textTheme
+                .titleMedium
+                ?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           Flexible(

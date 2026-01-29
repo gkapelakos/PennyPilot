@@ -15,7 +15,12 @@ void main() {
     await Isar.initializeIsarCore(download: true);
     tempDir = await Directory.systemTemp.createTemp('pennypilot_budget_test');
     isar = await Isar.open(
-      [BudgetModelSchema, TransactionModelSchema, SubscriptionModelSchema, SpendingSplitModelSchema],
+      [
+        BudgetModelSchema,
+        TransactionModelSchema,
+        SubscriptionModelSchema,
+        SpendingSplitModelSchema
+      ],
       directory: tempDir.path,
     );
     service = BudgetService(isar);
@@ -76,7 +81,8 @@ void main() {
       expect(result.dailySafeAmount, (1000 - 100 - 20) / remainingDays);
     });
 
-    test('calculateSafeToSpend returns isBudgetSet false when no budget', () async {
+    test('calculateSafeToSpend returns isBudgetSet false when no budget',
+        () async {
       final result = await service.calculateSafeToSpend();
       expect(result.isBudgetSet, isFalse);
     });

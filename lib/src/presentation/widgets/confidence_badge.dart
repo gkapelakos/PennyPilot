@@ -16,7 +16,7 @@ class ConfidenceBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final color = AppTheme.getConfidenceColor(context, level);
-    
+
     final icon = _getIcon();
     final label = _getLabel();
 

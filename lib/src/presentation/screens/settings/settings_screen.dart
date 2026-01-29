@@ -23,9 +23,8 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
-    final connectedEmails = ref
-        .watch(authServiceProvider.notifier)
-        .connectedEmails;
+    final connectedEmails =
+        ref.watch(authServiceProvider.notifier).connectedEmails;
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -161,10 +160,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       child: Text(
         title.toUpperCase(),
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-          color: Theme.of(context).colorScheme.primary,
-          letterSpacing: 1.2,
-          fontWeight: FontWeight.bold,
-        ),
+              color: Theme.of(context).colorScheme.primary,
+              letterSpacing: 1.2,
+              fontWeight: FontWeight.bold,
+            ),
       ),
     );
   }

@@ -21,7 +21,7 @@ final startupServiceProvider = Provider<StartupService>((ref) {
   final merchantService = ref.watch(merchantNormalizationServiceProvider);
   final categorizationService = ref.watch(categorizationServiceProvider);
   final llmService = ref.watch(llmExtractionServiceProvider);
-  
+
   return StartupService(merchantService, categorizationService, llmService);
 });
 
@@ -37,24 +37,27 @@ final categorizationServiceProvider = Provider<CategorizationService>((ref) {
 });
 
 // Merchant normalization service provider
-final merchantNormalizationServiceProvider = Provider<MerchantNormalizationService>((ref) {
+final merchantNormalizationServiceProvider =
+    Provider<MerchantNormalizationService>((ref) {
   final isar = ref.watch(isarProvider);
   return MerchantNormalizationService(isar);
 });
 
 // Subscription intelligence service provider
-final subscriptionIntelligenceServiceProvider = Provider<SubscriptionIntelligenceService>((ref) {
+final subscriptionIntelligenceServiceProvider =
+    Provider<SubscriptionIntelligenceService>((ref) {
   final isar = ref.watch(isarProvider);
   final categorizationService = ref.watch(categorizationServiceProvider);
-  
+
   return SubscriptionIntelligenceService(isar, categorizationService);
 });
 
 // Receipt extraction service provider
-final receiptExtractionServiceProvider = Provider<ReceiptExtractionService>((ref) {
+final receiptExtractionServiceProvider =
+    Provider<ReceiptExtractionService>((ref) {
   final merchantService = ref.watch(merchantNormalizationServiceProvider);
   final llmService = ref.watch(llmExtractionServiceProvider);
-  
+
   return ReceiptExtractionService(merchantService, llmService);
 });
 
@@ -79,7 +82,7 @@ final budgetServiceProvider = Provider<BudgetService>((ref) {
 // Transactions stream provider
 final transactionsProvider = StreamProvider<List<TransactionModel>>((ref) {
   final isar = ref.watch(isarProvider);
-  
+
   return isar.transactionModels
       .where()
       .sortByDateDesc()
@@ -89,7 +92,7 @@ final transactionsProvider = StreamProvider<List<TransactionModel>>((ref) {
 // Subscriptions stream provider
 final subscriptionsProvider = StreamProvider<List<SubscriptionModel>>((ref) {
   final isar = ref.watch(isarProvider);
-  
+
   return isar.subscriptionModels
       .where()
       .sortByNextRenewalDate()
@@ -97,9 +100,10 @@ final subscriptionsProvider = StreamProvider<List<SubscriptionModel>>((ref) {
 });
 
 // Active subscriptions only
-final activeSubscriptionsProvider = StreamProvider<List<SubscriptionModel>>((ref) {
+final activeSubscriptionsProvider =
+    StreamProvider<List<SubscriptionModel>>((ref) {
   final isar = ref.watch(isarProvider);
-  
+
   return isar.subscriptionModels
       .filter()
       .lifecycleStateEqualTo(SubscriptionLifecycleState.active)
@@ -107,7 +111,8 @@ final activeSubscriptionsProvider = StreamProvider<List<SubscriptionModel>>((ref
 });
 
 // Subscription statistics provider
-final subscriptionStatsProvider = FutureProvider<Map<String, dynamic>>((ref) async {
+final subscriptionStatsProvider =
+    FutureProvider<Map<String, dynamic>>((ref) async {
   final service = ref.watch(subscriptionIntelligenceServiceProvider);
   return await service.getStatistics();
 });
@@ -121,18 +126,16 @@ final transactionCountProvider = FutureProvider<int>((ref) async {
 // Categories stream provider
 final categoriesProvider = StreamProvider<List<CategoryModel>>((ref) {
   final isar = ref.watch(isarProvider);
-  
-  return isar.categoryModels
-      .where()
-      .sortByOrder()
-      .watch(fireImmediately: true);
+
+  return isar.categoryModels.where().sortByOrder().watch(fireImmediately: true);
 });
 
 // Recent transactions (last 30 days)
-final recentTransactionsProvider = StreamProvider<List<TransactionModel>>((ref) {
+final recentTransactionsProvider =
+    StreamProvider<List<TransactionModel>>((ref) {
   final isar = ref.watch(isarProvider);
   final thirtyDaysAgo = DateTime.now().subtract(const Duration(days: 30));
-  
+
   return isar.transactionModels
       .filter()
       .dateGreaterThan(thirtyDaysAgo)

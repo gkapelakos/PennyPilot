@@ -12,7 +12,7 @@ class ManualEditBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     if (compact) {
       return Tooltip(
         message: 'Manually Edited',

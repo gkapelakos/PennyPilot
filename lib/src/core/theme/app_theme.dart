@@ -5,7 +5,7 @@ class AppTheme {
   // Seed colors for dynamic theming
   static const Color seedColor = Color(0xFF6750A4); // Deep Purple
   static const Color secondaryColor = Color(0xFF006C4C); // Teal
-  
+
   // Neutral colors for financial data (avoid red/green semantics)
   static const Color neutralAmount = Color(0xFF1F1F1F); // Dark gray for amounts
   static const Color neutralAmountLight = Color(0xFF424242);
@@ -14,16 +14,17 @@ class AppTheme {
 
   /// Generate light theme with optional dynamic colors
   static ThemeData lightTheme(ColorScheme? dynamicColorScheme) {
-    final scheme = dynamicColorScheme ?? ColorScheme.fromSeed(
-      seedColor: seedColor,
-      brightness: Brightness.light,
-    );
+    final scheme = dynamicColorScheme ??
+        ColorScheme.fromSeed(
+          seedColor: seedColor,
+          brightness: Brightness.light,
+        );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
       textTheme: _buildTextTheme(scheme, Brightness.light),
-      
+
       // AppBar theming
       appBarTheme: AppBarTheme(
         centerTitle: true,
@@ -95,7 +96,8 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: scheme.error, width: 1),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
 
       // Chip theming
@@ -191,12 +193,14 @@ class AppTheme {
   }
 
   /// Generate dark theme with optional dynamic colors
-  static ThemeData darkTheme(ColorScheme? dynamicColorScheme, {bool isOled = false}) {
-    var scheme = dynamicColorScheme ?? ColorScheme.fromSeed(
-      seedColor: seedColor,
-      brightness: Brightness.dark,
-    );
-    
+  static ThemeData darkTheme(ColorScheme? dynamicColorScheme,
+      {bool isOled = false}) {
+    var scheme = dynamicColorScheme ??
+        ColorScheme.fromSeed(
+          seedColor: seedColor,
+          brightness: Brightness.dark,
+        );
+
     if (isOled) {
       scheme = scheme.copyWith(
         surface: Colors.black,
@@ -210,7 +214,7 @@ class AppTheme {
       colorScheme: scheme,
       scaffoldBackgroundColor: isOled ? Colors.black : scheme.surface,
       textTheme: _buildTextTheme(scheme, Brightness.dark),
-      
+
       // AppBar theming
       appBarTheme: AppBarTheme(
         centerTitle: true,
@@ -226,7 +230,10 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
-          side: isOled ? BorderSide(color: scheme.outlineVariant.withAlpha(128), width: 0.5) : BorderSide.none,
+          side: isOled
+              ? BorderSide(
+                  color: scheme.outlineVariant.withAlpha(128), width: 0.5)
+              : BorderSide.none,
         ),
         clipBehavior: Clip.antiAlias,
         color: isOled ? const Color(0xFF0A0A0A) : scheme.surfaceContainerLow,
@@ -283,7 +290,8 @@ class AppTheme {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: scheme.error, width: 1),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
 
       // Chip theming
@@ -503,7 +511,8 @@ class AppTheme {
   }
 
   /// Monospaced text style for currency amounts
-  static TextStyle monospaceAmount(BuildContext context, {
+  static TextStyle monospaceAmount(
+    BuildContext context, {
     double? fontSize,
     FontWeight? fontWeight,
     Color? color,

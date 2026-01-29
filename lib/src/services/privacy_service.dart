@@ -10,7 +10,7 @@ class PrivacyService {
   PrivacyService(this._prefs);
 
   // --- Local-Only Mode ---
-  
+
   bool get isLocalOnlyMode => _prefs.getBool('isLocalOnlyMode') ?? false;
 
   Future<void> setLocalOnlyMode(bool enabled) async {
@@ -19,7 +19,8 @@ class PrivacyService {
 
   // --- Search & Privacy ---
 
-  bool get isSensitiveDataMasked => _prefs.getBool('isSensitiveDataMasked') ?? false;
+  bool get isSensitiveDataMasked =>
+      _prefs.getBool('isSensitiveDataMasked') ?? false;
 
   Future<void> setSensitiveDataMasked(bool enabled) async {
     await _prefs.setBool('isSensitiveDataMasked', enabled);
