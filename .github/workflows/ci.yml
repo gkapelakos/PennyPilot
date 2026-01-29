@@ -49,7 +49,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - target: apk --target-platform android-arm --split-per-abi
+        - target: apk --target-platform android-arm,android-arm64 --split-per-abi
           os: ubuntu-latest
         - target: linux
           os: ubuntu-latest
