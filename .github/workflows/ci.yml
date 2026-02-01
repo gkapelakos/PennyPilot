@@ -1,4 +1,5 @@
 name: CI Turbo
+
 on: 
   push:
     branches: [main, develop]
@@ -72,6 +73,13 @@ jobs:
         echo '{"project_info":{"project_number":"12345","project_id":"dummy","storage_bucket":"dummy.appspot.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:12345:android:12345","android_client_info":{"package_name":"com.example.pennypilot"}},"oauth_client":[],"api_key":[{"current_key":"dummy"}],"services":{}}],"configuration_version":"1"}' > android/app/google-services.json
     - run: flutter pub get
     - run: flutter build ${{ matrix.target }} --release --no-pub
+
+    - name: Upload APK artifacts
+      if: contains(matrix.target, 'apk')
+      uses: actions/upload-artifact@v2
+      with:
+        name: apk-files
+        path: build/app/outputs/flutter-apk/
 
   docs:
     runs-on: ubuntu-latest
