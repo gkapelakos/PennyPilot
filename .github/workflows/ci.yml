@@ -74,12 +74,13 @@ jobs:
     - run: flutter pub get
     - run: flutter build ${{ matrix.target }} --release --no-pub
 
-    - name: Upload APK artifacts
+    - name: apk-${{ github.run_number }}
       if: contains(matrix.target, 'apk')
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: apk-files
-        path: build/app/outputs/flutter-apk/
+        path: build/app/outputs/flutter-apk/*.apk
+        if-no-files-found: error
 
   docs:
     runs-on: ubuntu-latest
