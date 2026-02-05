@@ -30,6 +30,11 @@ class ManageCategoriesScreen extends ConsumerWidget {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.edit),
+                      tooltip: 'Edit',
+                      constraints: const BoxConstraints(
+                        minWidth: 44,
+                        minHeight: 44,
+                      ),
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -41,6 +46,11 @@ class ManageCategoriesScreen extends ConsumerWidget {
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete),
+                      tooltip: 'Delete',
+                      constraints: const BoxConstraints(
+                        minWidth: 44,
+                        minHeight: 44,
+                      ),
                       onPressed: () async {
                         final isar = ref.read(isarProvider);
                         await isar.writeTxn(() async {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/presentation/widgets/confidence_badge.dart';
 import 'package:pennypilot/src/presentation/widgets/amount_display.dart';
+import 'package:pennypilot/src/presentation/widgets/details_row.dart';
 import 'package:pennypilot/src/presentation/widgets/manual_edit_badge.dart';
 import 'package:pennypilot/src/presentation/screens/transactions/edit_transaction_screen.dart';
 import 'package:pennypilot/src/presentation/screens/transactions/split_transaction_sheet.dart';
@@ -143,20 +144,17 @@ class TransactionDetailsScreen extends ConsumerWidget {
                     style: theme.textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),
-                  _buildDetailRow(
-                    context,
+                  DetailsRow(
                     icon: Icons.calendar_today,
                     label: 'Date',
                     value: dateFormat.format(transaction.date),
                   ),
-                  _buildDetailRow(
-                    context,
+                  DetailsRow(
                     icon: Icons.access_time,
                     label: 'Time',
                     value: timeFormat.format(transaction.date),
                   ),
-                  _buildDetailRow(
-                    context,
+                  DetailsRow(
                     icon: transaction.kind == TransactionKind.income
                         ? Icons.arrow_downward
                         : Icons.arrow_upward,
@@ -165,21 +163,18 @@ class TransactionDetailsScreen extends ConsumerWidget {
                         transaction.kind.name.substring(1),
                   ),
                   if (transaction.isRecurring)
-                    _buildDetailRow(
-                      context,
+                    DetailsRow(
                       icon: Icons.repeat,
                       label: 'Recurring',
                       value: 'Yes',
                     ),
                   if (transaction.category != null)
-                    _buildDetailRow(
-                      context,
+                    DetailsRow(
                       icon: Icons.category,
                       label: 'Category',
                       value: transaction.category!,
                     ),
-                  _buildDetailRow(
-                    context,
+                  DetailsRow(
                     icon: Icons.attach_money,
                     label: 'Currency',
                     value: transaction.currency,
@@ -489,50 +484,6 @@ class TransactionDetailsScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 32),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            size: 20,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              label,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          Flexible(
-            child: Text(
-              value,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.right,
-            ),
-          ),
         ],
       ),
     );

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/data/models/subscription_model.dart';
 import 'package:pennypilot/src/presentation/widgets/lifecycle_badge.dart';
 import 'package:pennypilot/src/presentation/widgets/amount_display.dart';
+import 'package:pennypilot/src/presentation/widgets/details_row.dart';
 import 'package:pennypilot/src/presentation/providers/data_providers.dart';
 import 'package:pennypilot/src/services/subscription_intelligence_service.dart';
 import 'package:intl/intl.dart';
@@ -123,47 +124,40 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                     style: theme.textTheme.titleMedium,
                   ),
                   const SizedBox(height: 16),
-                  _buildDetailRow(
-                    context,
+                  DetailsRow(
                     icon: Icons.calendar_today,
                     label: 'Next Renewal',
                     value: dateFormat.format(subscription.nextRenewalDate),
                   ),
-                  _buildDetailRow(
-                    context,
+                  DetailsRow(
                     icon: Icons.history,
                     label: 'First Seen',
                     value: dateFormat.format(subscription.firstSeenDate),
                   ),
                   if (subscription.lastChargedDate != null)
-                    _buildDetailRow(
-                      context,
+                    DetailsRow(
                       icon: Icons.payment,
                       label: 'Last Charged',
                       value: dateFormat.format(subscription.lastChargedDate!),
                     ),
-                  _buildDetailRow(
-                    context,
+                  DetailsRow(
                     icon: Icons.repeat,
                     label: 'Consistency',
                     value: '${subscription.frequencyConsistency}%',
                   ),
-                  _buildDetailRow(
-                    context,
+                  DetailsRow(
                     icon: Icons.receipt,
                     label: 'Total Charges',
                     value: subscription.chargeCount.toString(),
                   ),
                   if (subscription.averageDaysBetweenCharges != null)
-                    _buildDetailRow(
-                      context,
+                    DetailsRow(
                       icon: Icons.schedule,
                       label: 'Avg Days Between',
                       value: subscription.averageDaysBetweenCharges!
                           .toStringAsFixed(1),
                     ),
-                  _buildDetailRow(
-                    context,
+                  DetailsRow(
                     icon: Icons.source,
                     label: 'Detection Source',
                     value: _getDetectionSourceLabel(),
@@ -201,6 +195,10 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                     FutureBuilder<List<PriceChange>>(
                       future: _getPriceChanges(ref),
                       builder: (context, snapshot) {
+                        final textScale =
+                            MediaQuery.textScaleFactorOf(context);
+                        final maxLines = textScale > 1.2 ? 2 : 1;
+
                         if (!snapshot.hasData || snapshot.data!.isEmpty) {
                           return Text(
                             'No price changes detected',
@@ -239,9 +237,10 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                                           theme.textTheme.bodyMedium?.copyWith(
                                         fontWeight: FontWeight.w600,
                                       ),
-                                      maxLines: 1,
+                                      maxLines: maxLines,
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.right,
+                                      softWrap: true,
                                     ),
                                   ),
                                   const SizedBox(width: 8),
@@ -308,6 +307,10 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                     FutureBuilder<List<CycleChange>>(
                       future: _getCycleChanges(ref),
                       builder: (context, snapshot) {
+                        final textScale =
+                            MediaQuery.textScaleFactorOf(context);
+                        final maxLines = textScale > 1.2 ? 2 : 1;
+
                         if (!snapshot.hasData || snapshot.data!.isEmpty) {
                           return Text(
                             'No cycle changes detected',
@@ -342,9 +345,10 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                                           theme.textTheme.bodyMedium?.copyWith(
                                         fontWeight: FontWeight.w600,
                                       ),
-                                      maxLines: 1,
+                                      maxLines: maxLines,
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.right,
+                                      softWrap: true,
                                     ),
                                   ),
                                 ],
@@ -407,50 +411,6 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
           ),
 
           const SizedBox(height: 32),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required String value,
-  }) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            size: 20,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              label,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          Flexible(
-            child: Text(
-              value,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.right,
-            ),
-          ),
         ],
       ),
     );
