@@ -102,10 +102,14 @@ class TransactionDetailsScreen extends ConsumerWidget {
                             color: theme.colorScheme.onSurfaceVariant,
                           ),
                           const SizedBox(width: 6),
-                          Text(
-                            'Original: ${transaction.rawMerchantName}',
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
+                          Flexible(
+                            child: Text(
+                              'Original: ${transaction.rawMerchantName}',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -266,11 +270,12 @@ class TransactionDetailsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Confidence',
-                        style: theme.textTheme.bodyMedium,
+                      Expanded(
+                        child: Text(
+                          'Confidence',
+                          style: theme.textTheme.bodyMedium,
+                        ),
                       ),
                       ConfidenceBadge(
                         level: transaction.extractionConfidence.name,
@@ -280,11 +285,12 @@ class TransactionDetailsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 12),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Has Line Items',
-                        style: theme.textTheme.bodyMedium,
+                      Expanded(
+                        child: Text(
+                          'Has Line Items',
+                          style: theme.textTheme.bodyMedium,
+                        ),
                       ),
                       Icon(
                         transaction.hasLineItems
@@ -299,11 +305,12 @@ class TransactionDetailsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 12),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'User Verified',
-                        style: theme.textTheme.bodyMedium,
+                      Expanded(
+                        child: Text(
+                          'User Verified',
+                          style: theme.textTheme.bodyMedium,
+                        ),
                       ),
                       Icon(
                         transaction.userVerified
@@ -318,13 +325,15 @@ class TransactionDetailsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: 12),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Source',
-                        style: theme.textTheme.bodyMedium,
+                      Expanded(
+                        child: Text(
+                          'Source',
+                          style: theme.textTheme.bodyMedium,
+                        ),
                       ),
                       Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
                             transaction.origin ==
@@ -509,12 +518,19 @@ class TransactionDetailsScreen extends ConsumerWidget {
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          Text(
-            value,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
+          Flexible(
+            child: Text(
+              value,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.right,
             ),
           ),
         ],

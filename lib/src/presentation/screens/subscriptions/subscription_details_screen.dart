@@ -232,10 +232,16 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                                       style: theme.textTheme.bodyMedium,
                                     ),
                                   ),
-                                  Text(
-                                    '${CurrencyInfo.getSymbol(subscription.currency)}${change.oldAmount.toStringAsFixed(2)} → ${CurrencyInfo.getSymbol(subscription.currency)}${change.newAmount.toStringAsFixed(2)}',
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w600,
+                                  Flexible(
+                                    child: Text(
+                                      '${CurrencyInfo.getSymbol(subscription.currency)}${change.oldAmount.toStringAsFixed(2)} → ${CurrencyInfo.getSymbol(subscription.currency)}${change.newAmount.toStringAsFixed(2)}',
+                                      style:
+                                          theme.textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.right,
                                     ),
                                   ),
                                   const SizedBox(width: 8),
@@ -329,10 +335,16 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                                       style: theme.textTheme.bodyMedium,
                                     ),
                                   ),
-                                  Text(
-                                    '${_frequencyName(change.oldFrequency)} → ${_frequencyName(change.newFrequency)}',
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w600,
+                                  Flexible(
+                                    child: Text(
+                                      '${_frequencyName(change.oldFrequency)} → ${_frequencyName(change.newFrequency)}',
+                                      style:
+                                          theme.textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.right,
                                     ),
                                   ),
                                 ],
@@ -424,12 +436,19 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          Text(
-            value,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
+          Flexible(
+            child: Text(
+              value,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.right,
             ),
           ),
         ],
