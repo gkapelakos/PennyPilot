@@ -10,15 +10,18 @@ void main() {
   late Isar isar;
   late Directory tempDir;
 
-  setUp(() async {
+  setUpAll(() async {
     await Isar.initializeIsarCore(download: true);
+  });
+
+  setUp(() async {
     tempDir = await Directory.systemTemp.createTemp('pennypilot_db_test');
     service = DatabaseService(tempDir.path);
     isar = await service.db;
   });
 
   tearDown(() async {
-    await isar.close();
+    await isar.close(deleteFromDisk: true);
     if (await tempDir.exists()) {
       await tempDir.delete(recursive: true);
     }

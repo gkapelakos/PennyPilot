@@ -52,6 +52,9 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
             actions: [
               IconButton(
                 icon: Icon(_isSearching ? Icons.close : Icons.search),
+                tooltip: _isSearching
+                    ? MaterialLocalizations.of(context).closeButtonTooltip
+                    : l10n.searchHint,
                 onPressed: () {
                   setState(() {
                     if (_isSearching) {
@@ -67,6 +70,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
               if (!_isSearching)
                 IconButton(
                   icon: const Icon(Icons.filter_list),
+                  tooltip: l10n.filterAndSort,
                   onPressed: () => _showFilterSheet(context),
                 ),
             ],

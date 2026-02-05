@@ -138,6 +138,63 @@ class AppLocalizationsDe extends AppLocalizations {
   String get privacySecurity => 'Datenschutz & Sicherheit';
 
   @override
+  String get securitySection => 'Sicherheit';
+
+  @override
+  String get biometricLock => 'Biometrische Sperre';
+
+  @override
+  String get biometricLockAvailableSubtitle =>
+      'Zum Öffnen der App authentifizieren';
+
+  @override
+  String get biometricLockUnavailableSubtitle =>
+      'Biometrie auf diesem Gerät nicht verfügbar';
+
+  @override
+  String get localOnlyMode => 'Nur‑lokaler Modus';
+
+  @override
+  String get localOnlyModeSubtitle =>
+      'Alle externen Verbindungen außer OAuth‑Authentifizierung deaktivieren.';
+
+  @override
+  String get dataManagementSection => 'Datenverwaltung';
+
+  @override
+  String get exportCsv => 'CSV exportieren';
+
+  @override
+  String get exportCsvSubtitle =>
+      'Transaktionen in Excel oder Google Sheets öffnen';
+
+  @override
+  String get dangerZone => 'Gefahrenzone';
+
+  @override
+  String get nuclearWipe => 'Nukleares Löschen';
+
+  @override
+  String get nuclearWipeSubtitle =>
+      'Alle Transaktionen und Kategorien löschen und Konten trennen.';
+
+  @override
+  String get wipeConfirmTitle => 'Sind Sie absolut sicher?';
+
+  @override
+  String get wipeConfirmBody =>
+      'Dies ist die nukleare Option. Alle lokalen Daten werden dauerhaft gelöscht und Ihre E‑Mail‑Konten werden getrennt.\n\nDiese Aktion kann nicht rückgängig gemacht werden.';
+
+  @override
+  String get wipeCancel => 'Abbrechen';
+
+  @override
+  String get wipeConfirmAction => 'ALLES LÖSCHEN';
+
+  @override
+  String get wipeSuccessMessage => 'Alle Daten wurden gelöscht.';
+
+  @override
   String get privacyAudit => 'Datenschutz-Audit';
 
   @override

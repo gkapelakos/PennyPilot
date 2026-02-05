@@ -50,4 +50,10 @@ class PrivacyService {
       return false;
     }
   }
+
+  Future<void> resetPrivacySettings() async {
+    await _prefs.remove('isLocalOnlyMode');
+    await _prefs.remove('isSensitiveDataMasked');
+    await _prefs.remove('isBiometricEnabled');
+  }
 }

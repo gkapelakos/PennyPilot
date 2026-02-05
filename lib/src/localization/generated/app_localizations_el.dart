@@ -137,6 +137,62 @@ class AppLocalizationsEl extends AppLocalizations {
   String get privacySecurity => 'Απόρρητο & Ασφάλεια';
 
   @override
+  String get securitySection => 'Ασφάλεια';
+
+  @override
+  String get biometricLock => 'Βιομετρικό κλείδωμα';
+
+  @override
+  String get biometricLockAvailableSubtitle =>
+      'Απαιτείται ταυτοποίηση για άνοιγμα της εφαρμογής';
+
+  @override
+  String get biometricLockUnavailableSubtitle =>
+      'Τα βιομετρικά δεν είναι διαθέσιμα σε αυτήν τη συσκευή';
+
+  @override
+  String get localOnlyMode => 'Λειτουργία μόνο τοπικά';
+
+  @override
+  String get localOnlyModeSubtitle =>
+      'Απενεργοποιεί όλες τις εξωτερικές συνδέσεις εκτός από την πιστοποίηση OAuth.';
+
+  @override
+  String get dataManagementSection => 'Διαχείριση δεδομένων';
+
+  @override
+  String get exportCsv => 'Εξαγωγή CSV';
+
+  @override
+  String get exportCsvSubtitle => 'Άνοιγμα συναλλαγών σε Excel ή Google Sheets';
+
+  @override
+  String get dangerZone => 'Ζώνη κινδύνου';
+
+  @override
+  String get nuclearWipe => 'Πλήρης διαγραφή';
+
+  @override
+  String get nuclearWipeSubtitle =>
+      'Διαγράφει όλες τις συναλλαγές, τις κατηγορίες και αποσυνδέει τους λογαριασμούς.';
+
+  @override
+  String get wipeConfirmTitle => 'Είστε απόλυτα σίγουροι;';
+
+  @override
+  String get wipeConfirmBody =>
+      'Αυτή είναι η «πυρηνική» επιλογή. Θα διαγράψει οριστικά όλα τα τοπικά δεδομένα και θα αποσυνδέσει τους λογαριασμούς email.\n\nΔεν μπορεί να αναιρεθεί.';
+
+  @override
+  String get wipeCancel => 'Άκυρο';
+
+  @override
+  String get wipeConfirmAction => 'ΔΙΑΓΡΑΦΗ ΤΩΝ ΠΑΝΤΩΝ';
+
+  @override
+  String get wipeSuccessMessage => 'Όλα τα δεδομένα διαγράφηκαν.';
+
+  @override
   String get privacyAudit => 'Έλεγχος Απορρήτου';
 
   @override

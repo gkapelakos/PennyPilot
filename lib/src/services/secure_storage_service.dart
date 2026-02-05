@@ -32,6 +32,10 @@ class SecureStorageService extends _$SecureStorageService {
     await _storage.delete(key: key);
   }
 
+  Future<void> deleteAll() async {
+    await _storage.deleteAll();
+  }
+
   Future<void> writeJson(String key, Map<String, dynamic> data) async {
     await _storage.write(key: key, value: jsonEncode(data));
   }

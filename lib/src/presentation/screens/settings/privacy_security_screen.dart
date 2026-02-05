@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/privacy_provider.dart';
 import 'package:pennypilot/src/presentation/providers/backup_provider.dart';
 import 'package:pennypilot/src/services/auth_service.dart';
+import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
+import 'package:pennypilot/src/services/secure_storage_service.dart';
+import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 
 class PrivacySecurityScreen extends ConsumerWidget {
   const PrivacySecurityScreen({super.key});
@@ -12,48 +15,60 @@ class PrivacySecurityScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final privacyService = ref.watch(privacyServiceProvider);
     final backupService = ref.watch(backupServiceProvider);
+    final l10n = AppLocalizations.of(context)!;
 
     final isLocalOnly = ref.watch(isLocalOnlyModeProvider);
     final isBiometric = ref.watch(isBiometricEnabledProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Privacy & Security'),
+        title: Text(l10n.privacySecurity),
       ),
       body: ListView(
         children: [
           // Security Section
-          _buildSectionHeader(context, 'Security'),
-          FutureBuilder<bool>(
-            future: privacyService.canCheckBiometrics(),
-            builder: (context, snapshot) {
-              final canDoBiometrics = snapshot.data ?? false;
-              return SwitchListTile(
-                title: const Text('Biometric Lock'),
-                subtitle: Text(canDoBiometrics
-                    ? 'Require authentication to open the app'
-                    : 'Biometrics not available on this device'),
-                value: isBiometric,
-                onChanged: canDoBiometrics
-                    ? (value) async {
-                        if (value) {
-                          final success = await privacyService.authenticate();
-                          if (!success) return;
+          _buildSectionHeader(context, l10n.securitySection),
+          ref.watch(canCheckBiometricsProvider).when(
+                data: (canDoBiometrics) => SwitchListTile(
+                  title: Text(l10n.biometricLock),
+                  subtitle: Text(canDoBiometrics
+                      ? l10n.biometricLockAvailableSubtitle
+                      : l10n.biometricLockUnavailableSubtitle),
+                  value: isBiometric,
+                  onChanged: canDoBiometrics
+                      ? (value) async {
+                          if (value) {
+                            final success = await privacyService.authenticate();
+                            if (!success) return;
+                          }
+                          await privacyService.setBiometricEnabled(value);
+                          ref.read(isBiometricEnabledProvider.notifier).state =
+                              value;
                         }
-                        await privacyService.setBiometricEnabled(value);
-                        ref.read(isBiometricEnabledProvider.notifier).state =
-                            value;
-                      }
-                    : null,
-                secondary:
-                    Icon(Icons.fingerprint, color: theme.colorScheme.primary),
-              );
-            },
-          ),
+                      : null,
+                  secondary: Icon(Icons.fingerprint,
+                      color: theme.colorScheme.primary),
+                ),
+                loading: () => SwitchListTile(
+                  title: Text(l10n.biometricLock),
+                  subtitle: Text(l10n.biometricLockUnavailableSubtitle),
+                  value: isBiometric,
+                  onChanged: null,
+                  secondary: Icon(Icons.fingerprint,
+                      color: theme.colorScheme.primary),
+                ),
+                error: (_, __) => SwitchListTile(
+                  title: Text(l10n.biometricLock),
+                  subtitle: Text(l10n.biometricLockUnavailableSubtitle),
+                  value: isBiometric,
+                  onChanged: null,
+                  secondary: Icon(Icons.fingerprint,
+                      color: theme.colorScheme.primary),
+                ),
+              ),
           SwitchListTile(
-            title: const Text('Local-Only Mode'),
-            subtitle: const Text(
-                'Disable all external connections except for OAuth authentication.'),
+            title: Text(l10n.localOnlyMode),
+            subtitle: Text(l10n.localOnlyModeSubtitle),
             value: isLocalOnly,
             onChanged: (value) async {
               await privacyService.setLocalOnlyMode(value);
@@ -65,12 +80,11 @@ class PrivacySecurityScreen extends ConsumerWidget {
           const Divider(),
 
           // Data Export Section
-          _buildSectionHeader(context, 'Data Management'),
+          _buildSectionHeader(context, l10n.dataManagementSection),
           ListTile(
             leading: Icon(Icons.table_chart, color: theme.colorScheme.primary),
-            title: const Text('Export CSV'),
-            subtitle:
-                const Text('Open your transactions in Excel or Google Sheets'),
+            title: Text(l10n.exportCsv),
+            subtitle: Text(l10n.exportCsvSubtitle),
             onTap: () async {
               try {
                 await backupService.exportToCsv();
@@ -83,13 +97,12 @@ class PrivacySecurityScreen extends ConsumerWidget {
           const Divider(),
 
           // Danger Zone Section
-          _buildSectionHeader(context, 'Danger Zone', isError: true),
+          _buildSectionHeader(context, l10n.dangerZone, isError: true),
           ListTile(
             leading: Icon(Icons.delete_forever, color: theme.colorScheme.error),
-            title: Text('Nuclear Wipe',
+            title: Text(l10n.nuclearWipe,
                 style: TextStyle(color: theme.colorScheme.error)),
-            subtitle: const Text(
-                'Delete all transactions, categories, and disconnect accounts.'),
+            subtitle: Text(l10n.nuclearWipeSubtitle),
             onTap: () => _showWipeConfirmation(context, ref),
           ),
 
@@ -117,17 +130,16 @@ class PrivacySecurityScreen extends ConsumerWidget {
   }
 
   void _showWipeConfirmation(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Are you absolutely sure?'),
-        content: const Text(
-          'This is the Nuclear Option. It will permanently delete all your local data and disconnect your email accounts.\n\nThis action cannot be undone.',
-        ),
+        title: Text(l10n.wipeConfirmTitle),
+        content: Text(l10n.wipeConfirmBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(l10n.wipeCancel),
           ),
           FilledButton(
             style: FilledButton.styleFrom(
@@ -136,13 +148,21 @@ class PrivacySecurityScreen extends ConsumerWidget {
               Navigator.pop(context);
               await ref.read(backupServiceProvider).nuclearWipe();
               await ref.read(authServiceProvider.notifier).signOut();
+              await ref.read(privacyServiceProvider).resetPrivacySettings();
+              ref.read(isLocalOnlyModeProvider.notifier).state = false;
+              ref.read(isBiometricEnabledProvider.notifier).state = false;
+              ref.read(isSensitiveDataMaskedProvider.notifier).state = false;
+              await ref.read(appStateProvider.notifier).factoryResetAppState();
+              await ref
+                  .read(secureStorageServiceProvider.notifier)
+                  .deleteAll();
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('All data has been wiped.')),
+                  SnackBar(content: Text(l10n.wipeSuccessMessage)),
                 );
               }
             },
-            child: const Text('WIPE EVERYTHING'),
+            child: Text(l10n.wipeConfirmAction),
           ),
         ],
       ),

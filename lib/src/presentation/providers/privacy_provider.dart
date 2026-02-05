@@ -21,3 +21,8 @@ final isSensitiveDataMaskedProvider = StateProvider<bool>((ref) {
   final service = ref.watch(privacyServiceProvider);
   return service.isSensitiveDataMasked;
 });
+
+final canCheckBiometricsProvider = FutureProvider<bool>((ref) {
+  final service = ref.watch(privacyServiceProvider);
+  return service.canCheckBiometrics();
+});

@@ -167,6 +167,14 @@ class AppTheme {
         ),
       ),
 
+      // Icon button theming
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+          minimumSize: const Size(44, 44),
+          padding: const EdgeInsets.all(10),
+        ),
+      ),
+
       // Divider theming
       dividerTheme: DividerThemeData(
         color: scheme.outlineVariant,
@@ -358,6 +366,14 @@ class AppTheme {
         elevation: 3,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+
+      // Icon button theming
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+          minimumSize: const Size(44, 44),
+          padding: const EdgeInsets.all(10),
         ),
       ),
 

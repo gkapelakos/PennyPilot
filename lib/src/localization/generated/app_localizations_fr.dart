@@ -137,6 +137,63 @@ class AppLocalizationsFr extends AppLocalizations {
   String get privacySecurity => 'Confidentialité et sécurité';
 
   @override
+  String get securitySection => 'Sécurité';
+
+  @override
+  String get biometricLock => 'Verrouillage biométrique';
+
+  @override
+  String get biometricLockAvailableSubtitle =>
+      'Exiger une authentification pour ouvrir l’application';
+
+  @override
+  String get biometricLockUnavailableSubtitle =>
+      'Biométrie non disponible sur cet appareil';
+
+  @override
+  String get localOnlyMode => 'Mode local uniquement';
+
+  @override
+  String get localOnlyModeSubtitle =>
+      'Désactive toutes les connexions externes sauf l’authentification OAuth.';
+
+  @override
+  String get dataManagementSection => 'Gestion des données';
+
+  @override
+  String get exportCsv => 'Exporter CSV';
+
+  @override
+  String get exportCsvSubtitle =>
+      'Ouvrir vos transactions dans Excel ou Google Sheets';
+
+  @override
+  String get dangerZone => 'Zone de danger';
+
+  @override
+  String get nuclearWipe => 'Effacement nucléaire';
+
+  @override
+  String get nuclearWipeSubtitle =>
+      'Supprimer toutes les transactions et catégories, et déconnecter les comptes.';
+
+  @override
+  String get wipeConfirmTitle => 'Êtes‑vous absolument sûr ?';
+
+  @override
+  String get wipeConfirmBody =>
+      'C’est l’option nucléaire. Elle supprimera définitivement toutes vos données locales et déconnectera vos comptes e‑mail.\n\nCette action est irréversible.';
+
+  @override
+  String get wipeCancel => 'Annuler';
+
+  @override
+  String get wipeConfirmAction => 'TOUT EFFACER';
+
+  @override
+  String get wipeSuccessMessage => 'Toutes les données ont été effacées.';
+
+  @override
   String get privacyAudit => 'Audit de confidentialité';
 
   @override

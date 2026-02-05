@@ -324,6 +324,108 @@ abstract class AppLocalizations {
   /// **'Privacy & Security'**
   String get privacySecurity;
 
+  /// No description provided for @securitySection.
+  ///
+  /// In en, this message translates to:
+  /// **'Security'**
+  String get securitySection;
+
+  /// No description provided for @biometricLock.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric Lock'**
+  String get biometricLock;
+
+  /// No description provided for @biometricLockAvailableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Require authentication to open the app'**
+  String get biometricLockAvailableSubtitle;
+
+  /// No description provided for @biometricLockUnavailableSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometrics not available on this device'**
+  String get biometricLockUnavailableSubtitle;
+
+  /// No description provided for @localOnlyMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Local-Only Mode'**
+  String get localOnlyMode;
+
+  /// No description provided for @localOnlyModeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable all external connections except for OAuth authentication.'**
+  String get localOnlyModeSubtitle;
+
+  /// No description provided for @dataManagementSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Management'**
+  String get dataManagementSection;
+
+  /// No description provided for @exportCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'Export CSV'**
+  String get exportCsv;
+
+  /// No description provided for @exportCsvSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open your transactions in Excel or Google Sheets'**
+  String get exportCsvSubtitle;
+
+  /// No description provided for @dangerZone.
+  ///
+  /// In en, this message translates to:
+  /// **'Danger Zone'**
+  String get dangerZone;
+
+  /// No description provided for @nuclearWipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Nuclear Wipe'**
+  String get nuclearWipe;
+
+  /// No description provided for @nuclearWipeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all transactions, categories, and disconnect accounts.'**
+  String get nuclearWipeSubtitle;
+
+  /// No description provided for @wipeConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you absolutely sure?'**
+  String get wipeConfirmTitle;
+
+  /// No description provided for @wipeConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the Nuclear Option. It will permanently delete all your local data and disconnect your email accounts.\n\nThis action cannot be undone.'**
+  String get wipeConfirmBody;
+
+  /// No description provided for @wipeCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get wipeCancel;
+
+  /// No description provided for @wipeConfirmAction.
+  ///
+  /// In en, this message translates to:
+  /// **'WIPE EVERYTHING'**
+  String get wipeConfirmAction;
+
+  /// No description provided for @wipeSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'All data has been wiped.'**
+  String get wipeSuccessMessage;
+
   /// No description provided for @privacyAudit.
   ///
   /// In en, this message translates to:

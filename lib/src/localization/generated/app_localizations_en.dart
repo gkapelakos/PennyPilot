@@ -137,6 +137,63 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacySecurity => 'Privacy & Security';
 
   @override
+  String get securitySection => 'Security';
+
+  @override
+  String get biometricLock => 'Biometric Lock';
+
+  @override
+  String get biometricLockAvailableSubtitle =>
+      'Require authentication to open the app';
+
+  @override
+  String get biometricLockUnavailableSubtitle =>
+      'Biometrics not available on this device';
+
+  @override
+  String get localOnlyMode => 'Local-Only Mode';
+
+  @override
+  String get localOnlyModeSubtitle =>
+      'Disable all external connections except for OAuth authentication.';
+
+  @override
+  String get dataManagementSection => 'Data Management';
+
+  @override
+  String get exportCsv => 'Export CSV';
+
+  @override
+  String get exportCsvSubtitle =>
+      'Open your transactions in Excel or Google Sheets';
+
+  @override
+  String get dangerZone => 'Danger Zone';
+
+  @override
+  String get nuclearWipe => 'Nuclear Wipe';
+
+  @override
+  String get nuclearWipeSubtitle =>
+      'Delete all transactions, categories, and disconnect accounts.';
+
+  @override
+  String get wipeConfirmTitle => 'Are you absolutely sure?';
+
+  @override
+  String get wipeConfirmBody =>
+      'This is the Nuclear Option. It will permanently delete all your local data and disconnect your email accounts.\n\nThis action cannot be undone.';
+
+  @override
+  String get wipeCancel => 'Cancel';
+
+  @override
+  String get wipeConfirmAction => 'WIPE EVERYTHING';
+
+  @override
+  String get wipeSuccessMessage => 'All data has been wiped.';
+
+  @override
   String get privacyAudit => 'Privacy Audit';
 
   @override
