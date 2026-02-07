@@ -20,7 +20,7 @@ jobs:
               $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl tar
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq curl tar
+              $SUDO apk add nodejs jq curl tar gcompat libc6-compat
             fi
           fi
           git config --global --add safe.directory '*'
@@ -60,7 +60,7 @@ jobs:
               $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl tar
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq curl tar
+              $SUDO apk add nodejs jq curl tar gcompat libc6-compat
             fi
           fi
           git config --global --add safe.directory '*'
@@ -103,7 +103,7 @@ jobs:
               $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl tar
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq curl tar
+              $SUDO apk add nodejs jq curl tar gcompat libc6-compat
             fi
           fi
           git config --global --add safe.directory '*'
@@ -162,7 +162,7 @@ jobs:
               $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl tar
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq curl tar
+              $SUDO apk add nodejs jq curl tar gcompat libc6-compat
             fi
           fi
           git config --global --add safe.directory '*'
