@@ -31,9 +31,11 @@ class PrivacySecurityScreen extends ConsumerWidget {
           ref.watch(canCheckBiometricsProvider).when(
                 data: (canDoBiometrics) => SwitchListTile(
                   title: Text(l10n.biometricLock),
-                  subtitle: Text(canDoBiometrics
-                      ? l10n.biometricLockAvailableSubtitle
-                      : l10n.biometricLockUnavailableSubtitle),
+                  subtitle: Text(
+                    canDoBiometrics
+                        ? l10n.biometricLockAvailableSubtitle
+                        : l10n.biometricLockUnavailableSubtitle,
+                  ),
                   value: isBiometric,
                   onChanged: canDoBiometrics
                       ? (value) async {
@@ -46,24 +48,30 @@ class PrivacySecurityScreen extends ConsumerWidget {
                               value;
                         }
                       : null,
-                  secondary: Icon(Icons.fingerprint,
-                      color: theme.colorScheme.primary),
+                  secondary: Icon(
+                    Icons.fingerprint,
+                    color: theme.colorScheme.primary,
+                  ),
                 ),
                 loading: () => SwitchListTile(
                   title: Text(l10n.biometricLock),
                   subtitle: Text(l10n.biometricLockUnavailableSubtitle),
                   value: isBiometric,
                   onChanged: null,
-                  secondary: Icon(Icons.fingerprint,
-                      color: theme.colorScheme.primary),
+                  secondary: Icon(
+                    Icons.fingerprint,
+                    color: theme.colorScheme.primary,
+                  ),
                 ),
                 error: (_, __) => SwitchListTile(
                   title: Text(l10n.biometricLock),
                   subtitle: Text(l10n.biometricLockUnavailableSubtitle),
                   value: isBiometric,
                   onChanged: null,
-                  secondary: Icon(Icons.fingerprint,
-                      color: theme.colorScheme.primary),
+                  secondary: Icon(
+                    Icons.fingerprint,
+                    color: theme.colorScheme.primary,
+                  ),
                 ),
               ),
           SwitchListTile(
@@ -143,7 +151,8 @@ class PrivacySecurityScreen extends ConsumerWidget {
           ),
           FilledButton(
             style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.error),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
             onPressed: () async {
               Navigator.pop(context);
               await ref.read(backupServiceProvider).nuclearWipe();
@@ -153,9 +162,7 @@ class PrivacySecurityScreen extends ConsumerWidget {
               ref.read(isBiometricEnabledProvider.notifier).state = false;
               ref.read(isSensitiveDataMaskedProvider.notifier).state = false;
               await ref.read(appStateProvider.notifier).factoryResetAppState();
-              await ref
-                  .read(secureStorageServiceProvider.notifier)
-                  .deleteAll();
+              await ref.read(secureStorageServiceProvider.notifier).deleteAll();
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(l10n.wipeSuccessMessage)),

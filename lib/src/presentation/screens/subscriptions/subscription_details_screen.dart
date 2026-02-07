@@ -195,8 +195,7 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                     FutureBuilder<List<PriceChange>>(
                       future: _getPriceChanges(ref),
                       builder: (context, snapshot) {
-                        final textScale =
-                            MediaQuery.textScaleFactorOf(context);
+                        final textScale = MediaQuery.textScaleFactorOf(context);
                         final maxLines = textScale > 1.2 ? 2 : 1;
 
                         if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -307,8 +306,7 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                     FutureBuilder<List<CycleChange>>(
                       future: _getCycleChanges(ref),
                       builder: (context, snapshot) {
-                        final textScale =
-                            MediaQuery.textScaleFactorOf(context);
+                        final textScale = MediaQuery.textScaleFactorOf(context);
                         final maxLines = textScale > 1.2 ? 2 : 1;
 
                         if (!snapshot.hasData || snapshot.data!.isEmpty) {
