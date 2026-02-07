@@ -12,6 +12,10 @@ jobs:
     steps:
       - name: Ensure build dependencies are installed
         run: |
+          if command -v apk &> /dev/null; then
+            if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
+            $SUDO apk add --no-cache gcompat libc6-compat libstdc++
+          fi
           if ! command -v node &> /dev/null || ! command -v jq &> /dev/null || ! command -v curl &> /dev/null || ! tar --version | grep -q "GNU tar" &> /dev/null; then
             echo "Dependencies missing or incompatible. Installing..."
             if command -v apt-get &> /dev/null; then
@@ -20,7 +24,7 @@ jobs:
               $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl tar
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq curl tar gcompat libc6-compat
+              $SUDO apk add nodejs jq curl tar
             fi
           fi
           git config --global --add safe.directory '*'
@@ -52,6 +56,10 @@ jobs:
     steps:
       - name: Ensure build dependencies are installed
         run: |
+          if command -v apk &> /dev/null; then
+            if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
+            $SUDO apk add --no-cache gcompat libc6-compat libstdc++
+          fi
           if ! command -v node &> /dev/null || ! command -v jq &> /dev/null || ! command -v curl &> /dev/null || ! tar --version | grep -q "GNU tar" &> /dev/null; then
             echo "Dependencies missing or incompatible. Installing..."
             if command -v apt-get &> /dev/null; then
@@ -60,7 +68,7 @@ jobs:
               $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl tar
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq curl tar gcompat libc6-compat
+              $SUDO apk add nodejs jq curl tar
             fi
           fi
           git config --global --add safe.directory '*'
@@ -95,6 +103,10 @@ jobs:
     steps:
       - name: Ensure build dependencies are installed
         run: |
+          if command -v apk &> /dev/null; then
+            if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
+            $SUDO apk add --no-cache gcompat libc6-compat libstdc++
+          fi
           if ! command -v node &> /dev/null || ! command -v jq &> /dev/null || ! command -v curl &> /dev/null || ! tar --version | grep -q "GNU tar" &> /dev/null; then
             echo "Dependencies missing or incompatible. Installing..."
             if command -v apt-get &> /dev/null; then
@@ -103,7 +115,7 @@ jobs:
               $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl tar
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq curl tar gcompat libc6-compat
+              $SUDO apk add nodejs jq curl tar
             fi
           fi
           git config --global --add safe.directory '*'
@@ -154,6 +166,10 @@ jobs:
     steps:
       - name: Ensure build dependencies are installed
         run: |
+          if command -v apk &> /dev/null; then
+            if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
+            $SUDO apk add --no-cache gcompat libc6-compat libstdc++
+          fi
           if ! command -v node &> /dev/null || ! command -v jq &> /dev/null || ! command -v curl &> /dev/null || ! tar --version | grep -q "GNU tar" &> /dev/null; then
             echo "Dependencies missing or incompatible. Installing..."
             if command -v apt-get &> /dev/null; then
@@ -162,7 +178,7 @@ jobs:
               $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl tar
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq curl tar gcompat libc6-compat
+              $SUDO apk add nodejs jq curl tar
             fi
           fi
           git config --global --add safe.directory '*'
