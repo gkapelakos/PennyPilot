@@ -10,6 +10,20 @@ jobs:
   metrics:
     runs-on: ubuntu-latest
     steps:
+      - name: Ensure Node.js is installed
+        run: |
+          if ! command -v node &> /dev/null; then
+            echo "Node.js not found. Installing..."
+            if command -v apt-get &> /dev/null; then
+              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
+              $SUDO apt-get update
+              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
+            elif command -v apk &> /dev/null; then
+              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
+              $SUDO apk add nodejs
+            fi
+          fi
+
       - uses: actions/checkout@v4
 
       - uses: subosito/flutter-action@v2
@@ -34,6 +48,20 @@ jobs:
           - { name: "integration", path: "test" }
 
     steps:
+      - name: Ensure Node.js is installed
+        run: |
+          if ! command -v node &> /dev/null; then
+            echo "Node.js not found. Installing..."
+            if command -v apt-get &> /dev/null; then
+              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
+              $SUDO apt-get update
+              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
+            elif command -v apk &> /dev/null; then
+              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
+              $SUDO apk add nodejs
+            fi
+          fi
+
       - uses: actions/checkout@v4
 
       - uses: subosito/flutter-action@v2
@@ -61,6 +89,20 @@ jobs:
           - linux
 
     steps:
+      - name: Ensure Node.js is installed
+        run: |
+          if ! command -v node &> /dev/null; then
+            echo "Node.js not found. Installing..."
+            if command -v apt-get &> /dev/null; then
+              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
+              $SUDO apt-get update
+              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
+            elif command -v apk &> /dev/null; then
+              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
+              $SUDO apk add nodejs
+            fi
+          fi
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-java@v4
@@ -104,6 +146,20 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
+      - name: Ensure Node.js is installed
+        run: |
+          if ! command -v node &> /dev/null; then
+            echo "Node.js not found. Installing..."
+            if command -v apt-get &> /dev/null; then
+              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
+              $SUDO apt-get update
+              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
+            elif command -v apk &> /dev/null; then
+              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
+              $SUDO apk add nodejs
+            fi
+          fi
+
       - uses: actions/checkout@v4
 
       - uses: subosito/flutter-action@v2
