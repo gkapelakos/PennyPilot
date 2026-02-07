@@ -10,17 +10,17 @@ jobs:
   metrics:
     runs-on: ubuntu-latest
     steps:
-      - name: Ensure Node.js is installed
+      - name: Ensure build dependencies are installed
         run: |
-          if ! command -v node &> /dev/null; then
-            echo "Node.js not found. Installing..."
+          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null; then
+            echo "Dependencies missing. Installing..."
             if command -v apt-get &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
               $SUDO apt-get update
-              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
+              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs
+              $SUDO apk add nodejs jq
             fi
           fi
 
@@ -48,17 +48,17 @@ jobs:
           - { name: "integration", path: "test" }
 
     steps:
-      - name: Ensure Node.js is installed
+      - name: Ensure build dependencies are installed
         run: |
-          if ! command -v node &> /dev/null; then
-            echo "Node.js not found. Installing..."
+          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null; then
+            echo "Dependencies missing. Installing..."
             if command -v apt-get &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
               $SUDO apt-get update
-              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
+              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs
+              $SUDO apk add nodejs jq
             fi
           fi
 
@@ -89,17 +89,17 @@ jobs:
           - linux
 
     steps:
-      - name: Ensure Node.js is installed
+      - name: Ensure build dependencies are installed
         run: |
-          if ! command -v node &> /dev/null; then
-            echo "Node.js not found. Installing..."
+          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null; then
+            echo "Dependencies missing. Installing..."
             if command -v apt-get &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
               $SUDO apt-get update
-              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
+              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs
+              $SUDO apk add nodejs jq
             fi
           fi
 
@@ -146,17 +146,17 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - name: Ensure Node.js is installed
+      - name: Ensure build dependencies are installed
         run: |
-          if ! command -v node &> /dev/null; then
-            echo "Node.js not found. Installing..."
+          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null; then
+            echo "Dependencies missing. Installing..."
             if command -v apt-get &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
               $SUDO apt-get update
-              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs
+              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs
+              $SUDO apk add nodejs jq
             fi
           fi
 
