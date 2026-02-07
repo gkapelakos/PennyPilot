@@ -1,6 +1,6 @@
 name: CI Turbo
 
-on: 
+on:
   push:
     branches: [main, develop]
   pull_request:
@@ -8,84 +8,101 @@ on:
 
 jobs:
   metrics:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu
     steps:
-    - uses: actions/checkout@v4
-    - uses: subosito/flutter-action@v2
-      with:
-        cache: true
-        channel: stable
-    - name: Create secrets.dart
-      run: cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
-      shell: bash
-    - run: flutter analyze
-    - run: dart format --set-exit-if-changed .
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+          channel: stable
+
+      - name: Create secrets.dart
+        run: cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
+
+      - run: flutter analyze
+      - run: dart format --set-exit-if-changed .
 
   test-matrix:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu
     strategy:
       fail-fast: false
       matrix:
-        shard: 
-        - {name: "unit-core", path: "test"}
-        - {name: "widgets", path: "test"} 
-        - {name: "integration", path: "test"}
+        shard:
+          - { name: "unit-core", path: "test" }
+          - { name: "widgets", path: "test" }
+          - { name: "integration", path: "test" }
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: subosito/flutter-action@v2
-      with: {cache: true}
-    - name: Cache coverage
-      uses: actions/cache@v4
-      with:
-        path: coverage/
-        key: ${{ runner.os }}-coverage-${{ hashFiles('pubspec.lock') }}
-    - name: Create secrets.dart
-      run: cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
-      shell: bash
-    - run: flutter test ${{ matrix.shard.path }} --coverage --machine
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+
+      - name: Cache coverage
+        uses: actions/cache@v4
+        with:
+          path: coverage/
+          key: ubuntu-coverage-${{ hashFiles('pubspec.lock') }}
+
+      - name: Create secrets.dart
+        run: cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
+
+      - run: flutter test ${{ matrix.shard.path }} --coverage --machine
 
   build-matrix:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu
     strategy:
       fail-fast: false
       matrix:
-        include:
-        - target: apk --target-platform android-arm,android-arm64 --split-per-abi
-          os: ubuntu-latest
-        - target: linux
-          os: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: subosito/flutter-action@v2
-      with: {cache: true}
-    - name: Install Linux build dependencies
-      if: matrix.target == 'linux'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev liblzma-dev libstdc++-12-dev libsecret-1-dev
-    - name: Create secrets.dart
-      run: cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
-      shell: bash
-    - name: Create dummy google-services.json for Android
-      if: contains(matrix.target, 'apk')
-      run: |
-        mkdir -p android/app
-        echo '{"project_info":{"project_number":"12345","project_id":"dummy","storage_bucket":"dummy.appspot.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:12345:android:12345","android_client_info":{"package_name":"com.example.pennypilot"}},"oauth_client":[],"api_key":[{"current_key":"dummy"}],"services":{}}],"configuration_version":"1"}' > android/app/google-services.json
-    - run: flutter pub get
-    - run: flutter build ${{ matrix.target }} --release --no-pub
+        target:
+          - apk --target-platform android-arm,android-arm64 --split-per-abi
+          - linux
 
-    - name: apk-${{ github.run_number }}
-      if: contains(matrix.target, 'apk')
-      uses: actions/upload-artifact@v4
-      with:
-        name: apk-files
-        path: build/app/outputs/flutter-apk/*.apk
-        if-no-files-found: error
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+
+      - name: Install Linux build dependencies
+        if: matrix.target == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            clang cmake ninja-build pkg-config \
+            libgtk-3-dev liblzma-dev \
+            libstdc++-12-dev libsecret-1-dev
+
+      - name: Create secrets.dart
+        run: cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
+
+      - name: Create dummy google-services.json for Android
+        if: contains(matrix.target, 'apk')
+        run: |
+          mkdir -p android/app
+          echo '{"project_info":{"project_number":"12345","project_id":"dummy","storage_bucket":"dummy.appspot.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:12345:android:12345","android_client_info":{"package_name":"com.example.pennypilot"}},"oauth_client":[],"api_key":[{"current_key":"dummy"}],"services":{}}],"configuration_version":"1"}' > android/app/google-services.json
+
+      - run: flutter pub get
+      - run: flutter build ${{ matrix.target }} --release --no-pub
+
+      - name: Upload APK artifacts
+        if: contains(matrix.target, 'apk')
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-files
+          path: build/app/outputs/flutter-apk/*.apk
+          if-no-files-found: error
 
   docs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu
     steps:
-    - uses: actions/checkout@v4
-    - uses: subosito/flutter-action@v2
-      with: {cache: true}
-    - run: dart doc-update . || echo "docs not configured"
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+
+      - run: dart doc-update . || echo "docs not configured"
