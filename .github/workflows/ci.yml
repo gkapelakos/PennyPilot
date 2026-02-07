@@ -30,6 +30,7 @@ jobs:
         with:
           cache: true
           channel: stable
+          architecture: x64
 
       - name: Create secrets.dart
         run: cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
@@ -67,6 +68,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           cache: true
+          architecture: x64
 
       - name: Cache coverage
         uses: actions/cache@v4
@@ -113,6 +115,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           cache: true
+          architecture: x64
 
       - name: Install Linux build dependencies
         if: matrix.target == 'linux'
@@ -165,5 +168,6 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           cache: true
+          architecture: x64
 
       - run: dart doc-update . || echo "docs not configured"
