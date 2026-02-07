@@ -12,15 +12,15 @@ jobs:
     steps:
       - name: Ensure build dependencies are installed
         run: |
-          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null; then
+          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null || ! command -v curl &> /dev/null; then
             echo "Dependencies missing. Installing..."
             if command -v apt-get &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
               $SUDO apt-get update
-              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq
+              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq
+              $SUDO apk add nodejs jq curl
             fi
           fi
 
@@ -50,15 +50,15 @@ jobs:
     steps:
       - name: Ensure build dependencies are installed
         run: |
-          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null; then
+          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null || ! command -v curl &> /dev/null; then
             echo "Dependencies missing. Installing..."
             if command -v apt-get &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
               $SUDO apt-get update
-              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq
+              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq
+              $SUDO apk add nodejs jq curl
             fi
           fi
 
@@ -91,15 +91,15 @@ jobs:
     steps:
       - name: Ensure build dependencies are installed
         run: |
-          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null; then
+          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null || ! command -v curl &> /dev/null; then
             echo "Dependencies missing. Installing..."
             if command -v apt-get &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
               $SUDO apt-get update
-              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq
+              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq
+              $SUDO apk add nodejs jq curl
             fi
           fi
 
@@ -148,15 +148,15 @@ jobs:
     steps:
       - name: Ensure build dependencies are installed
         run: |
-          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null; then
+          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null || ! command -v curl &> /dev/null; then
             echo "Dependencies missing. Installing..."
             if command -v apt-get &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
               $SUDO apt-get update
-              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq
+              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl
             elif command -v apk &> /dev/null; then
               if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq
+              $SUDO apk add nodejs jq curl
             fi
           fi
 
