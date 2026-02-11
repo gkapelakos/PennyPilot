@@ -220,7 +220,7 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
 
                         Center(
                           child: Text(
-                            'Version 1.0.0-alpha.1.20',
+                            'Version 1.0.0-alpha.1.19',
                             style: theme.textTheme.labelSmall?.copyWith(
                               color: theme.colorScheme.onSurfaceVariant
                                   .withAlpha(150),
