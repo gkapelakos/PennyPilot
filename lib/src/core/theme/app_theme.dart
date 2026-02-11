@@ -25,6 +25,10 @@ class AppTheme {
       colorScheme: scheme,
       textTheme: _buildTextTheme(scheme, Brightness.light),
 
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {TargetPlatform.android: FadeUpwardsPageTransitionsBuilder()},
+      ),
+
       // AppBar theming
       appBarTheme: AppBarTheme(
         centerTitle: true,
@@ -222,6 +226,10 @@ class AppTheme {
       colorScheme: scheme,
       scaffoldBackgroundColor: isOled ? Colors.black : scheme.surface,
       textTheme: _buildTextTheme(scheme, Brightness.dark),
+
+      pageTransitionsTheme: const PageTransitionsTheme(
+        builders: {TargetPlatform.android: FadeUpwardsPageTransitionsBuilder()},
+      ),
 
       // AppBar theming
       appBarTheme: AppBarTheme(

@@ -44,7 +44,7 @@ dependencies:
   tflite_flutter: ^0.11.0
   google_mlkit_text_recognition: ^0.15.0
   isolate_agents: ^0.2.0
-  rive: ^0.13.4
+  isolate_agents: ^0.2.0
   image_picker: any
   flutter_colorpicker: any
   shimmer: ^3.0.0

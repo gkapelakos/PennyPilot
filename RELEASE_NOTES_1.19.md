@@ -1,29 +1,37 @@
-# Release Notes - v1.0.0-alpha.1.19
+# Release Notes - v1.0.0-alpha.1.19 (Ultimate Edition)
 
 ## 🚀 Highlights
-This release focuses on **robustness, stability, and developer experience**. We've implemented an "Always Work" philosophy across critical user flows to ensure the app handles errors gracefully and provides clear feedback instead of crashing.
+This release implements the "Ultimate PennyPilot Fix+Shrink" initiative, delivering a **robust, optimized, and lightweight** application experience.
 
-### 🛡️ "Always Work" Reliability Improvements
-We've hardened the following screens with comprehensive error handling (`try-catch`), loading states, and user-friendly feedback:
-- **Add Transaction**: Prevents crashes during save operations and currency conversion.
-- **Connect Accounts**: Added loading states and robust error handling for Google/Email sign-in flows.
-- **Edit Transaction**: Secured the update process with validation and error reporting.
-- **Transaction Details**: "Verify" and "Add Note" actions now fail gracefully without disrupting the user experience.
-- **Receipt Scanning**: Added protection against double-submissions and robust error handling for image processing and categorization.
-- **Add Subscription**: Standardized error reporting and input validation.
-- **Startup**: Protected the initial configuration flow (Language/Currency selection) to prevent startup crashes.
-- **Currency Converter**: Added safe type casting and error handling for exchange rate calculations.
+### 🛡️ "Always Work" Reliability
+Every critical user action now follows a rigorous `try-catch` pattern with loading states and user-friendly error handling:
+- **Add Transaction**: Protected against crashes and double-submissions.
+- **Connect Accounts**: Robust error handling for authentication flows.
+- **Edit/Verify Transactions**: Graceful failure modes with clear feedback.
+- **Receipt Scanning**: Prevented race conditions and improved error reporting.
+- **Startup**: Crash-proof configuration loading.
+
+### 📉 Size Reduction (Target: ~7MB)
+We've aggressively optimized the APK size:
+- **ABI Splits**: Generating dedicated ARM64-v8a APKs to remove unused native libraries.
+- **Code Shrinking**: Enabled R8 full mode obfuscation and shrinking.
+- **Resource Shrinking**: Removing unused resources from the final build.
+- **Asset Cleanup**: Removed large source files (PSDs) and unused animations (Rive).
+- **Dead Code Removal**: Deleted `SmartDashboard` and unused widgets.
 
 ### 🛠️ Developer Experience & CI/CD
-- **Simplified CI Workflow**: The GitHub Actions workflow (`ci.yml`) has been completely refactored for simplicity and speed.
-- **ARM64 Builds**: The CI pipeline now automatically builds and uploads an **ARM64 APK** artifact on every push to `main`, making it easier to test on physical Android devices.
+- **Ultimate CI Workflow**: Automated build pipeline for optimized, obfuscated ARM64 APKs.
+- **Material 3**: Enhanced UI with `FadeUpwardsPageTransitionsBuilder` for smoother navigation on Android.
+- **ProGuard Rules**: Tuned keep rules for ML Kit, Isar, and Flutter to ensure safe shrinking.
 
 ## 🐛 Bug Fixes
-- Fixed potential crashes in `CurrencyConverterScreen` due to malformed exchange rate data.
-- Resolved race conditions in `ReceiptScanScreen` that could lead to multiple transaction submissions.
-- Fixed UI freezing issues during long-running operations in `AddTransactionSheet` and `ConnectEmailScreen`.
+- Fixed `CurrencyConverterScreen` crashes.
+- Resolved `ReceiptScanScreen` state issues.
+- Fixed potential startup crashes in `StartupScreen`.
 
 ## 📦 Technical Details
 - **Version**: 1.0.0-alpha.1.19+1
-- **Flutter SDK**: >=3.2.0 <4.0.0
-- **Build Target**: Android ARM64 (`android-arm64`)
+- **Flutter SDK**: 3.24.0 (Target)
+- **Architecture**: `arm64-v8a` Only (via Splits)
+- **Min SDK**: 24
+- **Target SDK**: 35

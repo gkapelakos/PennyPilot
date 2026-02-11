@@ -1,48 +1,39 @@
-name: Simple Builder
-
-on:
+name: 7MB APK CI/CD
+on: 
   push:
     branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
-  build_arm_apk:
-    name: Build ARM APK
+  build:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
+    - uses: subosito/flutter-action@v2
+      with: 
+        channel: stable
+        cache: true
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          cache: true
+    - name: Create Secrets
+      run: cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
 
-      - name: Create Secrets
-        run: |
-          cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
+    - name: Build
+      run: |
+        flutter clean
+        flutter pub get
+        flutter build apk --release \
+          --target-platform android-arm64 \
+          --split-per-abi \
+          --obfuscate \
+          --split-debug-info=build/app/outputs/symbols
           
-      - name: Create Dummy Google Services
-        run: |
-          mkdir -p android/app
-          echo '{"project_info":{"project_number":"12345","project_id":"dummy","storage_bucket":"dummy.appspot.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:12345:android:12345","android_client_info":{"package_name":"com.example.pennypilot"}},"oauth_client":[],"api_key":[{"current_key":"dummy"}],"services":{}}],"configuration_version":"1"}' > android/app/google-services.json
-
-      - name: Get Dependencies
-        run: flutter pub get
-
-      - name: Build ARM64 APK
-        run: flutter build apk --release --target-platform android-arm64
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: pennypilot-arm64
-          path: build/app/outputs/flutter-apk/app-release.apk
+    - uses: actions/upload-artifact@v4
+      with:
+        name: pennypilot-7mb-apk
+        path: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
