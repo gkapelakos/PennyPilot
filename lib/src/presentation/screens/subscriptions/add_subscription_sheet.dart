@@ -75,20 +75,18 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
         await isar.subscriptionModels.put(subscription);
       });
 
-      if (mounted) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(AppLocalizations.of(context)!.subscriptionAdded)),
-        );
-      }
+      if (!mounted) return;
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(AppLocalizations.of(context)!.subscriptionAdded)),
+      );
     } catch (e) {
       debugPrint('Add subscription fail: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Fixed-safe: ${e.toString()}')),
-        );
-      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Fixed-safe: ${e.toString()}')),
+      );
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);

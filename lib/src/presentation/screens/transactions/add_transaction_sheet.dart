@@ -107,20 +107,18 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
         await isar.transactionModels.put(transaction);
       });
 
-      if (mounted) {
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(AppLocalizations.of(context)!.transactionRecorded)),
-        );
-      }
+      if (!mounted) return;
+      Navigator.pop(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text(AppLocalizations.of(context)!.transactionRecorded)),
+      );
     } catch (e) {
       debugPrint('Action fail: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Fixed-safe: ${e.toString()}')),
-        );
-      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Fixed-safe: ${e.toString()}')),
+      );
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
