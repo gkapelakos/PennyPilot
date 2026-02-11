@@ -431,13 +431,13 @@ class _EmailScannerControlsScreenState
     try {
       await ref.read(emailServiceProvider).scanEmails();
 
-      if (!mounted) return;
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Scan complete')),
       );
     } catch (e) {
       debugPrint('Rescan fail: $e');
-      if (!mounted) return;
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Fixed-safe: $e'),

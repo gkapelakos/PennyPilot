@@ -36,10 +36,11 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
               onTap: _isProcessing
                   ? null
                   : () async {
-                      if (mounted) setState(() => _isProcessing = true);
+                      if (!mounted) return;
+                      setState(() => _isProcessing = true);
                       try {
                         await ref.read(backupServiceProvider).exportToCsv();
-                        if (!mounted) return;
+                        if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('CSV exported successfully'),
@@ -47,7 +48,7 @@ class _BackupScreenState extends ConsumerState<BackupScreen> {
                         );
                       } catch (e) {
                         debugPrint('Export failed: $e');
-                        if (!mounted) return;
+                        if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Fixed-safe: $e')),
                         );
