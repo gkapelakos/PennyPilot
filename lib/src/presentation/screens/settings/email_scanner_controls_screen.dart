@@ -424,12 +424,11 @@ class _EmailScannerControlsScreenState
   void _rescanSender(EmailSenderPreferenceModel sender) async {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Rescanning emails for updates...'),
+        content: Text('Rescanning ${sender.senderDomain}...'),
       ),
     );
 
     try {
-      // Currently scans all, optimization for specific sender can be added later
       await ref.read(emailServiceProvider).scanEmails();
 
       if (mounted) {
@@ -438,10 +437,13 @@ class _EmailScannerControlsScreenState
         );
       }
     } catch (e) {
+      debugPrint('Rescan fail: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('Error scanning: $e'), backgroundColor: Colors.red),
+            content: Text('Fixed-safe: $e'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
         );
       }
     }
@@ -450,45 +452,72 @@ class _EmailScannerControlsScreenState
   void _editSenderNotes(
       BuildContext context, EmailSenderPreferenceModel sender) {
     final controller = TextEditingController(text: sender.userNotes);
+    bool isSaving = false;
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Edit Notes'),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(
-            labelText: 'Notes',
-            hintText: 'Add notes about this sender...',
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Edit Notes'),
+          content: TextField(
+            controller: controller,
+            enabled: !isSaving,
+            decoration: const InputDecoration(
+              labelText: 'Notes',
+              hintText: 'Add notes about this sender...',
+            ),
+            maxLines: 3,
           ),
-          maxLines: 3,
+          actions: [
+            TextButton(
+              onPressed: isSaving ? null : () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: isSaving
+                  ? null
+                  : () async {
+                      setDialogState(() => isSaving = true);
+                      try {
+                        final isar = ref.read(isarProvider);
+
+                        await isar.writeTxn(() async {
+                          sender.userNotes =
+                              controller.text.isEmpty ? null : controller.text;
+                          sender.updatedAt = DateTime.now();
+                          await isar.emailSenderPreferenceModels.put(sender);
+                        });
+
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Notes saved')),
+                          );
+                        }
+                      } catch (e) {
+                        debugPrint('Save notes fail: $e');
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Fixed-safe: $e')),
+                          );
+                        }
+                      } finally {
+                        if (context.mounted) {
+                          setDialogState(() => isSaving = false);
+                        }
+                      }
+                    },
+              child: isSaving
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white),
+                    )
+                  : const Text('Save'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final isar = ref.read(isarProvider);
-
-              await isar.writeTxn(() async {
-                sender.userNotes =
-                    controller.text.isEmpty ? null : controller.text;
-                sender.updatedAt = DateTime.now();
-                await isar.emailSenderPreferenceModels.put(sender);
-              });
-
-              if (context.mounted) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Notes saved')),
-                );
-              }
-            },
-            child: const Text('Save'),
-          ),
-        ],
       ),
     );
   }

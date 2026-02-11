@@ -52,10 +52,24 @@ class ManageCategoriesScreen extends ConsumerWidget {
                         minHeight: 44,
                       ),
                       onPressed: () async {
-                        final isar = ref.read(isarProvider);
-                        await isar.writeTxn(() async {
-                          await isar.categoryModels.delete(category.id);
-                        });
+                        try {
+                          final isar = ref.read(isarProvider);
+                          await isar.writeTxn(() async {
+                            await isar.categoryModels.delete(category.id);
+                          });
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Category deleted')),
+                            );
+                          }
+                        } catch (e) {
+                          debugPrint('Delete failed: $e');
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Fixed-safe: $e')),
+                            );
+                          }
+                        }
                       },
                     ),
                   ],

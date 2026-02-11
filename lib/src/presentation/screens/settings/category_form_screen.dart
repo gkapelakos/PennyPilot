@@ -33,41 +33,61 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
     _icon = widget.category?.icon ?? 'home';
   }
 
-  void _submit() async {
+  bool _isLoading = false;
+
+  Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      final isar = ref.read(isarProvider);
-      final hexColor =
-          '#${(_color.r * 255).toInt().toRadixString(16).padLeft(2, '0')}${(_color.g * 255).toInt().toRadixString(16).padLeft(2, '0')}${(_color.b * 255).toInt().toRadixString(16).padLeft(2, '0')}'
-              .toUpperCase();
+      setState(() => _isLoading = true);
 
-      await isar.writeTxn(() async {
-        if (widget.category == null) {
-          final newCategory = CategoryModel()
-            ..name = _name
-            ..color = hexColor
-            ..icon = _icon
-            ..isSystem = false
-            ..order = 0
-            ..isActive = true
-            ..transactionCount = 0
-            ..createdAt = DateTime.now();
-          await isar.categoryModels.put(newCategory);
-        } else {
-          final categoryToUpdate =
-              await isar.categoryModels.get(widget.category!.id);
-          if (categoryToUpdate != null) {
-            categoryToUpdate.name = _name;
-            categoryToUpdate.color = hexColor;
-            categoryToUpdate.icon = _icon;
-            categoryToUpdate.updatedAt = DateTime.now();
-            await isar.categoryModels.put(categoryToUpdate);
+      try {
+        final isar = ref.read(isarProvider);
+        // Convert Color to Hex String
+        final hexColor =
+            '#${(_color.r * 255).toInt().toRadixString(16).padLeft(2, '0')}${(_color.g * 255).toInt().toRadixString(16).padLeft(2, '0')}${(_color.b * 255).toInt().toRadixString(16).padLeft(2, '0')}'
+                .toUpperCase();
+
+        await isar.writeTxn(() async {
+          if (widget.category == null) {
+            final newCategory = CategoryModel()
+              ..name = _name
+              ..color = hexColor
+              ..icon = _icon
+              ..isSystem = false
+              ..order = 0
+              ..isActive = true
+              ..transactionCount = 0
+              ..createdAt = DateTime.now();
+            await isar.categoryModels.put(newCategory);
+          } else {
+            final categoryToUpdate =
+                await isar.categoryModels.get(widget.category!.id);
+            if (categoryToUpdate != null) {
+              categoryToUpdate.name = _name;
+              categoryToUpdate.color = hexColor;
+              categoryToUpdate.icon = _icon;
+              categoryToUpdate.updatedAt = DateTime.now();
+              await isar.categoryModels.put(categoryToUpdate);
+            }
           }
-        }
-      });
+        });
 
-      if (!mounted) return;
-      Navigator.of(context).pop();
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Category saved')),
+          );
+          Navigator.of(context).pop();
+        }
+      } catch (e) {
+        debugPrint('Save category failed: $e');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Fixed-safe: ${e.toString()}')),
+          );
+        }
+      } finally {
+        if (mounted) setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -77,10 +97,20 @@ class _CategoryFormScreenState extends ConsumerState<CategoryFormScreen> {
       appBar: AppBar(
         title: Text(widget.category == null ? 'New Category' : 'Edit Category'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: _submit,
-          ),
+          if (_isLoading)
+            const Padding(
+              padding: EdgeInsets.all(12.0),
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            )
+          else
+            IconButton(
+              icon: const Icon(Icons.save),
+              onPressed: _submit,
+            ),
         ],
       ),
       body: Padding(
