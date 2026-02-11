@@ -24,13 +24,21 @@ class _CurrencyConverterScreenState
   }
 
   void _convert(Map<String, dynamic> exchangeRates) {
-    final amount = double.tryParse(_amountController.text);
-    if (amount != null && exchangeRates.isNotEmpty) {
-      final fromRate = exchangeRates[_fromCurrency]?.toDouble() ?? 1.0;
-      final toRate = exchangeRates[_toCurrency]?.toDouble() ?? 1.0;
-      setState(() {
-        _convertedAmount = amount * (toRate / fromRate);
-      });
+    try {
+      final amount = double.tryParse(_amountController.text);
+      if (amount != null && exchangeRates.isNotEmpty) {
+        final fromVal = exchangeRates[_fromCurrency];
+        final toVal = exchangeRates[_toCurrency];
+
+        final fromRate = (fromVal is num) ? fromVal.toDouble() : 1.0;
+        final toRate = (toVal is num) ? toVal.toDouble() : 1.0;
+
+        setState(() {
+          _convertedAmount = amount * (toRate / fromRate);
+        });
+      }
+    } catch (e) {
+      debugPrint('Conversion error: $e');
     }
   }
 

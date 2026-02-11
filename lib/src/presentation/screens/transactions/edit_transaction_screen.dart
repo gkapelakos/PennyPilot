@@ -113,10 +113,11 @@ class _EditTransactionScreenState extends ConsumerState<EditTransactionScreen> {
         );
       }
     } catch (e) {
+      debugPrint('Action fail: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error saving transaction: $e'),
+            content: Text('Fixed-safe: $e'),
             backgroundColor: Colors.red,
           ),
         );

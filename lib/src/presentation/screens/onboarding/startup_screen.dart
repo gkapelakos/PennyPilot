@@ -29,18 +29,36 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
     _selectedCurrency = 'USD';
   }
 
-  void _onGetStarted() async {
-    if (_selectedLanguage != null) {
-      await ref.read(appStateProvider.notifier).setLanguage(_selectedLanguage);
-    }
-    if (_selectedCurrency != null) {
-      await ref.read(appStateProvider.notifier).setCurrency(_selectedCurrency!);
-    }
+  bool _isLoading = false;
 
-    if (mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const OnboardingScreen()),
-      );
+  Future<void> _onGetStarted() async {
+    setState(() => _isLoading = true);
+    try {
+      if (_selectedLanguage != null) {
+        await ref
+            .read(appStateProvider.notifier)
+            .setLanguage(_selectedLanguage);
+      }
+      if (_selectedCurrency != null) {
+        await ref
+            .read(appStateProvider.notifier)
+            .setCurrency(_selectedCurrency!);
+      }
+
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+        );
+      }
+    } catch (e) {
+      debugPrint('Startup config fail: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Fixed-safe: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -164,7 +182,7 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
                         SizedBox(
                           height: 64,
                           child: FilledButton(
-                            onPressed: _onGetStarted,
+                            onPressed: _isLoading ? null : _onGetStarted,
                             style: FilledButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
@@ -173,20 +191,29 @@ class _StartupScreenState extends ConsumerState<StartupScreen> {
                               shadowColor:
                                   theme.colorScheme.primary.withAlpha(100),
                             ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Get Started',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                            child: _isLoading
+                                ? const SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Get Started',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(width: 12),
+                                      Icon(Icons.arrow_forward_rounded),
+                                    ],
                                   ),
-                                ),
-                                SizedBox(width: 12),
-                                Icon(Icons.arrow_forward_rounded),
-                              ],
-                            ),
                           ),
                         ),
                         const SizedBox(height: 24),

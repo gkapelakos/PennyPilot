@@ -5,11 +5,59 @@ import 'package:go_router/go_router.dart';
 import 'package:pennypilot/src/services/auth_service.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
 
-class ConnectEmailScreen extends ConsumerWidget {
+class ConnectEmailScreen extends ConsumerStatefulWidget {
   const ConnectEmailScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConnectEmailScreen> createState() => _ConnectEmailScreenState();
+}
+
+class _ConnectEmailScreenState extends ConsumerState<ConnectEmailScreen> {
+  bool _isLoading = false;
+
+  Future<void> _handleGmailConnect() async {
+    setState(() => _isLoading = true);
+    try {
+      final authService = ref.read(authServiceProvider.notifier);
+      await authService.signInWithGoogle();
+
+      if (mounted) {
+        final emails = ref.read(authServiceProvider.notifier).connectedEmails;
+        if (emails.isNotEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(
+                    AppLocalizations.of(context)!.connectedTo(emails.first))),
+          );
+          context.go('/dashboard');
+        }
+      }
+    } catch (e) {
+      debugPrint('Action fail: $e');
+      if (mounted) {
+        String errorMessage;
+        if (e is PlatformException) {
+          errorMessage = 'Fixed-safe: ${e.message ?? e.toString()}';
+        } else {
+          errorMessage = 'Fixed-safe: ${e.toString()}';
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            duration: const Duration(seconds: 5),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.connectAccounts),
@@ -29,76 +77,50 @@ class ConnectEmailScreen extends ConsumerWidget {
               icon: Icons.mail,
               label: AppLocalizations.of(context)!.connectGmail,
               color: Colors.red.shade700,
-              onPressed: () async {
-                try {
-                  final authService = ref.read(authServiceProvider.notifier);
-                  await authService.signInWithGoogle();
-
-                  if (context.mounted) {
-                    final emails =
-                        ref.read(authServiceProvider.notifier).connectedEmails;
-                    if (emails.isNotEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text(AppLocalizations.of(context)!
-                                .connectedTo(emails.first))),
-                      );
-                      context.go('/dashboard');
-                    }
-                  }
-                } catch (e) {
-                  if (context.mounted) {
-                    String errorMessage;
-                    if (e is PlatformException) {
-                      errorMessage = e.message ?? e.toString();
-                    } else {
-                      errorMessage = e.toString();
-                    }
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(errorMessage),
-                        duration: const Duration(seconds: 5),
-                      ),
-                    );
-                  }
-                }
-              },
+              onPressed: _isLoading ? null : _handleGmailConnect,
+              isLoading: _isLoading,
             ),
             const SizedBox(height: 16),
             _ConnectButton(
               icon: Icons.mail_outline,
               label: AppLocalizations.of(context)!.connectOutlook,
               color: Colors.blue.shade700,
-              onPressed: () {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(
-                            '${AppLocalizations.of(context)!.connectOutlook} coming soon!')),
-                  );
-                }
-              },
+              onPressed: _isLoading
+                  ? null
+                  : () {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text(
+                                  '${AppLocalizations.of(context)!.connectOutlook} coming soon!')),
+                        );
+                      }
+                    },
             ),
             const SizedBox(height: 16),
             _ConnectButton(
               icon: Icons.cloud,
               label: AppLocalizations.of(context)!.connectICloud,
               color: Colors.blueGrey,
-              onPressed: () {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(
-                            '${AppLocalizations.of(context)!.connectICloud} coming soon!')),
-                  );
-                }
-              },
+              onPressed: _isLoading
+                  ? null
+                  : () {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text(
+                                  '${AppLocalizations.of(context)!.connectICloud} coming soon!')),
+                        );
+                      }
+                    },
             ),
             const Spacer(),
             TextButton(
-              onPressed: () {
-                context.go('/dashboard');
-              },
+              onPressed: _isLoading
+                  ? null
+                  : () {
+                      context.go('/dashboard');
+                    },
               child: Text(AppLocalizations.of(context)!.tryDemoMode),
             ),
             const SizedBox(height: 16),
@@ -118,20 +140,31 @@ class _ConnectButton extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
+  final bool isLoading;
 
   const _ConnectButton({
     required this.icon,
     required this.label,
     required this.color,
     required this.onPressed,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: onPressed,
-      icon: Icon(icon, color: Colors.white),
+      icon: isLoading
+          ? const SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            )
+          : Icon(icon, color: Colors.white),
       label: Text(label),
       style: ElevatedButton.styleFrom(
         backgroundColor: color,

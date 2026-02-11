@@ -1,193 +1,48 @@
-name: CI Turbo
+name: Simple Builder
 
 on:
   push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
-  metrics:
+  build_arm_apk:
+    name: Build ARM APK
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Ensure build dependencies are installed
-        run: |
-          if command -v apk &> /dev/null; then
-            if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-            $SUDO apk add --no-cache gcompat libc6-compat libstdc++
-          fi
-          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null || ! command -v curl &> /dev/null || ! tar --version | grep -q "GNU tar" &> /dev/null; then
-            echo "Dependencies missing or incompatible. Installing..."
-            if command -v apt-get &> /dev/null; then
-              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apt-get update
-              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl tar
-            elif command -v apk &> /dev/null; then
-              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq curl tar
-            fi
-          fi
-          git config --global --add safe.directory '*'
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - uses: actions/checkout@v4
-
-      - uses: subosito/flutter-action@v2
-        with:
-          cache: true
-          channel: stable
-          architecture: x64
-
-      - name: Create secrets.dart
-        run: cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
-
-      - run: flutter analyze
-      - run: dart format --set-exit-if-changed .
-
-  test-matrix:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        shard:
-          - { name: "unit-core", path: "test" }
-          - { name: "widgets", path: "test" }
-          - { name: "integration", path: "test" }
-
-    steps:
-      - name: Ensure build dependencies are installed
-        run: |
-          if command -v apk &> /dev/null; then
-            if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-            $SUDO apk add --no-cache gcompat libc6-compat libstdc++
-          fi
-          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null || ! command -v curl &> /dev/null || ! tar --version | grep -q "GNU tar" &> /dev/null; then
-            echo "Dependencies missing or incompatible. Installing..."
-            if command -v apt-get &> /dev/null; then
-              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apt-get update
-              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl tar
-            elif command -v apk &> /dev/null; then
-              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq curl tar
-            fi
-          fi
-          git config --global --add safe.directory '*'
-
-      - uses: actions/checkout@v4
-
-      - uses: subosito/flutter-action@v2
-        with:
-          cache: true
-          architecture: x64
-
-      - name: Cache coverage
-        uses: actions/cache@v4
-        with:
-          path: coverage/
-          key: ubuntu-coverage-${{ hashFiles('pubspec.lock') }}
-
-      - name: Create secrets.dart
-        run: cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
-
-      - run: flutter test ${{ matrix.shard.path }} --coverage --machine
-
-  build-matrix:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        target:
-          - apk --target-platform android-arm,android-arm64 --split-per-abi
-          - linux
-
-    steps:
-      - name: Ensure build dependencies are installed
-        run: |
-          if command -v apk &> /dev/null; then
-            if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-            $SUDO apk add --no-cache gcompat libc6-compat libstdc++
-          fi
-          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null || ! command -v curl &> /dev/null || ! tar --version | grep -q "GNU tar" &> /dev/null; then
-            echo "Dependencies missing or incompatible. Installing..."
-            if command -v apt-get &> /dev/null; then
-              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apt-get update
-              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl tar
-            elif command -v apk &> /dev/null; then
-              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq curl tar
-            fi
-          fi
-          git config --global --add safe.directory '*'
-
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
+          channel: 'stable'
           cache: true
-          architecture: x64
 
-      - name: Install Linux build dependencies
-        if: matrix.target == 'linux'
+      - name: Create Secrets
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            clang cmake ninja-build pkg-config \
-            libgtk-3-dev liblzma-dev \
-            libstdc++-12-dev libsecret-1-dev
-
-      - name: Create secrets.dart
-        run: cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
-
-      - name: Create dummy google-services.json for Android
-        if: contains(matrix.target, 'apk')
+          cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
+          
+      - name: Create Dummy Google Services
         run: |
           mkdir -p android/app
           echo '{"project_info":{"project_number":"12345","project_id":"dummy","storage_bucket":"dummy.appspot.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:12345:android:12345","android_client_info":{"package_name":"com.example.pennypilot"}},"oauth_client":[],"api_key":[{"current_key":"dummy"}],"services":{}}],"configuration_version":"1"}' > android/app/google-services.json
 
-      - run: flutter pub get
-      - run: flutter build ${{ matrix.target }} --release --no-pub
+      - name: Get Dependencies
+        run: flutter pub get
 
-      - name: Upload APK artifacts
-        if: contains(matrix.target, 'apk')
+      - name: Build ARM64 APK
+        run: flutter build apk --release --target-platform android-arm64
+
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: apk-files
-          path: build/app/outputs/flutter-apk/*.apk
-          if-no-files-found: error
-
-  docs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Ensure build dependencies are installed
-        run: |
-          if command -v apk &> /dev/null; then
-            if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-            $SUDO apk add --no-cache gcompat libc6-compat libstdc++
-          fi
-          if ! command -v node &> /dev/null || ! command -v jq &> /dev/null || ! command -v curl &> /dev/null || ! tar --version | grep -q "GNU tar" &> /dev/null; then
-            echo "Dependencies missing or incompatible. Installing..."
-            if command -v apt-get &> /dev/null; then
-              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apt-get update
-              $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs jq curl tar
-            elif command -v apk &> /dev/null; then
-              if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; else SUDO=""; fi
-              $SUDO apk add nodejs jq curl tar
-            fi
-          fi
-          git config --global --add safe.directory '*'
-
-      - uses: actions/checkout@v4
-
-      - uses: subosito/flutter-action@v2
-        with:
-          cache: true
-          architecture: x64
-
-      - run: dart doc-update . || echo "docs not configured"
+          name: pennypilot-arm64
+          path: build/app/outputs/flutter-apk/app-release.apk

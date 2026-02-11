@@ -83,11 +83,10 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
         );
       }
     } catch (e) {
+      debugPrint('Add subscription fail: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(AppLocalizations.of(context)!
-                  .errorAddingSubscription(e.toString()))),
+          SnackBar(content: Text('Fixed-safe: ${e.toString()}')),
         );
       }
     } finally {

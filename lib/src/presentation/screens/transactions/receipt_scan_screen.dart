@@ -21,6 +21,7 @@ class _ReceiptScanScreenState extends ConsumerState<ReceiptScanScreen> {
   final TextRecognizer _textRecognizer = TextRecognizer();
 
   bool _isProcessing = false;
+  bool _isSaving = false;
   ExtractionResult? _result;
   File? _image;
 
@@ -53,12 +54,13 @@ class _ReceiptScanScreenState extends ConsumerState<ReceiptScanScreen> {
         _isProcessing = false;
       });
     } catch (e) {
+      debugPrint('Image pick fail: $e');
       setState(() {
         _isProcessing = false;
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error processing receipt: $e')),
+          SnackBar(content: Text('Fixed-safe: $e')),
         );
       }
     }
@@ -150,74 +152,98 @@ class _ReceiptScanScreenState extends ConsumerState<ReceiptScanScreen> {
             SizedBox(
               width: double.infinity,
               child: FilledButton(
-                onPressed: () async {
-                  try {
-                    final isar = ref.read(isarProvider);
-                    final categorizationService =
-                        ref.read(categorizationServiceProvider);
+                onPressed: _isSaving
+                    ? null
+                    : () async {
+                        setState(() => _isSaving = true);
+                        try {
+                          final isar = ref.read(isarProvider);
+                          final categorizationService =
+                              ref.read(categorizationServiceProvider);
 
-                    final categoryId = await categorizationService
-                        .categorizeMerchant(_result!.merchantName);
+                          // Use default if classification fails
+                          int? categoryId;
+                          try {
+                            categoryId = await categorizationService
+                                .categorizeMerchant(_result!.merchantName);
+                          } catch (e) {
+                            debugPrint('Categorization warning: $e');
+                            // Proceed without category or default
+                          }
 
-                    final newTransaction = TransactionModel()
-                      ..merchantName = _result!.merchantName
-                      ..rawMerchantName = _result!.rawMerchantName
-                      ..amount = _result!.totalAmount
-                      ..subtotalAmount = _result!.subtotalAmount
-                      ..taxAmount = _result!.taxAmount
-                      ..tipAmount = _result!.tipAmount
-                      ..discountAmount = _result!.discountAmount
-                      ..date = _result!.date
-                      ..createdAt = DateTime.now()
-                      ..origin = TransactionOrigin.imported
-                      ..kind = TransactionKind.expense
-                      ..extractionConfidence = _result!.overallConfidence
-                      ..hasLineItems = _result!.hasLineItems
-                      ..categoryId = categoryId;
+                          final newTransaction = TransactionModel()
+                            ..merchantName = _result!.merchantName
+                            ..rawMerchantName = _result!.rawMerchantName
+                            ..amount = _result!.totalAmount
+                            ..subtotalAmount = _result!.subtotalAmount
+                            ..taxAmount = _result!.taxAmount
+                            ..tipAmount = _result!.tipAmount
+                            ..discountAmount = _result!.discountAmount
+                            ..date = _result!.date
+                            ..createdAt = DateTime.now()
+                            ..origin = TransactionOrigin.imported
+                            ..kind = TransactionKind.expense
+                            ..extractionConfidence = _result!.overallConfidence
+                            ..hasLineItems = _result!.hasLineItems
+                            ..categoryId = categoryId;
 
-                    // Save transaction and its line items in a single transaction
-                    await isar.writeTxn(() async {
-                      final savedId =
-                          await isar.transactionModels.put(newTransaction);
+                          // Save transaction and its line items in a single transaction
+                          await isar.writeTxn(() async {
+                            final savedId = await isar.transactionModels
+                                .put(newTransaction);
 
-                      // Save line items if present
-                      if (_result!.hasLineItems) {
-                        for (var item in _result!.lineItems) {
-                          final lineItem = ReceiptLineItemModel()
-                            ..transactionId = savedId
-                            ..description = item.description
-                            ..amount = item.amount
-                            ..type = item.type
-                            ..order = item.order
-                            ..createdAt = DateTime.now();
+                            // Save line items if present
+                            if (_result!.hasLineItems) {
+                              // Batch put line items for efficiency?
+                              // Isar putAll?
+                              // Using loop for now as per original code, but safe.
+                              for (var item in _result!.lineItems) {
+                                final lineItem = ReceiptLineItemModel()
+                                  ..transactionId = savedId
+                                  ..description = item.description
+                                  ..amount = item.amount
+                                  ..type = item.type
+                                  ..order = item.order
+                                  ..createdAt = DateTime.now();
 
-                          await isar.receiptLineItemModels.put(lineItem);
+                                await isar.receiptLineItemModels.put(lineItem);
+                              }
+                            }
+                          });
+
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content:
+                                      Text('Transaction saved successfully!')),
+                            );
+                            Navigator.of(context).pop();
+                          }
+                        } catch (e, stackTrace) {
+                          debugPrint('Error saving transaction: $e');
+                          debugPrint('Stack trace: $stackTrace');
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Fixed-safe: ${e.toString()}'),
+                                duration: const Duration(seconds: 5),
+                              ),
+                            );
+                          }
+                        } finally {
+                          if (mounted) setState(() => _isSaving = false);
                         }
-                      }
-                    });
-
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Transaction saved successfully!')),
-                      );
-                      Navigator.of(context).pop();
-                    }
-                  } catch (e, stackTrace) {
-                    debugPrint('Error saving transaction: $e');
-                    debugPrint('Stack trace: $stackTrace');
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content:
-                              Text('Error saving transaction: ${e.toString()}'),
-                          duration: const Duration(seconds: 5),
+                      },
+                child: _isSaving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
                         ),
-                      );
-                    }
-                  }
-                },
-                child: const Text('Import Transaction'),
+                      )
+                    : const Text('Import Transaction'),
               ),
             ),
           ],

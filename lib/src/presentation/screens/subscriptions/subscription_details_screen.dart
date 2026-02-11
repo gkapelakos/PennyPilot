@@ -198,6 +198,16 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                         final textScale = MediaQuery.textScaleFactorOf(context);
                         final maxLines = textScale > 1.2 ? 2 : 1;
 
+                        if (snapshot.hasError) {
+                          debugPrint('Price history error: ${snapshot.error}');
+                          return Text(
+                            'Failed to load price history',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.error,
+                            ),
+                          );
+                        }
+
                         if (!snapshot.hasData || snapshot.data!.isEmpty) {
                           return Text(
                             'No price changes detected',
@@ -308,6 +318,16 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
                       builder: (context, snapshot) {
                         final textScale = MediaQuery.textScaleFactorOf(context);
                         final maxLines = textScale > 1.2 ? 2 : 1;
+
+                        if (snapshot.hasError) {
+                          debugPrint('Cycle history error: ${snapshot.error}');
+                          return Text(
+                            'Failed to load cycle history',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.error,
+                            ),
+                          );
+                        }
 
                         if (!snapshot.hasData || snapshot.data!.isEmpty) {
                           return Text(
@@ -487,95 +507,160 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Edit Subscription'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: 'Service Name'),
+      builder: (context) {
+        bool isLoading = false;
+        return StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            title: const Text('Edit Subscription'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(labelText: 'Service Name'),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: amountController,
+                  decoration: const InputDecoration(labelText: 'Amount'),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: amountController,
-              decoration: const InputDecoration(labelText: 'Amount'),
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final newName = nameController.text.trim();
-              final newAmount =
-                  double.tryParse(amountController.text) ?? subscription.amount;
+            actions: [
+              TextButton(
+                onPressed: isLoading ? null : () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        final newName = nameController.text.trim();
+                        final newAmount =
+                            double.tryParse(amountController.text) ??
+                                subscription.amount;
 
-              if (newName.isNotEmpty) {
-                final isar = ref.read(isarProvider);
-                await isar.writeTxn(() async {
-                  subscription.serviceName = newName;
-                  subscription.amount = newAmount;
-                  await isar.subscriptionModels.put(subscription);
-                });
+                        if (newName.isNotEmpty) {
+                          setState(() => isLoading = true);
+                          try {
+                            final isar = ref.read(isarProvider);
+                            await isar.writeTxn(() async {
+                              subscription.serviceName = newName;
+                              subscription.amount = newAmount;
+                              await isar.subscriptionModels.put(subscription);
+                            });
 
-                if (context.mounted) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Subscription updated')),
-                  );
-                }
-              }
-            },
-            child: const Text('Save'),
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Subscription updated')),
+                              );
+                            }
+                          } catch (e) {
+                            debugPrint('Edit subscription failed: $e');
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content:
+                                        Text('Fixed-safe: ${e.toString()}')),
+                              );
+                            }
+                          } finally {
+                            if (context.mounted) {
+                              setState(() => isLoading = false);
+                            }
+                          }
+                        }
+                      },
+                child: isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Text('Save'),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        );
+      },
+    ).then((_) {
+      nameController.dispose();
+      amountController.dispose();
+    });
   }
 
   void _showCancelDialog(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Mark as Cancelled?'),
-        content: const Text(
-          'This will change the subscription status to cancelled. It will no longer appear in your active subscriptions.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('No, Keep Active'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final isar = ref.read(isarProvider);
-              await isar.writeTxn(() async {
-                subscription.lifecycleState =
-                    SubscriptionLifecycleState.cancelled;
-                await isar.subscriptionModels.put(subscription);
-              });
-
-              if (context.mounted) {
-                Navigator.pop(context);
-                Navigator.pop(context); // Go back to list
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Subscription cancelled')),
-                );
-              }
-            },
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
+      builder: (context) {
+        bool isLoading = false;
+        return StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            title: const Text('Mark as Cancelled?'),
+            content: const Text(
+              'This will change the subscription status to cancelled. It will no longer appear in your active subscriptions.',
             ),
-            child: const Text('Yes, Cancel It'),
+            actions: [
+              TextButton(
+                onPressed: isLoading ? null : () => Navigator.pop(context),
+                child: const Text('No, Keep Active'),
+              ),
+              FilledButton(
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        setState(() => isLoading = true);
+                        try {
+                          final isar = ref.read(isarProvider);
+                          await isar.writeTxn(() async {
+                            subscription.lifecycleState =
+                                SubscriptionLifecycleState.cancelled;
+                            await isar.subscriptionModels.put(subscription);
+                          });
+
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            Navigator.pop(context); // Go back to list
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Subscription cancelled')),
+                            );
+                          }
+                        } catch (e) {
+                          debugPrint('Cancel subscription failed: $e');
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text('Fixed-safe: ${e.toString()}')),
+                            );
+                          }
+                        } finally {
+                          if (context.mounted) {
+                            setState(() => isLoading = false);
+                          }
+                        }
+                      },
+                style: FilledButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+                child: isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Text('Yes, Cancel It'),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -584,42 +669,74 @@ class SubscriptionDetailsScreen extends ConsumerWidget {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add Note'),
-        content: TextField(
-          controller: noteController,
-          decoration: const InputDecoration(
-            labelText: 'Notes',
-            hintText: 'Add details like login info or contract end date...',
-          ),
-          maxLines: 3,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final isar = ref.read(isarProvider);
-              await isar.writeTxn(() async {
-                subscription.notes = noteController.text.trim().isEmpty
+      builder: (context) {
+        bool isLoading = false;
+        return StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            title: const Text('Add Note'),
+            content: TextField(
+              controller: noteController,
+              decoration: const InputDecoration(
+                labelText: 'Notes',
+                hintText: 'Add details like login info or contract end date...',
+              ),
+              maxLines: 3,
+            ),
+            actions: [
+              TextButton(
+                onPressed: isLoading ? null : () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: isLoading
                     ? null
-                    : noteController.text.trim();
-                await isar.subscriptionModels.put(subscription);
-              });
+                    : () async {
+                        setState(() => isLoading = true);
+                        try {
+                          final isar = ref.read(isarProvider);
+                          await isar.writeTxn(() async {
+                            subscription.notes =
+                                noteController.text.trim().isEmpty
+                                    ? null
+                                    : noteController.text.trim();
+                            await isar.subscriptionModels.put(subscription);
+                          });
 
-              if (context.mounted) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Note saved')),
-                );
-              }
-            },
-            child: const Text('Save'),
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Note saved')),
+                            );
+                          }
+                        } catch (e) {
+                          debugPrint('Save note failed: $e');
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text('Fixed-safe: ${e.toString()}')),
+                            );
+                          }
+                        } finally {
+                          if (context.mounted) {
+                            setState(() => isLoading = false);
+                          }
+                        }
+                      },
+                child: isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white),
+                      )
+                    : const Text('Save'),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        );
+      },
+    ).then((_) {
+      noteController.dispose();
+    });
   }
 }

@@ -39,13 +39,24 @@ class PrivacySecurityScreen extends ConsumerWidget {
                   value: isBiometric,
                   onChanged: canDoBiometrics
                       ? (value) async {
-                          if (value) {
-                            final success = await privacyService.authenticate();
-                            if (!success) return;
+                          try {
+                            if (value) {
+                              final success =
+                                  await privacyService.authenticate();
+                              if (!success) return;
+                            }
+                            await privacyService.setBiometricEnabled(value);
+                            ref
+                                .read(isBiometricEnabledProvider.notifier)
+                                .state = value;
+                          } catch (e) {
+                            debugPrint('Biometric toggle failed: $e');
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Fixed-safe: $e')),
+                              );
+                            }
                           }
-                          await privacyService.setBiometricEnabled(value);
-                          ref.read(isBiometricEnabledProvider.notifier).state =
-                              value;
                         }
                       : null,
                   secondary: Icon(
@@ -79,8 +90,17 @@ class PrivacySecurityScreen extends ConsumerWidget {
             subtitle: Text(l10n.localOnlyModeSubtitle),
             value: isLocalOnly,
             onChanged: (value) async {
-              await privacyService.setLocalOnlyMode(value);
-              ref.read(isLocalOnlyModeProvider.notifier).state = value;
+              try {
+                await privacyService.setLocalOnlyMode(value);
+                ref.read(isLocalOnlyModeProvider.notifier).state = value;
+              } catch (e) {
+                debugPrint('Local only mode toggle failed: $e');
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Fixed-safe: $e')),
+                  );
+                }
+              }
             },
             secondary: Icon(Icons.cloud_off, color: theme.colorScheme.primary),
           ),
@@ -97,7 +117,12 @@ class PrivacySecurityScreen extends ConsumerWidget {
               try {
                 await backupService.exportToCsv();
               } catch (e) {
-                if (context.mounted) _showError(context, e.toString());
+                debugPrint('Export failed: $e');
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Fixed-safe: $e')),
+                  );
+                }
               }
             },
           ),
@@ -141,46 +166,81 @@ class PrivacySecurityScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.wipeConfirmTitle),
-        content: Text(l10n.wipeConfirmBody),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.wipeCancel),
+      builder: (context) {
+        bool isLoading = false;
+        return StatefulBuilder(
+          builder: (context, setState) => AlertDialog(
+            title: Text(l10n.wipeConfirmTitle),
+            content: Text(l10n.wipeConfirmBody),
+            actions: [
+              TextButton(
+                onPressed: isLoading ? null : () => Navigator.pop(context),
+                child: Text(l10n.wipeCancel),
+              ),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+                onPressed: isLoading
+                    ? null
+                    : () async {
+                        setState(() => isLoading = true);
+                        try {
+                          await ref.read(backupServiceProvider).nuclearWipe();
+                          await ref
+                              .read(authServiceProvider.notifier)
+                              .signOut();
+                          await ref
+                              .read(privacyServiceProvider)
+                              .resetPrivacySettings();
+                          ref.read(isLocalOnlyModeProvider.notifier).state =
+                              false;
+                          ref.read(isBiometricEnabledProvider.notifier).state =
+                              false;
+                          ref
+                              .read(isSensitiveDataMaskedProvider.notifier)
+                              .state = false;
+                          await ref
+                              .read(appStateProvider.notifier)
+                              .factoryResetAppState();
+                          await ref
+                              .read(secureStorageServiceProvider.notifier)
+                              .deleteAll();
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(l10n.wipeSuccessMessage)),
+                            );
+                          }
+                        } catch (e) {
+                          debugPrint('Nuclear wipe failed: $e');
+                          if (context.mounted) {
+                            Navigator.pop(
+                                context); // Close dialog on error too? Or stay? Stay is better but maybe button enables again.
+                            // Actually if I pop, user can try again.
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Fixed-safe: $e')),
+                            );
+                          }
+                        } finally {
+                          if (context.mounted) {
+                            setState(() => isLoading = false);
+                          }
+                        }
+                      },
+                child: isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white),
+                      )
+                    : Text(l10n.wipeConfirmAction),
+              ),
+            ],
           ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-            onPressed: () async {
-              Navigator.pop(context);
-              await ref.read(backupServiceProvider).nuclearWipe();
-              await ref.read(authServiceProvider.notifier).signOut();
-              await ref.read(privacyServiceProvider).resetPrivacySettings();
-              ref.read(isLocalOnlyModeProvider.notifier).state = false;
-              ref.read(isBiometricEnabledProvider.notifier).state = false;
-              ref.read(isSensitiveDataMaskedProvider.notifier).state = false;
-              await ref.read(appStateProvider.notifier).factoryResetAppState();
-              await ref.read(secureStorageServiceProvider.notifier).deleteAll();
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10n.wipeSuccessMessage)),
-                );
-              }
-            },
-            child: Text(l10n.wipeConfirmAction),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showError(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-          content: Text(message),
-          backgroundColor: Theme.of(context).colorScheme.error),
+        );
+      },
     );
   }
 }

@@ -391,18 +391,27 @@ class TransactionDetailsScreen extends ConsumerWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () async {
-                    final updated = transaction
-                      ..userVerified = !transaction.userVerified;
-                    await ref
-                        .read(transactionRepositoryProvider)
-                        .updateTransaction(updated);
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text(updated.userVerified
-                                ? 'Marked as verified'
-                                : 'Unverified')),
-                      );
+                    try {
+                      final updated = transaction
+                        ..userVerified = !transaction.userVerified;
+                      await ref
+                          .read(transactionRepositoryProvider)
+                          .updateTransaction(updated);
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text(updated.userVerified
+                                  ? 'Marked as verified'
+                                  : 'Unverified')),
+                        );
+                      }
+                    } catch (e) {
+                      debugPrint('Action fail: $e');
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Fixed-safe: $e')),
+                        );
+                      }
                     }
                   },
                   icon: Icon(transaction.userVerified
@@ -415,45 +424,54 @@ class TransactionDetailsScreen extends ConsumerWidget {
               Expanded(
                 child: FilledButton.icon(
                   onPressed: () async {
-                    final controller =
-                        TextEditingController(text: transaction.notes);
-                    final newNote = await showDialog<String>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: const Text('Add Note'),
-                        content: TextField(
-                          controller: controller,
-                          decoration: const InputDecoration(
-                            hintText: 'Enter your note here...',
-                            border: OutlineInputBorder(),
+                    try {
+                      final controller =
+                          TextEditingController(text: transaction.notes);
+                      final newNote = await showDialog<String>(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Add Note'),
+                          content: TextField(
+                            controller: controller,
+                            decoration: const InputDecoration(
+                              hintText: 'Enter your note here...',
+                              border: OutlineInputBorder(),
+                            ),
+                            maxLines: 3,
+                            autofocus: true,
                           ),
-                          maxLines: 3,
-                          autofocus: true,
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Cancel'),
+                            ),
+                            FilledButton(
+                              onPressed: () =>
+                                  Navigator.pop(context, controller.text),
+                              child: const Text('Save'),
+                            ),
+                          ],
                         ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text('Cancel'),
-                          ),
-                          FilledButton(
-                            onPressed: () =>
-                                Navigator.pop(context, controller.text),
-                            child: const Text('Save'),
-                          ),
-                        ],
-                      ),
-                    );
+                      );
 
-                    if (newNote != null && context.mounted) {
-                      final updated = transaction
-                        ..notes = newNote
-                        ..isManuallyEdited = true;
-                      await ref
-                          .read(transactionRepositoryProvider)
-                          .updateTransaction(updated);
+                      if (newNote != null && context.mounted) {
+                        final updated = transaction
+                          ..notes = newNote
+                          ..isManuallyEdited = true;
+                        await ref
+                            .read(transactionRepositoryProvider)
+                            .updateTransaction(updated);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Note saved')),
+                          );
+                        }
+                      }
+                    } catch (e) {
+                      debugPrint('Action fail: $e');
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Note saved')),
+                          SnackBar(content: Text('Fixed-safe: $e')),
                         );
                       }
                     }

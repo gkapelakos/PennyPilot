@@ -115,10 +115,10 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
         );
       }
     } catch (e) {
+      debugPrint('Action fail: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(AppLocalizations.of(context)!.error(e.toString()))),
+          SnackBar(content: Text('Fixed-safe: ${e.toString()}')),
         );
       }
     } finally {
