@@ -21,7 +21,9 @@ jobs:
         cache: true
 
     - name: Create Secrets
-      run: cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
+      run: |
+        cp lib/src/config/secrets.dart.example lib/src/config/secrets.dart
+        cp android/app/google-services.json.example android/app/google-services.json
 
     - name: Build
       run: |
