@@ -5,6 +5,7 @@ import '../../providers/database_provider.dart';
 import '../../../data/database/app_database.dart';
 import '../../../../widgets/shadcn_card.dart';
 import '../../widgets/scanner/premium_ocr_scanner.dart';
+import '../../screens/settings/settings_screen.dart';
 
 class SubscriptionIntelligenceDashboard extends ConsumerWidget {
   const SubscriptionIntelligenceDashboard({super.key});
@@ -30,6 +31,15 @@ class SubscriptionIntelligenceDashboard extends ConsumerWidget {
             icon: const Icon(Icons.refresh),
             onPressed: () {
               // Trigger Analysis logic
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const SettingsScreen()),
+              );
             },
           ),
         ],

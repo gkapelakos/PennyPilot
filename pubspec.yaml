@@ -1,7 +1,7 @@
 name: pennypilot
 description: A local-first personal finance tracker.
 publish_to: 'none'
-version: 1.0.0-alpha.1.19+1
+version: 2.0.0-alpha.2+2
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
@@ -74,7 +74,7 @@ flutter:
   generate: true
   uses-material-design: true
   assets:
-    - assets/pennypilot logo.png
+    - assets/pennypilot_logo.png
     - assets/lottie/
 
 
@@ -85,16 +85,16 @@ google_ml_kit:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: false
-  image_path: "assets/pennypilot logo.png"
+  image_path: "assets/pennypilot_logo.png"
   min_sdk_android: 21
   web:
     generate: true
-    image_path: "assets/pennypilot logo.png"
+    image_path: "assets/pennypilot_logo.png"
     background_color: "#121212"
     theme_color: "#121212"
   windows:
     generate: true
-    image_path: "assets/pennypilot logo.png"
+    image_path: "assets/pennypilot_logo.png"
     icon_size: 48
 
 dependency_overrides:

@@ -8,6 +8,7 @@ import 'package:pennypilot/src/data/models/subscription_model.dart';
 
 import 'package:pennypilot/src/presentation/screens/subscriptions/add_subscription_sheet.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
+import 'package:pennypilot/src/presentation/screens/settings/settings_screen.dart';
 
 class SubscriptionsScreen extends ConsumerStatefulWidget {
   const SubscriptionsScreen({super.key});
@@ -41,6 +42,17 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
         slivers: [
           SliverAppBar.large(
             title: Text(l10n.subscriptions),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                  );
+                },
+              ),
+            ],
           ),
           subscriptionsAsync.when(
             data: (subscriptions) {

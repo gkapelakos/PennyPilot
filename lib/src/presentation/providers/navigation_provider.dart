@@ -7,7 +7,7 @@ import 'package:pennypilot/src/presentation/screens/transactions/transactions_sc
 import 'package:pennypilot/src/presentation/screens/subscriptions/subscriptions_screen.dart';
 import 'package:pennypilot/src/presentation/screens/insights/insights_screen.dart';
 import 'package:pennypilot/src/presentation/screens/settings/settings_screen.dart';
-import 'package:pennypilot/src/presentation/screens/onboarding/startup_screen.dart';
+import 'package:pennypilot/src/presentation/screens/onboarding/welcome_screen.dart';
 import 'package:pennypilot/onboarding/onboarding_screen.dart';
 import 'package:pennypilot/src/presentation/screens/auth/connect_email_screen.dart';
 import 'package:pennypilot/src/presentation/screens/transactions/add_transaction_sheet.dart';
@@ -17,6 +17,7 @@ import 'package:pennypilot/src/presentation/widgets/status_dialogs.dart';
 import 'package:pennypilot/src/presentation/providers/email_provider.dart';
 import 'package:pennypilot/src/presentation/screens/subscriptions/subscription_intelligence_dashboard.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
+import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 
 part 'navigation_provider.g.dart';
 
@@ -28,10 +29,22 @@ GoRouter router(RouterRef ref) {
   return GoRouter(
     initialLocation: '/',
     navigatorKey: rootNavigatorKey,
+    redirect: (context, state) {
+      final appState = ref.read(appStateProvider);
+      final isOnboarding = state.matchedLocation == '/' ||
+          state.matchedLocation == '/onboarding';
+
+      if (appState.hasCompletedOnboarding) {
+        if (isOnboarding) return '/dashboard';
+      } else {
+        if (!isOnboarding) return '/';
+      }
+      return null;
+    },
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => const StartupScreen(),
+        builder: (context, state) => const WelcomeScreen(),
       ),
       GoRoute(
         path: '/onboarding',
@@ -117,10 +130,6 @@ class DashboardShell extends ConsumerWidget {
                     icon: const Icon(Icons.psychology_outlined),
                     selectedIcon: const Icon(Icons.psychology),
                     label: const Text('Intelligence')),
-                NavigationRailDestination(
-                    icon: const Icon(Icons.settings_outlined),
-                    selectedIcon: const Icon(Icons.settings),
-                    label: Text(l10n.settings)),
               ],
             ),
           Expanded(child: child),
@@ -152,10 +161,6 @@ class DashboardShell extends ConsumerWidget {
                     icon: const Icon(Icons.psychology_outlined),
                     selectedIcon: const Icon(Icons.psychology),
                     label: 'Intelligence'),
-                NavigationDestination(
-                    icon: const Icon(Icons.settings_outlined),
-                    selectedIcon: const Icon(Icons.settings),
-                    label: l10n.settings),
               ],
             ),
       floatingActionButton: selectedIndex < 4
@@ -173,7 +178,6 @@ class DashboardShell extends ConsumerWidget {
     if (location.startsWith('/transactions')) return 1;
     if (location.startsWith('/subscriptions')) return 2;
     if (location.startsWith('/insights')) return 3;
-    if (location.startsWith('/settings')) return 5;
     if (location.startsWith('/intelligence')) return 4;
     return 0;
   }
@@ -194,9 +198,6 @@ class DashboardShell extends ConsumerWidget {
         break;
       case 4:
         context.go('/intelligence');
-        break;
-      case 5:
-        context.go('/settings');
         break;
     }
   }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pennypilot/src/presentation/providers/transactions_provider.dart';
 import 'package:pennypilot/src/presentation/providers/subscriptions_provider.dart';
+import 'package:pennypilot/src/presentation/screens/settings/settings_screen.dart';
 import 'package:pennypilot/src/presentation/widgets/transaction_shimmer.dart';
 import 'package:pennypilot/src/presentation/widgets/categories_scroller.dart';
 import 'package:pennypilot/src/presentation/widgets/safe_to_spend.dart';
@@ -55,6 +56,15 @@ class OverviewTab extends ConsumerWidget {
                   ),
                 ),
               const SizedBox(width: 8),
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                  );
+                },
+              ),
             ],
           ),
           SliverPadding(

@@ -8,6 +8,7 @@ import 'package:pennypilot/src/data/database/app_database.dart';
 import 'package:intl/intl.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
+import 'package:pennypilot/src/presentation/screens/settings/settings_screen.dart';
 
 class TransactionsScreen extends ConsumerStatefulWidget {
   const TransactionsScreen({super.key});
@@ -73,6 +74,15 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                   tooltip: l10n.filterAndSort,
                   onPressed: () => _showFilterSheet(context),
                 ),
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                  );
+                },
+              ),
             ],
           ),
           transactionsAsync.when(

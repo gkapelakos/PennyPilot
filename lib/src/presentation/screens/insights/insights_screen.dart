@@ -7,6 +7,7 @@ import 'package:pennypilot/src/data/models/category_model.dart';
 import 'package:intl/intl.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
+import 'package:pennypilot/src/presentation/screens/settings/settings_screen.dart';
 
 class InsightsScreen extends ConsumerWidget {
   const InsightsScreen({super.key});
@@ -24,9 +25,6 @@ class InsightsScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.spendingInsights),
-      ),
       body: transactionsAsync.when(
         data: (transactions) => categoriesAsync.when(
           data: (categories) =>
@@ -92,6 +90,17 @@ class InsightsScreen extends ConsumerWidget {
       slivers: [
         SliverAppBar.large(
           title: Text(l10n.spendingInsights),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                );
+              },
+            ),
+          ],
         ),
         SliverPadding(
           padding: const EdgeInsets.all(16),
