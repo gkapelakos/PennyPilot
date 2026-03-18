@@ -19,6 +19,11 @@
 </div>
 
 ---
+## Project Status
+
+This project is currently archived, and active development has been paused indefinitely. No further work will be carried out unless a contributor is interested in improving the project or taking over its development.
+The repository will remain available because the project has been useful to me, and I may revisit it in the future.
+
 
 ## 💎 The Sovereign Manifesto
 
