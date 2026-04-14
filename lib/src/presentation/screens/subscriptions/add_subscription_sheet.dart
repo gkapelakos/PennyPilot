@@ -75,7 +75,7 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
         await isar.subscriptionModels.put(subscription);
       });
 
-      if (!context.mounted) return;
+      if (!mounted) return;
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -83,7 +83,7 @@ class _AddSubscriptionSheetState extends ConsumerState<AddSubscriptionSheet> {
       );
     } catch (e) {
       debugPrint('Add subscription fail: $e');
-      if (!context.mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Fixed-safe: ${e.toString()}')),
       );

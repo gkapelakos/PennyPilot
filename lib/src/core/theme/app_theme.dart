@@ -3,14 +3,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Seed colors for dynamic theming
-  static const Color seedColor = Color(0xFF6750A4); // Deep Purple
-  static const Color secondaryColor = Color(0xFF006C4C); // Teal
+  static const Color seedColor = Color(0xFF4F46E5); // Indigo
+  static const Color secondaryColor = Color(0xFF10B981); // Emerald
 
   // Neutral colors for financial data (avoid red/green semantics)
   static const Color neutralAmount = Color(0xFF1F1F1F); // Dark gray for amounts
   static const Color neutralAmountLight = Color(0xFF424242);
-  static const Color accentBlue = Color(0xFF0277BD); // For positive context
-  static const Color accentAmber = Color(0xFFF57C00); // For attention context
+  static const Color accentBlue = Color(0xFF0EA5E9); // For positive context (Sky Blue)
+  static const Color accentAmber = Color(0xFFF59E0B); // For attention context (Amber)
 
   /// Generate light theme with optional dynamic colors
   static ThemeData lightTheme(ColorScheme? dynamicColorScheme) {

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../providers/database_provider.dart';
 import '../../../data/database/app_database.dart';
-import '../../../../widgets/shadcn_card.dart';
+import 'package:pennypilot/src/presentation/widgets/shadcn_card.dart';
 import '../../widgets/scanner/premium_ocr_scanner.dart';
 import '../../screens/settings/settings_screen.dart';
 

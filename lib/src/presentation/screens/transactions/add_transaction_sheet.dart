@@ -107,7 +107,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
         await isar.transactionModels.put(transaction);
       });
 
-      if (!context.mounted) return;
+      if (!mounted) return;
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -115,7 +115,7 @@ class _AddTransactionSheetState extends ConsumerState<AddTransactionSheet> {
       );
     } catch (e) {
       debugPrint('Action fail: $e');
-      if (!context.mounted) return;
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Fixed-safe: ${e.toString()}')),
       );
