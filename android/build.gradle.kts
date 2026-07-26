@@ -17,6 +17,26 @@ subprojects {
 }
 
 subprojects {
+    // Fix JVM target compatibility for all subprojects (e.g. tflite_flutter)
+    // This ensures both Java and Kotlin tasks use JVM 17
+    afterEvaluate {
+        if (plugins.hasPlugin("com.android.library")) {
+            try {
+                extensions.configure<com.android.build.gradle.LibraryExtension>("android") {
+                    compileOptions {
+                        sourceCompatibility = JavaVersion.VERSION_17
+                        targetCompatibility = JavaVersion.VERSION_17
+                    }
+                }
+            } catch (_: Exception) {}
+        }
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+            compilerOptions {
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+            }
+        }
+    }
+
     // Helper function to set namespace for isar_flutter_libs
     fun setNamespace() {
         if (project.name == "isar_flutter_libs") {
