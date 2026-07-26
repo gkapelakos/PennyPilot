@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/data/models/budget_model.dart';
 import 'package:pennypilot/src/presentation/providers/budget_provider.dart';
+import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
+import 'package:intl/intl.dart';
 
 class SplitTransactionSheet extends ConsumerStatefulWidget {
   final TransactionModel transaction;
@@ -120,12 +122,18 @@ class _SplitTransactionSheetState extends ConsumerState<SplitTransactionSheet> {
             ],
           ),
           const SizedBox(height: 16),
-          Text(
-            'Total: \$${widget.transaction.amount.toStringAsFixed(2)}',
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium
-                ?.copyWith(fontWeight: FontWeight.bold),
+          Builder(
+            builder: (context) {
+              final appCurrency = ref.watch(appStateProvider).currencyCode;
+              final currencyFormat = NumberFormat.currency(name: appCurrency);
+              return Text(
+                'Total: ${currencyFormat.format(widget.transaction.amount)}',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold),
+              );
+            },
           ),
           const SizedBox(height: 16),
           Flexible(
@@ -153,10 +161,10 @@ class _SplitTransactionSheetState extends ConsumerState<SplitTransactionSheet> {
                         child: TextField(
                           controller: _amountControllers[index],
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             labelText: 'Amount',
-                            border: OutlineInputBorder(),
-                            prefixText: '\$',
+                            border: const OutlineInputBorder(),
+                            prefixText: NumberFormat.simpleCurrency(name: ref.watch(appStateProvider).currencyCode).currencySymbol,
                           ),
                         ),
                       ),

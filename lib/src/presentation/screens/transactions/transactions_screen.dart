@@ -8,7 +8,9 @@ import 'package:pennypilot/src/data/database/app_database.dart';
 import 'package:intl/intl.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
-import 'package:pennypilot/src/presentation/screens/settings/settings_screen.dart';
+import 'package:pennypilot/src/presentation/screens/transactions/transaction_details_screen.dart';
+import 'package:pennypilot/src/data/models/transaction_model.dart';
+import 'package:pennypilot/src/presentation/providers/data_providers.dart' hide transactionsProvider, recentTransactionsProvider;
 
 class TransactionsScreen extends ConsumerStatefulWidget {
   const TransactionsScreen({super.key});
@@ -35,7 +37,12 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      body: CustomScrollView(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(transactionsProvider);
+          await Future.delayed(const Duration(milliseconds: 500));
+        },
+        child: CustomScrollView(
         slivers: [
           SliverAppBar.large(
             title: _isSearching
@@ -74,15 +81,6 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                   tooltip: l10n.filterAndSort,
                   onPressed: () => _showFilterSheet(context),
                 ),
-              IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                  );
-                },
-              ),
             ],
           ),
           transactionsAsync.when(
@@ -153,6 +151,7 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
             ),
           ),
         ],
+      ),
       ),
     );
   }
@@ -232,8 +231,20 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
       transaction: transaction,
       showConfidence: true,
       expandable: true,
-      onTap: () {
-        // context.push('/transactions/${transaction.id}');
+      onTap: () async {
+        final isar = ref.read(isarProvider);
+        final isarTransaction = await isar.transactionModels
+            .get(transaction.id);
+        if (isarTransaction != null && context.mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => TransactionDetailsScreen(
+                transaction: isarTransaction,
+              ),
+            ),
+          );
+        }
       },
     );
   }

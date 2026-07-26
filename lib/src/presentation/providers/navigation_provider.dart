@@ -130,6 +130,10 @@ class DashboardShell extends ConsumerWidget {
                     icon: const Icon(Icons.psychology_outlined),
                     selectedIcon: const Icon(Icons.psychology),
                     label: const Text('Intelligence')),
+                NavigationRailDestination(
+                    icon: const Icon(Icons.settings_outlined),
+                    selectedIcon: const Icon(Icons.settings),
+                    label: Text(l10n.settings)),
               ],
             ),
           Expanded(child: child),
@@ -161,9 +165,13 @@ class DashboardShell extends ConsumerWidget {
                     icon: const Icon(Icons.psychology_outlined),
                     selectedIcon: const Icon(Icons.psychology),
                     label: 'Intelligence'),
+                NavigationDestination(
+                    icon: const Icon(Icons.settings_outlined),
+                    selectedIcon: const Icon(Icons.settings),
+                    label: l10n.settings),
               ],
             ),
-      floatingActionButton: selectedIndex < 4
+      floatingActionButton: selectedIndex < 5
           ? FloatingActionButton(
               onPressed: () => _showActionMenu(context, ref),
               child: const Icon(Icons.add),
@@ -179,6 +187,7 @@ class DashboardShell extends ConsumerWidget {
     if (location.startsWith('/subscriptions')) return 2;
     if (location.startsWith('/insights')) return 3;
     if (location.startsWith('/intelligence')) return 4;
+    if (location.startsWith('/settings')) return 5;
     return 0;
   }
 
@@ -198,6 +207,9 @@ class DashboardShell extends ConsumerWidget {
         break;
       case 4:
         context.go('/intelligence');
+        break;
+      case 5:
+        context.go('/settings');
         break;
     }
   }

@@ -217,5 +217,17 @@
   "billingCycle": "Billing Cycle",
   "nextRenewalDate": "Next Renewal Date",
   "notesOptional": "Notes (Optional)",
-  "tryAgain": "Try Again"
+  "tryAgain": "Try Again",
+  "intelligence": "Intelligence",
+  "monthlyBurn": "Monthly Burn",
+  "totalSubscriptions": "Total subscriptions",
+  "zombieSubs": "Zombie Subs",
+  "potentialSavings": "Potential savings",
+  "costTrend": "Cost Trend",
+  "dailySubscriptionExpense": "Daily subscription expense",
+  "activeSubscriptions": "Active Subscriptions",
+  "noSubscriptionsDetected": "No subscriptions detected yet.",
+  "nextRenewal": "Next renewal",
+  "currencyConverter": "Currency Converter",
+  "emailScannerControls": "Email Scanner Controls"
 }

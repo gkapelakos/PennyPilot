@@ -523,4 +523,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tryAgain => 'Try Again';
+
+  @override
+  String get intelligence => 'Intelligence';
+
+  @override
+  String get monthlyBurn => 'Monthly Burn';
+
+  @override
+  String get totalSubscriptions => 'Total subscriptions';
+
+  @override
+  String get zombieSubs => 'Zombie Subs';
+
+  @override
+  String get potentialSavings => 'Potential savings';
+
+  @override
+  String get costTrend => 'Cost Trend';
+
+  @override
+  String get dailySubscriptionExpense => 'Daily subscription expense';
+
+  @override
+  String get activeSubscriptions => 'Active Subscriptions';
+
+  @override
+  String get noSubscriptionsDetected => 'No subscriptions detected yet.';
+
+  @override
+  String get nextRenewal => 'Next renewal';
+
+  @override
+  String get currencyConverter => 'Currency Converter';
+
+  @override
+  String get emailScannerControls => 'Email Scanner Controls';
 }

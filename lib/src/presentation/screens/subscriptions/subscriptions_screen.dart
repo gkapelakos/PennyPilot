@@ -8,7 +8,7 @@ import 'package:pennypilot/src/data/models/subscription_model.dart';
 
 import 'package:pennypilot/src/presentation/screens/subscriptions/add_subscription_sheet.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
-import 'package:pennypilot/src/presentation/screens/settings/settings_screen.dart';
+import 'package:pennypilot/src/presentation/screens/subscriptions/subscription_details_screen.dart';
 
 class SubscriptionsScreen extends ConsumerStatefulWidget {
   const SubscriptionsScreen({super.key});
@@ -38,123 +38,122 @@ class _SubscriptionsScreenState extends ConsumerState<SubscriptionsScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar.large(
-            title: Text(l10n.subscriptions),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const SettingsScreen()),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(subscriptionsProvider);
+          ref.invalidate(subscriptionStatsProvider);
+          await Future.delayed(const Duration(milliseconds: 500));
+        },
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar.large(
+              title: Text(l10n.subscriptions),
+            ),
+            subscriptionsAsync.when(
+              data: (subscriptions) {
+                if (subscriptions.isEmpty) {
+                  return SliverFillRemaining(
+                    child: EmptyState(
+                      icon: Icons.subscriptions,
+                      title: l10n.noSubscriptionsFound,
+                      message: l10n.noSubscriptionsDescription,
+                      action: FilledButton.icon(
+                        onPressed: _showAddSheet,
+                        icon: const Icon(Icons.add),
+                        label: Text(l10n.addManually),
+                      ),
+                    ),
                   );
-                },
-              ),
-            ],
-          ),
-          subscriptionsAsync.when(
-            data: (subscriptions) {
-              if (subscriptions.isEmpty) {
-                return SliverFillRemaining(
-                  child: EmptyState(
-                    icon: Icons.subscriptions,
-                    title: l10n.noSubscriptionsFound,
-                    message: l10n.noSubscriptionsDescription,
-                    action: FilledButton.icon(
-                      onPressed: _showAddSheet,
-                      icon: const Icon(Icons.add),
-                      label: Text(l10n.addManually),
+                }
+
+                var filteredSubscriptions = subscriptions;
+                if (_filter != 'all') {
+                  final filterState = _getLifecycleState(_filter);
+                  filteredSubscriptions = subscriptions
+                      .where((s) => s.lifecycleState == filterState)
+                      .toList();
+                }
+
+                return SliverMainAxisGroup(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: statsAsync.when(
+                        data: (stats) => _buildRefinedStats(context, stats),
+                        loading: () => const SizedBox(height: 100),
+                        error: (_, __) => const SizedBox.shrink(),
+                      ),
                     ),
-                  ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 56,
+                        child: ListView(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            _buildFilterChip(l10n.all, 'all'),
+                            _buildFilterChip(l10n.active, 'active'),
+                            _buildFilterChip(l10n.trial, 'trial'),
+                            _buildFilterChip(l10n.paused, 'paused'),
+                            _buildFilterChip(l10n.ended, 'ended'),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (filteredSubscriptions.isEmpty)
+                      SliverFillRemaining(
+                        child: EmptyState(
+                          icon: Icons.filter_alt_off,
+                          title: l10n.noFilteredSubscriptions(_filter == 'all'
+                              ? l10n.all
+                              : _filter.toUpperCase()),
+                          message: l10n.trySelectingDifferentFilter,
+                          action: TextButton(
+                            onPressed: () => setState(() => _filter = 'all'),
+                            child: Text(l10n.showAll),
+                          ),
+                        ),
+                      )
+                    else
+                      SliverPadding(
+                        padding: const EdgeInsets.only(bottom: 32),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              final subscription = filteredSubscriptions[index];
+                              return SubscriptionCard(
+                                subscription: subscription,
+                                showDetails: true,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => SubscriptionDetailsScreen(
+                                        subscription: subscription,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            childCount: filteredSubscriptions.length,
+                          ),
+                        ),
+                      ),
+                  ],
                 );
-              }
-
-              var filteredSubscriptions = subscriptions;
-              if (_filter != 'all') {
-                final filterState = _getLifecycleState(_filter);
-                filteredSubscriptions = subscriptions
-                    .where((s) => s.lifecycleState == filterState)
-                    .toList();
-              }
-
-              return SliverMainAxisGroup(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: statsAsync.when(
-                      data: (stats) => _buildRefinedStats(context, stats),
-                      loading: () => const SizedBox(height: 100),
-                      error: (_, __) => const SizedBox.shrink(),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 56,
-                      child: ListView(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          _buildFilterChip(l10n.all, 'all'),
-                          _buildFilterChip(l10n.active, 'active'),
-                          _buildFilterChip(l10n.trial, 'trial'),
-                          _buildFilterChip(l10n.paused, 'paused'),
-                          _buildFilterChip(l10n.ended, 'ended'),
-                        ],
-                      ),
-                    ),
-                  ),
-                  if (filteredSubscriptions.isEmpty)
-                    SliverFillRemaining(
-                      child: EmptyState(
-                        icon: Icons.filter_alt_off,
-                        title: l10n.noFilteredSubscriptions(_filter == 'all'
-                            ? l10n.all
-                            : _filter.toUpperCase()),
-                        message: l10n.trySelectingDifferentFilter,
-                        action: TextButton(
-                          onPressed: () => setState(() => _filter = 'all'),
-                          child: Text(l10n.showAll),
-                        ),
-                      ),
-                    )
-                  else
-                    SliverPadding(
-                      padding: const EdgeInsets.only(bottom: 32),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            final subscription = filteredSubscriptions[index];
-                            return SubscriptionCard(
-                              subscription: subscription,
-                              showDetails: true,
-                              onTap: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                      content: Text(l10n.detailsFor(
-                                          subscription.serviceName))),
-                                );
-                              },
-                            );
-                          },
-                          childCount: filteredSubscriptions.length,
-                        ),
-                      ),
-                    ),
-                ],
-              );
-            },
-            loading: () => const SliverFillRemaining(child: LoadingState()),
-            error: (error, stack) => SliverFillRemaining(
-              child: ErrorState(
-                title: l10n.failedToLoad,
-                message: error.toString(),
-                onRetry: () => ref.refresh(subscriptionsProvider),
+              },
+              loading: () => const SliverFillRemaining(child: LoadingState()),
+              error: (error, stack) => SliverFillRemaining(
+                child: ErrorState(
+                  title: l10n.failedToLoad,
+                  message: error.toString(),
+                  onRetry: () => ref.refresh(subscriptionsProvider),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

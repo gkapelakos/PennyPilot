@@ -1031,6 +1031,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Try Again'**
   String get tryAgain;
+
+  /// No description provided for @intelligence.
+  ///
+  /// In en, this message translates to:
+  /// **'Intelligence'**
+  String get intelligence;
+
+  /// No description provided for @monthlyBurn.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Burn'**
+  String get monthlyBurn;
+
+  /// No description provided for @totalSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Total subscriptions'**
+  String get totalSubscriptions;
+
+  /// No description provided for @zombieSubs.
+  ///
+  /// In en, this message translates to:
+  /// **'Zombie Subs'**
+  String get zombieSubs;
+
+  /// No description provided for @potentialSavings.
+  ///
+  /// In en, this message translates to:
+  /// **'Potential savings'**
+  String get potentialSavings;
+
+  /// No description provided for @costTrend.
+  ///
+  /// In en, this message translates to:
+  /// **'Cost Trend'**
+  String get costTrend;
+
+  /// No description provided for @dailySubscriptionExpense.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily subscription expense'**
+  String get dailySubscriptionExpense;
+
+  /// No description provided for @activeSubscriptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Subscriptions'**
+  String get activeSubscriptions;
+
+  /// No description provided for @noSubscriptionsDetected.
+  ///
+  /// In en, this message translates to:
+  /// **'No subscriptions detected yet.'**
+  String get noSubscriptionsDetected;
+
+  /// No description provided for @nextRenewal.
+  ///
+  /// In en, this message translates to:
+  /// **'Next renewal'**
+  String get nextRenewal;
+
+  /// No description provided for @currencyConverter.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency Converter'**
+  String get currencyConverter;
+
+  /// No description provided for @emailScannerControls.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Scanner Controls'**
+  String get emailScannerControls;
 }
 
 class _AppLocalizationsDelegate

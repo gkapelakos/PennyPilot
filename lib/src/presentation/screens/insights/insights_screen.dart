@@ -7,7 +7,7 @@ import 'package:pennypilot/src/data/models/category_model.dart';
 import 'package:intl/intl.dart';
 import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 import 'package:pennypilot/src/localization/generated/app_localizations.dart';
-import 'package:pennypilot/src/presentation/screens/settings/settings_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class InsightsScreen extends ConsumerWidget {
   const InsightsScreen({super.key});
@@ -50,18 +50,52 @@ class InsightsScreen extends ConsumerWidget {
   ) {
     final l10n = AppLocalizations.of(context)!;
     if (transactions.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.analytics_outlined,
-                size: 64, color: Theme.of(context).colorScheme.outline),
-            const SizedBox(height: 16),
-            Text(l10n.notEnoughDataForInsights),
-            const SizedBox(height: 8),
-            Text(l10n.connectEmailInsights),
-          ],
-        ),
+      return CustomScrollView(
+        slivers: [
+          SliverAppBar.large(
+            title: Text(l10n.spendingInsights),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primaryContainer.withAlpha(51),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.analytics_outlined,
+                        size: 48, color: Theme.of(context).colorScheme.primary),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    l10n.notEnoughDataForInsights,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.connectEmailInsights,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  FilledButton.icon(
+                    onPressed: () => context.push('/connect-email'),
+                    icon: const Icon(Icons.email),
+                    label: Text(l10n.connectEmail),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       );
     }
 
@@ -90,17 +124,6 @@ class InsightsScreen extends ConsumerWidget {
       slivers: [
         SliverAppBar.large(
           title: Text(l10n.spendingInsights),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                );
-              },
-            ),
-          ],
         ),
         SliverPadding(
           padding: const EdgeInsets.all(16),

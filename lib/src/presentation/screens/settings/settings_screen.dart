@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pennypilot/src/presentation/screens/settings/manage_categories_screen.dart';
 import 'package:pennypilot/src/presentation/screens/settings/privacy_security_screen.dart';
 import 'package:pennypilot/src/presentation/screens/settings/backup_screen.dart';
+import 'package:pennypilot/src/presentation/screens/converter/converter_screen.dart';
+import 'package:pennypilot/src/presentation/screens/settings/privacy_audit_screen.dart';
+import 'package:pennypilot/src/presentation/screens/settings/email_scanner_controls_screen.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pennypilot/src/presentation/providers/theme_provider.dart';
@@ -41,21 +44,37 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 _settingsSectionHeader(context, l10n.accounts),
                 _groupWrapper(
                   context,
-                  child: ListTile(
-                    leading: const Icon(Icons.manage_accounts),
-                    title: Text(l10n.manageConnectedAccounts),
-                    subtitle: Text(
-                      connectedEmails.isEmpty
-                          ? l10n.noAccountsConnected
-                          : l10n.accountsConnected(connectedEmails.length),
-                    ),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ManageAccountsScreen(),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: const Icon(Icons.manage_accounts),
+                        title: Text(l10n.manageConnectedAccounts),
+                        subtitle: Text(
+                          connectedEmails.isEmpty
+                              ? l10n.noAccountsConnected
+                              : l10n.accountsConnected(connectedEmails.length),
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ManageAccountsScreen(),
+                          ),
+                        ),
                       ),
-                    ),
+                      ListTile(
+                        leading: const Icon(Icons.tune),
+                        title: Text(l10n.emailScannerControls),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const EmailScannerControlsScreen(),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -104,12 +123,36 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                       ),
                       ListTile(
+                        leading: const Icon(Icons.calculate),
+                        title: Text(l10n.currencyConverter),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const CurrencyConverterScreen(),
+                          ),
+                        ),
+                      ),
+                      ListTile(
                         leading: const Icon(Icons.security),
                         title: Text(l10n.privacySecurity),
+                        trailing: const Icon(Icons.chevron_right),
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const PrivacySecurityScreen(),
+                          ),
+                        ),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.verified_user),
+                        title: Text(l10n.privacyAudit),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PrivacyAuditScreen(),
                           ),
                         ),
                       ),

@@ -8,6 +8,7 @@ import 'package:pennypilot/src/services/receipt_extraction_service.dart';
 import 'package:intl/intl.dart';
 import 'package:pennypilot/src/data/models/transaction_model.dart';
 import 'package:pennypilot/src/data/models/receipt_line_item_model.dart';
+import 'package:pennypilot/src/presentation/providers/app_state_provider.dart';
 
 class ReceiptScanScreen extends ConsumerStatefulWidget {
   const ReceiptScanScreen({super.key});
@@ -133,8 +134,8 @@ class _ReceiptScanScreenState extends ConsumerState<ReceiptScanScreen> {
   }
 
   Widget _buildResultCard(BuildContext context) {
-    final format =
-        NumberFormat.currency(symbol: '\$'); // Should use app currency
+    final appCurrency = ref.watch(appStateProvider).currencyCode;
+    final format = NumberFormat.currency(name: appCurrency);
 
     return Card(
       child: Padding(
