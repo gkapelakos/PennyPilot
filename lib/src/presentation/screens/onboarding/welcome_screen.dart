@@ -151,7 +151,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                       const SizedBox(height: 32),
 
                       // Version Label
-                      _VersionLabel(version: 'alpha.2.1'),
+                      _VersionLabel(version: 'alpha.2.2'),
 
                       const SizedBox(height: 24),
                     ],
